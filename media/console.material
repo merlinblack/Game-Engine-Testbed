@@ -1,0 +1,14 @@
+material console/background
+{
+	technique
+	{
+		pass
+		{
+            texture_unit
+			{
+			    texture console.png
+			}
+		}
+	}
+}
+

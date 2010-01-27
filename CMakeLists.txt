@@ -1,0 +1,34 @@
+cmake_minimum_required(VERSION 2.6)
+PROJECT(engine)
+
+set(CMAKE_MODULE_PATH /usr/local/lib/OGRE/cmake ${PROJECT_SOURCE_DIR}/cmake )
+
+FIND_PACKAGE(OpenGL)
+FIND_PACKAGE(OGRE)
+FIND_PACKAGE(OIS)
+FIND_PACKAGE(Lua51)
+
+INCLUDE_DIRECTORIES(
+	${OpenGL_INCLUDE_DIR}
+	${OGRE_INCLUDE_DIRS}
+	${OIS_INCLUDE_DIRS}
+	${LUA_INCLUDE_DIR}
+	${PROJECT_SOURCE_DIR}/include
+	/usr/local/include	# Luabind
+	)
+
+FILE(GLOB SRCS src/*.cpp)
+FILE(GLOB HDRS include/*.h)
+
+ADD_EXECUTABLE(engine 
+	${SRCS}
+	${HDRS}
+	)
+
+TARGET_LINK_LIBRARIES(engine
+	${OpenGL_LIBRARIES}
+	${OIS_LIBRARIES}
+	${OGRE_LIBRARIES}
+	${LUA_LIBRARIES}
+	luabind	# Luabind
+	)
