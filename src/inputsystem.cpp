@@ -1,4 +1,5 @@
 #include <inputsystem.h>
+#include <inputeventdata.h>
 
 void InputSystem::shutdown()
 {
@@ -51,13 +52,17 @@ void InputSystem::initialise( Ogre::RenderWindow *window, bool exclusive )
     mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, true));
     mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject(OIS::OISKeyboard, true));
 
+    mMouse->setEventCallback(this);
     mKeyboard->setEventCallback( this );
 
     adjustWindowSize( window );
 
     // Cache hash values for creating events.
-    event_keydown = Event::hash( "EVT_KEYDOWN" );
-    event_keyup = Event::hash( "EVT_KEYUP" );
+    event_keydown   = Event::hash( "EVT_KEYDOWN" );
+    event_keyup     = Event::hash( "EVT_KEYUP" );
+    event_mousedown = Event::hash( "EVT_MOUSEDOWN" );
+    event_mouseup   = Event::hash( "EVT_MOUSEUP" );
+    event_mousemove = Event::hash( "EVT_MOUSEMOVE" );
 }
 
 void InputSystem::adjustWindowSize( Ogre::RenderWindow *window )
@@ -80,9 +85,6 @@ bool InputSystem::keyPressed( const OIS::KeyEvent &arg )
 {
     EventPtr event( new Event( event_keydown ) );
 
-    event->key = arg.key;
-    event->param1 = arg.text;
-
     boost::shared_ptr<InputEventData> data( new InputEventData );
 
     data->key = arg.key;
@@ -99,7 +101,62 @@ bool InputSystem::keyReleased( const OIS::KeyEvent &arg )
 {
     EventPtr event( new Event( event_keyup ) );
 
-    event->key = arg.key;
+    boost::shared_ptr<InputEventData> data( new InputEventData );
+
+    data->key = arg.key;
+
+    event->data = data;
+
+    queueEvent( event );
+
+    return true;
+}
+
+bool InputSystem::mouseMoved( const OIS::MouseEvent &arg )
+{
+    EventPtr event( new Event( event_mousemove ) );
+
+    boost::shared_ptr<InputEventData> data( new InputEventData );
+
+    data->x = arg.state.X.abs;
+    data->y = arg.state.Y.abs;
+    data->parm = arg.state.buttons;
+
+    event->data = data;
+
+    queueEvent( event );
+
+    return true;
+}
+
+bool InputSystem::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
+{
+    EventPtr event( new Event( event_mousedown ) );
+
+    boost::shared_ptr<InputEventData> data( new InputEventData );
+
+    data->x = arg.state.X.abs;
+    data->y = arg.state.Y.abs;
+    data->parm = arg.state.buttons;
+
+    event->data = data;
+
+    queueEvent( event );
+
+    return true;
+}
+
+bool InputSystem::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
+{
+    EventPtr event( new Event( event_keyup ) );
+
+    boost::shared_ptr<InputEventData> data( new InputEventData );
+
+    data->x = arg.state.X.abs;
+    data->y = arg.state.Y.abs;
+    data->parm = arg.state.buttons;
+
+    event->data = data;
 
     queueEvent( event );
 

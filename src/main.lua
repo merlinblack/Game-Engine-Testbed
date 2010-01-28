@@ -5,14 +5,15 @@ function EventNotification( event )
     --print "Scripting System Received an Event"
 
     if event.type == Event.hash "EVT_KEYDOWN"  then
-        if event.key == KeyCodes.KC_ESCAPE then
+        if event.data.key == KeyCodes.KC_ESCAPE then
             quit()
 			return true
         end
-        --if event.key == KeyCodes.KC_F1 then
-            f1event = event
-            print 'Captured event'
-        --end
+    end
+
+    if event.type == Event.hash "EVT_MOUSEDOWN" then
+        print( "Mouse down: "..event.data.x..", "..event.data.y.." Buttons:"..event.data.buttons )
+        t=event
     end
 
     return false

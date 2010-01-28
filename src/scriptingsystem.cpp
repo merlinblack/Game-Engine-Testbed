@@ -1,6 +1,7 @@
 #include <scriptingsystem.h>
 #include <OgreLogManager.h>
 #include <luabind/class_info.hpp>
+#include <inputeventdata.h>
 
 int ScriptingSystem::GUID = 0;
 
@@ -63,10 +64,6 @@ void ScriptingSystem::bind()
             .def( constructor<const char*>() )
             .def( constructor<std::size_t>() )
             .def_readwrite( "type", &Event::type )
-            .def_readwrite( "key", &Event::key )
-            .def_readwrite( "x", &Event::x )
-            .def_readwrite( "y", &Event::y )
-            .def_readwrite( "param1", &Event::param1 )
             .def_readwrite( "data", &Event::data )
             .scope
             [
@@ -75,18 +72,15 @@ void ScriptingSystem::bind()
         ,
         def( "queueEvent", &queueEventThunk )
         ,
-        class_<EventData, boost::shared_ptr<EventData> >( "EventData" )
-            .def( constructor<>() ),
+        class_<EventData, boost::shared_ptr<EventData> >( "EventData" ),
         class_<InputEventData, EventData, boost::shared_ptr<EventData> >( "InputEventData" )
             .def( constructor<>() )
             .def_readwrite( "x", &InputEventData::x )
             .def_readwrite( "y", &InputEventData::y )
-            .def_readwrite( "button", &InputEventData::parm )
+            .def_readwrite( "buttons", &InputEventData::parm )
             .def_readwrite( "text", &InputEventData::parm )
             .def_readwrite( "key", &InputEventData::key )
     ];
-
-
 }
 
 bool ScriptingSystem::EventNotification( EventPtr event )

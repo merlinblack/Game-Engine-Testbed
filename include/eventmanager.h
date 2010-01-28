@@ -8,13 +8,7 @@
 
 struct EventData
 {
-};
-
-struct InputEventData : public EventData
-{
-    float x, y;
-    OIS::KeyCode key;
-	unsigned int parm;
+    virtual ~EventData() {}
 };
 
 struct Event
@@ -28,11 +22,6 @@ struct Event
 	static std::size_t hash( std::string hashstr );
 
     boost::shared_ptr<EventData> data;
-
-    // Some common and often used event parameters.
-    float x, y;
-    OIS::KeyCode key;
-	unsigned int param1;
 };
 
 class EventListenerSender;

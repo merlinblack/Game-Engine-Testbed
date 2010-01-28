@@ -37,7 +37,7 @@ string LuaInterpreter::getOutput()
 }
 
 // Insert (another) line of text into the interpreter.
-LuaInterpreter::State LuaInterpreter::insertLine( string& line, bool fInsertInOutput )
+LuaInterpreter::State LuaInterpreter::insertLine( std::string& line, bool fInsertInOutput )
 {
     if( fInsertInOutput == true )
     {
