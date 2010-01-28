@@ -1,4 +1,5 @@
 #include <engine.h>
+#include <inputeventdata.h>
 
 void BindLuaConsole( lua_State *L );	// From luaconsolebinding.cpp
 
@@ -43,25 +44,23 @@ bool Engine::EventNotification( EventPtr event )
         return true;
     }
 
-    if( event->type == Event::hash( "EVT_KEYUP" ) )
+    if( event->type == Event::hash( "EVT_KEYDOWN" ) )
     {
-        if( event->key == OIS::KC_F12 )   // Emergency stop.
+        boost::shared_ptr<InputEventData> data = boost::dynamic_pointer_cast<InputEventData>( event->data );
+
+        if( data->key == OIS::KC_F12 )   // Emergency stop.
         {
             stop = true;
             return true;
         }
-    }
-
-    if( event->type == Event::hash( "EVT_KEYDOWN" ) )
-    {
-        if( event->key == OIS::KC_GRAVE )
+        if( data->key == OIS::KC_GRAVE )
         {
             console.setVisible( ! console.isVisible() );
             return true;
         }
         if( console.isVisible() )
         {
-            OIS::KeyEvent arg( 0, event->key, event->param1 );
+            OIS::KeyEvent arg( 0, data->key, data->parm );
             console.injectKeyPress( arg );
             return true;
         }

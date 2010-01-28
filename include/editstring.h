@@ -33,7 +33,7 @@ protected:
 	int mCaret;
 
 public:
-	void setText( std::string & newText )
+	void setText( std::string& newText )
 	{
 		mText = newText;
 		mPosition = mText.end();
@@ -51,7 +51,7 @@ public:
 
 	bool inserting() { return mInsert; }
 
-	bool injectKeyPress( const OIS::KeyEvent &evt );
+	bool injectKeyPress( const OIS::KeyEvent& arg );
 
 	// gets the current position in the text for cursor placement
 	int getPosition(void) { return mCaret; }
