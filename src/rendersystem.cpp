@@ -6,6 +6,7 @@ void ::RenderSystem::shutdown()
 {
     if( mRoot )
     {
+        delete mLuaResourceManager;
         delete mRoot;
         mSceneManager = 0;
         mWindow = 0;
@@ -44,6 +45,7 @@ bool ::RenderSystem::initialise()
     // Alter the camera aspect ratio to match the viewport
     mCamera->setAspectRatio(Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
 
+    mLuaResourceManager = new LuaResourceManager();
     ResourceGroupManager::getSingleton().addResourceLocation("media", "FileSystem", "General");
     ResourceGroupManager::getSingleton().addResourceLocation("media/cubemapsJS.zip", "Zip", "General");
 

@@ -2,6 +2,7 @@
 #include <OgreLogManager.h>
 #include <luabind/class_info.hpp>
 #include <inputeventdata.h>
+#include "luaresource.h"
 
 int ScriptingSystem::GUID = 0;
 
@@ -22,7 +23,6 @@ void queueEventThunk( lua_State *L, EventPtr event )
     {
         Ogre::LogManager::getSingleton().stream() << "Error queuing event from Lua; could not retrieve scripting system instance";
     }
-
 }
 
 void ScriptingSystem::shutdown()
@@ -45,7 +45,9 @@ void ScriptingSystem::initialise()
 
     bind();
 
-    if( luaL_dofile( mL, "main.lua" ) );
+    LuaResourcePtr mainlua = LuaResourceManager::getSingleton().load( "main.lua" );
+
+    if( luaL_dostring( mL, mainlua->getScriptSource().c_str() ) );
     {
         Ogre::LogManager::getSingleton().stream() << lua_tostring( mL, -1 );
     }
