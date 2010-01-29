@@ -1,0 +1,95 @@
+#ifndef LUARESOURCE_H
+#define LUARESOURCE_H
+
+#include <OgreResourceManager.h>
+
+class LuaResource : public Ogre::Resource
+{
+    Ogre::String mScriptSource;
+
+protected:
+    void loadImpl();
+    void unloadImpl();
+    size_t calculateSize() const;
+
+public:
+    LuaResource(Ogre::ResourceManager* creator, const Ogre::String& name,
+        Ogre::ResourceHandle handle,
+        const Ogre::String& group = Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME,
+        bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
+
+    virtual ~LuaResource();
+
+    const Ogre::String getScriptSource() const;
+};
+
+class LuaResourcePtr : public Ogre::SharedPtr<LuaResource>
+{
+public:
+    LuaResourcePtr() : Ogre::SharedPtr<LuaResource>() {}
+    explicit LuaResourcePtr( LuaResource* p ) : Ogre::SharedPtr<LuaResource>(p) {}
+    LuaResourcePtr( const LuaResourcePtr& r ) : Ogre::SharedPtr<LuaResource>(r) {}
+
+    LuaResourcePtr( const Ogre::ResourcePtr& r ) : Ogre::SharedPtr<LuaResource>()
+    {
+        if( r.isNull() )
+            return; // Don't copy, parent constructor already done enough.
+
+        // Lock and copy other mutex pointer.
+        OGRE_LOCK_MUTEX( *r.OGRE_AUTO_MUTEX_NAME )
+        OGRE_COPY_AUTO_SHARED_MUTEX( r.OGRE_AUTO_MUTEX_NAME )
+
+        // Copy pointer, pointer to ref count, and memory free'ing stratagy
+        pRep = static_cast<LuaResource*>( r.getPointer() );
+        pUseCount = r.useCountPointer();
+        useFreeMethod = r.freeMethod();
+
+        // Bump reference count
+        if( pUseCount )
+            (*pUseCount)++;
+    }
+
+    LuaResourcePtr& operator=( const Ogre::ResourcePtr& r )
+    {
+        if( pRep == static_cast<LuaResource*>( r.getPointer() ) )
+            return *this; // Already pointing at the same object.
+
+        if( r.isNull() )
+            return *this; // Don't copy, release() already done enough.
+
+        // Lock and copy other mutex pointer.
+        OGRE_LOCK_MUTEX( *r.OGRE_AUTO_MUTEX_NAME )
+        OGRE_COPY_AUTO_SHARED_MUTEX( r.OGRE_AUTO_MUTEX_NAME )
+
+        // Copy pointer, pointer to ref count, and memory free'ing stratagy
+        pRep = static_cast<LuaResource*>( r.getPointer() );
+        pUseCount = r.useCountPointer();
+        useFreeMethod = r.freeMethod();
+
+        // Bump reference count
+        if( pUseCount )
+            (*pUseCount)++;
+
+        return *this;
+    }
+};
+
+class LuaResourceManager : public Ogre::ResourceManager, public Ogre::Singleton<LuaResourceManager>
+{
+protected:
+    Ogre::Resource *createImpl( const Ogre::String& name, Ogre::ResourceHandle handle,
+        const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader,
+        const Ogre::NameValuePairList* createParams);
+
+public:
+    LuaResourceManager();
+    virtual ~LuaResourceManager();
+
+    virtual LuaResourcePtr load( const Ogre::String& name, const Ogre::String& group = Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME );
+
+    static LuaResourceManager& getSingleton();
+    static LuaResourceManager* getSingeltonPtr();
+};
+
+#endif // LUARESOURCE_H
+

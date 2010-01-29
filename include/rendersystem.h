@@ -2,6 +2,7 @@
 #define RENDERSYSTEM_H_INCLUDED
 
 #include <Ogre.h>
+#include "luaresource.h"
 
 class RenderSystem
 {
@@ -9,9 +10,10 @@ class RenderSystem
     Ogre::SceneManager* mSceneManager;
     Ogre::RenderWindow* mWindow;
     Ogre::Camera* mCamera;
+    LuaResourceManager* mLuaResourceManager;
 
 public:
-    RenderSystem() : mRoot(0), mSceneManager(0), mWindow(0), mCamera(0)
+    RenderSystem() : mRoot(0), mSceneManager(0), mWindow(0), mCamera(0), mLuaResourceManager(0)
     {
     }
     ~RenderSystem()
