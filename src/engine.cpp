@@ -1,5 +1,7 @@
 #include <engine.h>
 #include <inputeventdata.h>
+#include <OgreLogManager.h>
+#include <luaresource.h>
 
 void BindLuaConsole( lua_State *L );	// From luaconsolebinding.cpp
 
@@ -62,6 +64,22 @@ bool Engine::EventNotification( EventPtr event )
         {
             OIS::KeyEvent arg( 0, data->key, data->parm );
             console.injectKeyPress( arg );
+            return true;
+        }
+        if( data->key == OIS::KC_F1 ) // Test lua loading.
+        {
+            try
+            {
+                LuaResourcePtr test = LuaResourceManager::getSingleton().load( "bogus.lua" );
+            }
+            catch( Ogre::FileNotFoundException& e )
+            {
+                Ogre::LogManager::getSingleton().stream() << e.what();
+            }
+            catch( Ogre::ItemIdentityException& e )
+            {
+                Ogre::LogManager::getSingleton().stream() << e.what();
+            }
             return true;
         }
     }
