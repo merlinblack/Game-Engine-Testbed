@@ -25,6 +25,46 @@ void queueEventThunk( lua_State *L, EventPtr event )
     }
 }
 
+int luaLibraryLoader( lua_State *L )
+{
+    if( ! lua_isstring( L, 1 ) )
+    {
+        luaL_typerror( L, 1, "string" );
+    }
+
+    std::string libraryFile = lua_tostring( L, 1 );
+
+    try
+    {
+        LuaResourcePtr library = LuaResourceManager::getSingleton().load( libraryFile + ".lua", "General" );
+
+        luaL_loadstring( L, library->getScriptSource().c_str() );
+    }
+    catch( Ogre::FileNotFoundException& e )
+    {
+        // Could not find the file.
+        std::string errMessage = "\n  no file '" + libraryFile + ".lua' found in Ogre resource archives.";
+        lua_pushstring( L, errMessage.c_str() );
+    }
+    return 1;
+}
+
+void installLibraryLoader( lua_State *L )
+{
+    // Insert the c++ func 'luaLibraryLoader' into package.loaders.
+    // Inserted at the start of the table in order to take precedance.
+    lua_getglobal( L, "table" );
+    lua_getfield( L, -1, "insert" );
+    lua_remove( L, -2 );    // table
+    lua_getglobal( L, "package" );
+    lua_getfield( L, -1, "loaders" );
+    lua_remove( L, -2 );    // package
+    lua_pushnumber( L, 1 ); // index where to insert into loaders table
+    lua_pushcfunction( L, luaLibraryLoader );
+    if( lua_pcall( L, 3, 0, 0 ) )
+        Ogre::LogManager::getSingleton().stream() << lua_tostring( L, 1);
+}
+
 void ScriptingSystem::shutdown()
 {
     if( mL )
@@ -58,6 +98,7 @@ void ScriptingSystem::bind()
     using namespace luabind;
 
     bind_class_info(mL);
+    installLibraryLoader( mL );
 
     module(mL)
     [
