@@ -36,10 +36,7 @@ public:
 	bool mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
 	bool mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
 
-    bool EventNotification( EventPtr event )
-    {
-        return false;
-    }
+    bool EventNotification( EventPtr event );
 };
 
 #endif // INPUTSYSTEM_H_INCLUDED

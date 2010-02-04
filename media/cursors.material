@@ -1,0 +1,14 @@
+material mouse/arrow
+{
+    technique
+    {
+        pass
+        {
+            scene_blend alpha_blend
+            texture_unit
+			{
+			    texture arrow.png
+			}
+		}
+	}
+}

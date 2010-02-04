@@ -38,7 +38,7 @@ void EventManager::removeListener( EventListenerSender* listener )
 void EventManager::queueEvent( EventPtr event )
 {
     current.push( event );
-    //std::cout << "Event Queued" << std::endl;
+//    std::cout << "Event Queued: " << event->type << std::endl;
 }
 
 void EventManager::processEvents()
