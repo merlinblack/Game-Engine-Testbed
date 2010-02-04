@@ -1,5 +1,6 @@
 require 'scheduler'
 require 'keys'
+require 'gui'
 
 function EventNotification( event )
     --print "Scripting System Received an Event"
@@ -11,9 +12,20 @@ function EventNotification( event )
         end
     end
 
+    if event.type == Event.hash "EVT_WINDOW_RESIZE" then
+        setViewportSize( event.data.width, event.data.height )
+    end
+
+    if event.type == Event.hash "EVT_MOUSEMOVE" then
+        mouseMoved( event.data.x, event.data.y, event.data.buttons )
+    end
+
     if event.type == Event.hash "EVT_MOUSEDOWN" then
-        print( "Mouse down: "..event.data.x..", "..event.data.y.." Buttons:"..event.data.buttons )
-        t=event
+        mouseMoved( event.data.x, event.data.y, event.data.buttons )
+    end
+
+    if event.type == Event.hash "EVT_MOUSEUP" then
+        mouseMoved( event.data.x, event.data.y, event.data.buttons )
     end
 
     return false
@@ -28,7 +40,7 @@ function FrameEnded( timeSinceLastFrame )
 	currentTaskId = runNextTask( currentTaskId )
 end
 
-function quit()
+function quitProgram()
 	queueEvent( Event( "MSG_QUIT" ) )
 end
 

@@ -1,4 +1,5 @@
 #include <rendersystem.h>
+#include <windoweventdata.h>
 
 using namespace Ogre;
 
@@ -11,6 +12,7 @@ void ::RenderSystem::shutdown()
         mSceneManager = 0;
         mWindow = 0;
         mCamera = 0;
+        mRoot   = 0;
     }
 }
 
@@ -33,7 +35,7 @@ bool ::RenderSystem::initialise()
     }
 
     // Create the SceneManager, in this case a generic one
-    mSceneManager = mRoot->createSceneManager(ST_GENERIC);
+    mSceneManager = mRoot->createSceneManager(ST_GENERIC, "SceneManagerInstance");
 
     // Create the camera
     mCamera = mSceneManager->createCamera("MainCamera");
@@ -51,8 +53,21 @@ bool ::RenderSystem::initialise()
 
     ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
+    // Notify other systems of the window size.
+    unsigned int width, height, depth;
+    int top, left;
+    EventPtr event( new Event( "EVT_WINDOW_RESIZE" ) );
+    boost::shared_ptr<WindowEventData> data( new WindowEventData );
+    mWindow->getMetrics(width, height, depth, left, top);
+    event->data = data;
+    data->height = height;
+    data->width = width;
+    queueEvent( event );
+
+
     // Setup a small test scene.
     mSceneManager->setSkyBox( true, "EveningSkyBox" );
+
 
     return true;
 }

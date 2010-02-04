@@ -1,26 +1,40 @@
 #include <engine.h>
 #include <inputeventdata.h>
+#include <windoweventdata.h>
 #include <OgreLogManager.h>
 #include <luaresource.h>
 
-void BindLuaConsole( lua_State *L );	// From luaconsolebinding.cpp
+void bindLuaConsole( lua_State *L );	// From luaconsolebinding.cpp
+
+Engine::~Engine()
+{
+    // Order of shutdown matters.
+    console             .shutdown();
+    scriptingSystem     .shutdown();
+    inputSystem         .shutdown();
+    renderSystem        .shutdown();
+}
 
 bool Engine::initialise()
 {
+    // Managers may enque events as the start
+    eventManager.addListener( this );
+    eventManager.addListener( &renderSystem );
+    eventManager.addListener( &scriptingSystem );
+    eventManager.addListener( &inputSystem );
+
     if( ! renderSystem.initialise() )
         return false;
 
     inputSystem.initialise( renderSystem.getWindow(), false );
     scriptingSystem.initialise();
 
-    eventManager.addListener( this );
-    eventManager.addListener( &scriptingSystem );
-    eventManager.addListener( &inputSystem );
-
+    // TODO: This could be better done by making the renderSystem a listener,
+    // and send frame events.
     renderSystem.addFrameListener( &scriptingSystem );
 
     console.init( renderSystem.getRoot(), scriptingSystem.getInterpreter() );
-	BindLuaConsole( scriptingSystem.getInterpreter() );
+	bindLuaConsole( scriptingSystem.getInterpreter() );
 
     Ogre::WindowEventUtilities::addWindowEventListener(renderSystem.getWindow(), this);
 
@@ -66,22 +80,6 @@ bool Engine::EventNotification( EventPtr event )
             console.injectKeyPress( arg );
             return true;
         }
-        if( data->key == OIS::KC_F1 ) // Test lua loading.
-        {
-            try
-            {
-                LuaResourcePtr test = LuaResourceManager::getSingleton().load( "bogus.lua" );
-            }
-            catch( Ogre::FileNotFoundException& e )
-            {
-                Ogre::LogManager::getSingleton().stream() << e.what();
-            }
-            catch( Ogre::ItemIdentityException& e )
-            {
-                Ogre::LogManager::getSingleton().stream() << e.what();
-            }
-            return true;
-        }
     }
 
     return false;
@@ -90,7 +88,19 @@ bool Engine::EventNotification( EventPtr event )
 //Adjust mouse clipping area
 void Engine::windowResized( Ogre::RenderWindow* rw)
 {
-    inputSystem.adjustWindowSize( rw );
+    unsigned int width, height, depth;
+    int top, left;
+
+    EventPtr event( new Event( "EVT_WINDOW_RESIZE" ) );
+    boost::shared_ptr<WindowEventData> data( new WindowEventData );
+
+    rw->getMetrics(width, height, depth, left, top);
+
+    event->data = data;
+    data->height = height;
+    data->width = width;
+
+    queueEvent( event );
 }
 
 //Unattach OIS before window shutdown (very important under Linux)

@@ -1,0 +1,80 @@
+material gui/button.normal
+{
+	technique
+	{
+		pass
+		{
+            scene_blend alpha_blend
+            texture_unit
+			{
+			    texture button.normal.png
+			}
+		}
+
+	}
+
+}
+
+material gui/button.hover
+{
+	technique
+	{
+		pass
+		{
+            scene_blend alpha_blend
+            texture_unit
+			{
+			    texture button.hover.png
+			}
+		}
+
+	}
+
+}
+
+material gui/button.pressed
+{
+	technique
+	{
+		pass
+		{
+            scene_blend alpha_blend
+            texture_unit
+			{
+			    texture button.pressed.png
+			}
+		}
+
+	}
+
+}
+
+material gui/dialog.background
+{
+    technique
+    {
+        pass
+        {
+            scene_blend alpha_blend
+            texture_unit
+            {
+                texture dialog.background.png
+            }
+        }
+    }
+}
+
+material gui/dialog.border
+{
+    technique
+    {
+        pass
+        {
+            scene_blend alpha_blend
+            texture_unit
+            {
+                texture dialog.border.png
+            }
+        }
+    }
+}

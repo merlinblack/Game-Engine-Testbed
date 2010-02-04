@@ -2,9 +2,10 @@
 #define RENDERSYSTEM_H_INCLUDED
 
 #include <Ogre.h>
-#include "luaresource.h"
+#include <luaresource.h>
+#include <eventmanager.h>
 
-class RenderSystem
+class RenderSystem : public EventListenerSender
 {
     Ogre::Root* mRoot;
     Ogre::SceneManager* mSceneManager;
@@ -29,6 +30,11 @@ public:
     void addFrameListener( Ogre::FrameListener *listener ) { mRoot->addFrameListener( listener ); }
 
     void renderOneFrame();
+
+    bool EventNotification( EventPtr event )
+    {
+        return false;
+    }
 };
 
 #endif // RENDERSYSTEM_H_INCLUDED

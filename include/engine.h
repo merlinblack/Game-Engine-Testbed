@@ -17,6 +17,7 @@ class Engine : public EventListenerSender, public Ogre::WindowEventListener
     bool stop;
 
 public:
+    virtual ~Engine();
     bool initialise();
     void run();
 

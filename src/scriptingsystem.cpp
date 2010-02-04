@@ -2,7 +2,10 @@
 #include <OgreLogManager.h>
 #include <luabind/class_info.hpp>
 #include <inputeventdata.h>
+#include <windoweventdata.h>
 #include "luaresource.h"
+
+void bindEngine( lua_State* L ); // From luabindings.cpp
 
 int ScriptingSystem::GUID = 0;
 
@@ -84,6 +87,7 @@ void ScriptingSystem::initialise()
     lua_settable( mL, LUA_REGISTRYINDEX );
 
     bind();
+    bindEngine( mL );
 
     LuaResourcePtr mainlua = LuaResourceManager::getSingleton().load( "main.lua" );
 
@@ -121,8 +125,11 @@ void ScriptingSystem::bind()
             .def_readwrite( "x", &InputEventData::x )
             .def_readwrite( "y", &InputEventData::y )
             .def_readwrite( "buttons", &InputEventData::parm )
-            .def_readwrite( "text", &InputEventData::parm )
-            .def_readwrite( "key", &InputEventData::key )
+            .def_readwrite( "text", &InputEventData::parm ) // 2nd name
+            .def_readwrite( "key", &InputEventData::key ),
+        class_<WindowEventData, EventData, boost::shared_ptr<EventData> >( "WindowEventData" )
+            .def_readwrite( "width", &WindowEventData::width )
+            .def_readwrite( "height", &WindowEventData::height )
     ];
 }
 

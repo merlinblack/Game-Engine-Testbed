@@ -97,7 +97,7 @@ int LuaConsole_log( lua_State *L )
     return 0;
 }
 
-luaL_reg ConsoleBindings[] =
+luaL_reg consoleBindings[] =
 {
     { "isVisible", LuaConsole_isVisible },
     { "setVisible", LuaConsole_setVisible },
@@ -109,15 +109,15 @@ luaL_reg ConsoleBindings[] =
 };
 
 // Load bindings into Lua
-void BindLuaConsole( lua_State *L )
+void bindLuaConsole( lua_State *L )
 {
-    luaL_register( L, "console", ConsoleBindings );
+    luaL_register( L, "console", consoleBindings );
     lua_pop( L, 1 );
 }
 
 // Change console functions so that any remaining Lua code
 // left to run, for example in finalisers, does not explode.
-void UnBindConsole( lua_State *L )
+void unBindConsole( lua_State *L )
 {
     luaL_dostring( L, "console.print = console.log "
                    "function console.isVisible() return false end "

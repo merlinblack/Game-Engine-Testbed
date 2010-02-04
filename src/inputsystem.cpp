@@ -1,5 +1,6 @@
 #include <inputsystem.h>
 #include <inputeventdata.h>
+#include <windoweventdata.h>
 
 void InputSystem::shutdown()
 {
@@ -41,9 +42,10 @@ void InputSystem::initialise( Ogre::RenderWindow *window, bool exclusive )
         paramList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_NONEXCLUSIVE")));
         #elif defined OIS_LINUX_PLATFORM
         paramList.insert(std::make_pair(std::string("x11_mouse_grab"), std::string("false")));
-        paramList.insert(std::make_pair(std::string("x11_mouse_hide"), std::string("false")));
+        paramList.insert(std::make_pair(std::string("x11_mouse_hide"), std::string("true")));
         paramList.insert(std::make_pair(std::string("x11_keyboard_grab"), std::string("false")));
-        paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));
+        paramList.insert(std::make_pair(std::string("XAutoRepeatOn"), std::string("true")));    // For console.
+        // May need to be in exculsive mode when not paused or in the console.
         #endif
     }
 
@@ -79,6 +81,18 @@ void InputSystem::capture()
 {
     mMouse->capture();
     mKeyboard->capture();
+}
+
+bool InputSystem::EventNotification( EventPtr event )
+{
+    if( event->type == Event::hash( "EVT_WINDOW_RESIZE" ) )
+    {
+        const OIS::MouseState &ms = mMouse->getMouseState();
+        boost::shared_ptr<WindowEventData> data = boost::dynamic_pointer_cast<WindowEventData>( event->data );
+        ms.width = data->width;
+        ms.height = data->height;
+    }
+    return false;   // We don't consume the event.  Other listeners might need it too.
 }
 
 bool InputSystem::keyPressed( const OIS::KeyEvent &arg )
@@ -148,7 +162,7 @@ bool InputSystem::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID i
 
 bool InputSystem::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
-    EventPtr event( new Event( event_keyup ) );
+    EventPtr event( new Event( event_mouseup ) );
 
     boost::shared_ptr<InputEventData> data( new InputEventData );
 
