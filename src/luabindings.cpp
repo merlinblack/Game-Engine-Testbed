@@ -317,6 +317,16 @@ void SceneNode_yaw( SceneNode *obj, const Real degrees )
 	return obj->yaw( Degree( degrees ) );
 }
 
+void SceneNode_pitch( SceneNode *obj, const Real degrees )
+{
+	return obj->pitch( Degree( degrees ) );
+}
+
+void SceneNode_roll( SceneNode *obj, const Real degrees )
+{
+	return obj->roll( Degree( degrees ) );
+}
+
 void bindSceneNode( lua_State* L )
 {
 	module(L)
@@ -325,6 +335,8 @@ void bindSceneNode( lua_State* L )
 		.def("createChildSceneNode", &createChildSceneNode )
 		.def("attachObject", &SceneNode::attachObject )
 		.def("yaw", SceneNode_yaw )
+		.def("pitch", SceneNode_pitch )
+		.def("roll", SceneNode_roll )
 		.def("setPosition", (void( SceneNode::*)(const Vector3&))&SceneNode::setPosition )
 		.def("setPosition", (void( SceneNode::*)(Real,Real,Real))&SceneNode::setPosition )
 	];
