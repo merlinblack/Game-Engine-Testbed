@@ -19,7 +19,7 @@ function setupMouse()
         setMouseCursorPosition(x,y)
     end
     mouseGui:setZOrder(650)
-    mouseGui:show()
+    --mouseGui:show()
 end
 
 function setMouseCursorPosition( x, y )
@@ -28,6 +28,7 @@ end
 
 function quitDialog()
     console.setVisible(false)
+	mouseGui:show()
     gui = OverlayManager:createOverlay()
     local window = Panel( -(260/2), -(140/2), 260, 140 )
     window.element:setMaterialName "gui/dialog.background"
@@ -64,6 +65,7 @@ function quitDialog()
     mouseMoved = oldmouse
 
     gui:hide()
+	mouseGui:hide()
     gui=nil
 
     if OK==true then
@@ -77,6 +79,7 @@ end
 
 function messageDialog(task)
     console.setVisible(false)
+	mouseGui:show()
     messageOverlay = OverlayManager:createOverlay()
     local window = Panel( -(task.data.width/2), -(task.data.height/2), task.data.width, task.data.height)
     window.element:setParameter("horz_align","center")
@@ -107,6 +110,7 @@ function messageDialog(task)
     mouseMoved = oldmouse
 
     messageOverlay:hide()
+	mouseGui:hide()
     messageOverlay=nil
 
 end
