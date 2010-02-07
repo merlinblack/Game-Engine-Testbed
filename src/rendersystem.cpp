@@ -48,8 +48,8 @@ bool ::RenderSystem::initialise()
     mCamera->setAspectRatio(Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
 
     mLuaResourceManager = new LuaResourceManager();
-    ResourceGroupManager::getSingleton().addResourceLocation("media", "FileSystem", "General");
-    ResourceGroupManager::getSingleton().addResourceLocation("media/cubemapsJS.zip", "Zip", "General");
+
+    addResourceLocations();
 
     ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
@@ -75,5 +75,30 @@ bool ::RenderSystem::initialise()
 void ::RenderSystem::renderOneFrame()
 {
     mRoot->renderOneFrame();
+}
+
+//-------------------------------------------------------------------------------------
+void ::RenderSystem::addResourceLocations()
+{
+   // Load resource paths from config file
+   ConfigFile cf;
+   cf.load("media.cfg");
+
+   // Go through all sections & settings in the file
+   ConfigFile::SectionIterator seci = cf.getSectionIterator();
+
+   String secName, typeName, archName;
+   while (seci.hasMoreElements())
+   {
+      secName = seci.peekNextKey();
+      ConfigFile::SettingsMultiMap *settings = seci.getNext();
+      ConfigFile::SettingsMultiMap::iterator i;
+      for (i = settings->begin(); i != settings->end(); ++i)
+      {
+         typeName = i->first;
+         archName = i->second;
+         ResourceGroupManager::getSingleton().addResourceLocation(archName, typeName, secName);
+      }
+   }
 }
 
