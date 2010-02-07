@@ -1,6 +1,6 @@
 require 'scheduler'
 require 'keys'
-require 'gui'
+require 'gui/gui'
 
 function EventNotification( event )
     --print "Scripting System Received an Event"

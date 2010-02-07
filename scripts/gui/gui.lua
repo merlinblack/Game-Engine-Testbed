@@ -1,7 +1,7 @@
-require 'panel'
-require 'text'
-require 'button'
-require 'checkbox'
+require 'gui/panel'
+require 'gui/text'
+require 'gui/button'
+require 'gui/checkbox'
 
 
 function setViewportSize( w, h )
