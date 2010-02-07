@@ -30,6 +30,7 @@ public:
     void addFrameListener( Ogre::FrameListener *listener ) { mRoot->addFrameListener( listener ); }
 
     void renderOneFrame();
+    void addResourceLocations();
 
     bool EventNotification( EventPtr event )
     {

@@ -78,3 +78,63 @@ material gui/dialog.border
         }
     }
 }
+
+material gui/icon.exit
+{
+    technique
+    {
+        pass
+        {
+            scene_blend alpha_blend
+            texture_unit
+            {
+                texture icon.exit.png
+            }
+        }
+    }
+}
+	
+material gui/icon.info
+{
+    technique
+    {
+        pass
+        {
+            scene_blend alpha_blend
+            texture_unit
+            {
+                texture icon.info.png
+            }
+        }
+    }
+}	
+material gui/checkbox.false
+{
+    technique
+    {
+        pass
+        {
+            scene_blend alpha_blend
+            texture_unit
+            {
+                texture icon.red.png
+            }
+        }
+    }
+}	
+
+material gui/checkbox.true
+{
+    technique
+    {
+        pass
+        {
+            scene_blend alpha_blend
+            texture_unit
+            {
+                texture icon.green.png
+            }
+        }
+    }
+}
+
