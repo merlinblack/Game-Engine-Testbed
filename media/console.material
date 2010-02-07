@@ -4,6 +4,7 @@ material console/background
 	{
 		pass
 		{
+			scene_blend modulate
             texture_unit
 			{
 			    texture console.png
