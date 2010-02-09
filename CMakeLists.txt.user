@@ -1,0 +1,141 @@
+<!DOCTYPE QtCreatorProject>
+<qtcreator>
+ <data>
+  <variable>RunConfiguration0-CMakeRunConfiguation.Title</variable>
+  <value type="QString" >engine</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-CMakeRunConfiguration.Arguments</variable>
+  <value type="QString" ></value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-CMakeRunConfiguration.Target</variable>
+  <value type="QString" >/home/nigel/prog/engine/qtcbuild/engine</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-CMakeRunConfiguration.UseTerminal</variable>
+  <value type="bool" >false</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-CMakeRunConfiguration.UserEnvironmentChanges</variable>
+  <valuelist type="QVariantList" />
+ </data>
+ <data>
+  <variable>RunConfiguration0-CMakeRunConfiguration.WorkingDirectory</variable>
+  <value type="QString" >/home/nigel/prog/engine/qtcbuild</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-RunConfiguration.name</variable>
+  <value type="QString" >engine</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-type</variable>
+  <value type="QString" >CMakeProjectManager.CMakeRunConfiguration</value>
+ </data>
+ <data>
+  <variable>activeRunConfiguration</variable>
+  <value type="int" >0</value>
+ </data>
+ <data>
+  <variable>activebuildconfiguration</variable>
+  <value type="QString" >all</value>
+ </data>
+ <data>
+  <variable>buildConfiguration-all</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >all</value>
+   <value key="buildDirectory" type="QString" >/home/nigel/prog/engine/qtcbuild</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-all-buildstep0</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >all</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList" >
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-PKu2eUgf5x,guid=35f17e25ed77ef7eab87e4e94b6f9a19</value>
+    <value type="QString" >DESKTOP_SESSION=gnome</value>
+    <value type="QString" >DESKTOP_STARTUP_ID=</value>
+    <value type="QString" >DISPLAY=:0.0</value>
+    <value type="QString" >GDMSESSION=gnome</value>
+    <value type="QString" >GDM_KEYBOARD_LAYOUT=us</value>
+    <value type="QString" >GDM_LANG=en_NZ.UTF-8</value>
+    <value type="QString" >GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
+    <value type="QString" >GNOME_KEYRING_PID=2230</value>
+    <value type="QString" >GNOME_KEYRING_SOCKET=/tmp/keyring-0SsNGI/socket</value>
+    <value type="QString" >GTK_MODULES=canberra-gtk-module</value>
+    <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/nigel/.gtkrc-1.2-gnome2</value>
+    <value type="QString" >HOME=/home/nigel</value>
+    <value type="QString" >LANG=en_NZ.UTF-8</value>
+    <value type="QString" >LD_LIBRARY_PATH=/usr/lib/qtcreator:</value>
+    <value type="QString" >LOGNAME=nigel</value>
+    <value type="QString" >ORBIT_SOCKETDIR=/tmp/orbit-nigel</value>
+    <value type="QString" >PATH=/home/nigel/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
+    <value type="QString" >PWD=/home/nigel</value>
+    <value type="QString" >SESSION_MANAGER=local/finwe:@/tmp/.ICE-unix/2245,unix/finwe:/tmp/.ICE-unix/2245</value>
+    <value type="QString" >SHELL=/bin/bash</value>
+    <value type="QString" >SPEECHD_PORT=7560</value>
+    <value type="QString" >SSH_AGENT_PID=2285</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/keyring-0SsNGI/socket.ssh</value>
+    <value type="QString" >USER=nigel</value>
+    <value type="QString" >USERNAME=nigel</value>
+    <value type="QString" >XAUTHORITY=/var/run/gdm/auth-for-nigel-Rsa5n7/database</value>
+    <value type="QString" >XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/</value>
+    <value type="QString" >XDG_SESSION_COOKIE=10d2fa9b46bf6c533790c1f14af1f5ce-1265605144.478563-1183591860</value>
+   </valuelist>
+   <valuelist key="abstractProcess.arguments" type="QVariantList" >
+    <value type="QString" >all</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString" >make</value>
+   <value key="abstractProcess.enabled" type="bool" >true</value>
+   <value key="abstractProcess.workingDirectory" type="QString" >/home/nigel/prog/engine/qtcbuild</value>
+   <valuelist key="buildTargets" type="QVariantList" >
+    <value type="QString" >all</value>
+   </valuelist>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-all-cleanstep0</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >all</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfigurations</variable>
+  <valuelist type="QVariantList" >
+   <value type="QString" >all</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>buildstep0</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" ></value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildsteps</variable>
+  <valuelist type="QVariantList" >
+   <value type="QString" >CMakeProjectManager.MakeStep</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>cleanstep0</variable>
+  <valuemap type="QVariantMap" >
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" ></value>
+   <value key="clean" type="bool" >true</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>cleansteps</variable>
+  <valuelist type="QVariantList" >
+   <value type="QString" >CMakeProjectManager.MakeStep</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>defaultFileEncoding</variable>
+  <value type="QByteArray" >System</value>
+ </data>
+ <data>
+  <variable>project</variable>
+  <valuemap type="QVariantMap" />
+ </data>
+</qtcreator>
