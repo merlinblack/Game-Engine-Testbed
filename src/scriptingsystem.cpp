@@ -3,7 +3,8 @@
 #include <luabind/class_info.hpp>
 #include <inputeventdata.h>
 #include <windoweventdata.h>
-#include "luaresource.h"
+#include <luaresource.h>
+#include <gameentity.h>
 
 void bindEngine( lua_State* L ); // From luabindings.cpp
 
@@ -92,6 +93,7 @@ void ScriptingSystem::initialise()
 
     bind();
     bindEngine( mL );
+    bindGameEntityClasses( mL );
 
     LuaResourcePtr mainlua = LuaResourceManager::getSingleton().load( "main.lua" );
 

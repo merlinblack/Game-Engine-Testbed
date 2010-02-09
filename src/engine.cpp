@@ -4,6 +4,20 @@
 #include <OgreLogManager.h>
 #include <luaresource.h>
 
+#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+#include <time.h>
+void msleep(int ms)
+{
+    struct timespec time;
+    time.tv_sec = ms / 1000;
+    time.tv_nsec = (ms % 1000) * (1000 * 1000);
+    while( nanosleep(&time, &time) == -1 && errno == EINTR )
+        continue; // We got woken by a system signal, go back to sleep
+}
+#else
+#error "Figure out what header for some sleep func, on your platform"
+#endif
+
 void bindLuaConsole( lua_State *L );	// From luaconsolebinding.cpp
 
 Engine::~Engine()
@@ -48,7 +62,20 @@ void Engine::run()
         Ogre::WindowEventUtilities::messagePump();
         inputSystem.capture();
         eventManager.processEvents();
+        gameEntityManager.update();
         renderSystem.renderOneFrame();
+
+        // Play nice with the operating system by sleeping a little.
+#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+        msleep( 10 );
+#endif
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
+        sleep( ??? );   // Might be the same as Linux.
+#endif
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+        Sleep( 10 );    // TODO: Check this func takes milliseconds!
+#endif
+
     }
 }
 

@@ -93,7 +93,12 @@ function setup()
     oldprint = print
     print = console.print
     log = console.log
-	clear = console.clear
+    clear = console.clear
+
+    --Something to look at...
+    require 'clock'
+    require 'camerarotate'
+
     print "Setup task completed"
 end
 

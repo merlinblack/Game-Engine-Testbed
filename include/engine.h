@@ -6,6 +6,7 @@
 #include "scriptingsystem.h"
 #include "eventmanager.h"
 #include "luaconsole.h"
+#include "gameentity.h"
 
 class Engine : public EventListenerSender, public Ogre::WindowEventListener
 {
@@ -14,6 +15,7 @@ class Engine : public EventListenerSender, public Ogre::WindowEventListener
     ScriptingSystem scriptingSystem;
     EventManager eventManager;
     LuaConsole console;
+    GameEntityManager gameEntityManager;
     bool stop;
 
 public:
