@@ -86,7 +86,18 @@ void LuaConsole::setVisible(bool fVisible)
 
 void LuaConsole::messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName )
 {
-    print( message );
+    if( enableLogging )
+        print( message );
+}
+
+bool LuaConsole::isLogging()
+{
+    return enableLogging;
+}
+
+void LuaConsole::setLogging( bool enable )
+{
+    enableLogging = enable;
 }
 
 bool LuaConsole::frameStarted(const Ogre::FrameEvent &evt)

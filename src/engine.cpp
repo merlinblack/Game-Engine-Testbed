@@ -34,7 +34,7 @@ bool Engine::initialise()
     renderSystem.addFrameListener( &scriptingSystem );
 
     console.init( renderSystem.getRoot(), scriptingSystem.getInterpreter() );
-	bindLuaConsole( scriptingSystem.getInterpreter() );
+    bindLuaConsole( scriptingSystem.getInterpreter() );
 
     Ogre::WindowEventUtilities::addWindowEventListener(renderSystem.getWindow(), this);
 

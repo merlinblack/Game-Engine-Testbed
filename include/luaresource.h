@@ -10,13 +10,15 @@ class LuaResource : public Ogre::Resource
 protected:
     void loadImpl();
     void unloadImpl();
-    size_t calculateSize() const;
 
 public:
+
+    size_t calculateSize() const;
+
     LuaResource(Ogre::ResourceManager* creator, const Ogre::String& name,
-        Ogre::ResourceHandle handle,
-        const Ogre::String& group = Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME,
-        bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
+                Ogre::ResourceHandle handle,
+                const Ogre::String& group = Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME,
+                bool isManual = false, Ogre::ManualResourceLoader* loader = 0);
 
     virtual ~LuaResource();
 

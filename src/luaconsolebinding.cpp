@@ -29,6 +29,31 @@ int LuaConsole_setVisible( lua_State *L )
     return 0;
 }
 
+int LuaConsole_isLogging( lua_State *L )
+{
+    if( lua_gettop( L ) )
+    {
+        lua_pushliteral( L, "isLogging does not take any parameters." );
+        lua_error( L );
+    }
+
+    lua_pushboolean( L, LuaConsole::getSingleton().isLogging() );
+
+    return 1;
+}
+
+int LuaConsole_setLogging( lua_State *L )
+{
+    if( ! lua_isboolean( L, 1 ) )
+    {
+        luaL_typerror( L, 1, "boolean" );
+    }
+
+    LuaConsole::getSingleton().setLogging( lua_toboolean( L, 1 ) );
+
+    return 0;
+}
+
 int LuaConsole_print( lua_State *L )
 {
     int i;
@@ -101,6 +126,8 @@ luaL_reg consoleBindings[] =
 {
     { "isVisible", LuaConsole_isVisible },
     { "setVisible", LuaConsole_setVisible },
+    { "isLogging", LuaConsole_isLogging },
+    { "setLogging", LuaConsole_setLogging },
     { "print", LuaConsole_print },
     { "clearHistory", LuaConsole_clearHistory },
     { "clear", LuaConsole_clearConsole },
@@ -122,6 +149,8 @@ void unBindConsole( lua_State *L )
     luaL_dostring( L, "console.print = console.log "
                    "function console.isVisible() return false end "
                    "function console.setVisible() return end "
+                   "function console.isLogging() return false end "
+                   "function console.setLogging() return end "
                    "function console.clearHistory() return end "
                    "function console.clear() return end " );
 }
