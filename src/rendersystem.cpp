@@ -64,10 +64,8 @@ bool ::RenderSystem::initialise()
     data->width = width;
     queueEvent( event );
 
-
     // Setup a small test scene.
-    mSceneManager->setSkyBox( true, "EveningSkyBox" );
-
+    mSceneManager->setSkyBox( true, "CloudyNoonSkyBox" );
 
     return true;
 }
