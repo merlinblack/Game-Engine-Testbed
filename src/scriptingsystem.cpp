@@ -36,18 +36,22 @@ int luaLibraryLoader( lua_State *L )
     }
 
     std::string libraryFile = lua_tostring( L, 1 );
+    libraryFile += ".lua";
 
-    try
-    {
-        LuaResourcePtr library = LuaResourceManager::getSingleton().load( libraryFile + ".lua", "General" );
-
-        luaL_loadstring( L, library->getScriptSource().c_str() );
-    }
-    catch( Ogre::FileNotFoundException& e )
+    if( ! Ogre::ResourceGroupManager::getSingleton().resourceExistsInAnyGroup( libraryFile ) )
     {
         // Could not find the file.
-        std::string errMessage = "\n  no file '" + libraryFile + ".lua' found in Ogre resource archives.";
+        std::string errMessage = "\n  no file '" + libraryFile + "' found in Ogre resource archives.";
         lua_pushstring( L, errMessage.c_str() );
+    }
+    else
+    {
+        LuaResourcePtr library = LuaResourceManager::getSingleton().load( libraryFile, "General" );
+
+        if( luaL_loadbuffer( L, library->getScriptSource().c_str(), library->calculateSize(), libraryFile.c_str() ) )
+        {
+            luaL_error( L, "Error loading library '%s' from resource archive.\n%s", libraryFile.c_str(), lua_tostring( L, -1 ) );
+        }
     }
     return 1;
 }
@@ -93,7 +97,10 @@ void ScriptingSystem::initialise()
 
     if( luaL_dostring( mL, mainlua->getScriptSource().c_str() ) );
     {
-        Ogre::LogManager::getSingleton().stream() << lua_tostring( mL, -1 );
+        Ogre::LogManager::getSingleton().stream() << " ****************************** ";
+        Ogre::LogManager::getSingleton().stream() << " *** main.lua failed to run     ";
+        Ogre::LogManager::getSingleton().stream() << " *** " << lua_tostring( mL, -1 );
+        Ogre::LogManager::getSingleton().stream() << " ****************************** ";
     }
 }
 
@@ -140,9 +147,18 @@ bool ScriptingSystem::EventNotification( EventPtr event )
 
     if( notify )
     {
-        ret = notify( event );
-        if( luabind::object_cast<bool>(ret) == true )
-            return true;
+        try
+        {
+            ret = notify( event );
+            if( luabind::object_cast<bool>(ret) == true )
+                return true;
+        }
+        catch( luabind::error& e )
+        {
+            luabind::object error_msg(luabind::from_stack(e.state(), -1));
+            Ogre::LogManager::getSingleton().stream() << error_msg;
+            lua_pop( e.state(), 1 );
+        }
     }
 
     return false;
@@ -152,8 +168,18 @@ bool ScriptingSystem::frameStarted(const Ogre::FrameEvent& evt)
 {
     luabind::object func = luabind::globals( mL )["FrameStarted"];
 
-    if( func )
-        func( evt.timeSinceLastFrame );
+    try
+    {
+        // If the function is not defined, don't worry about it.
+        if( func )
+            func( evt.timeSinceLastFrame );
+    }
+    catch( luabind::error& e )
+    {
+        luabind::object error_msg(luabind::from_stack(e.state(), -1));
+        Ogre::LogManager::getSingleton().stream() << error_msg;
+        lua_pop( e.state(), 1 );
+    }
 
     return true;
 }
@@ -162,8 +188,18 @@ bool ScriptingSystem::frameEnded(const Ogre::FrameEvent& evt)
 {
     luabind::object func = luabind::globals( mL )["FrameEnded"];
 
-    if( func )
-        func( evt.timeSinceLastFrame );
+    try
+    {
+        // If the function is not defined, don't worry about it.
+        if( func )
+            func( evt.timeSinceLastFrame );
+    }
+    catch( luabind::error& e )
+    {
+        luabind::object error_msg(luabind::from_stack(e.state(), -1));
+        Ogre::LogManager::getSingleton().stream() << error_msg;
+        lua_pop( e.state(), 1 );
+    }
 
     return true;
 }

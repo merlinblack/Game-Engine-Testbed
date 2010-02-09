@@ -33,6 +33,8 @@ public:
 
     // Log Listener
     void    messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName );
+    bool    isLogging();
+    void    setLogging( bool enable );
 
 protected:
     bool                    visible;
@@ -41,6 +43,7 @@ protected:
     int                     start_line;
     bool                    cursor_blink;
     float                   cursor_blinkTime;
+    bool                    enableLogging;
 
     Ogre::Overlay           *overlay;
     Ogre::OverlayContainer  *panel;
