@@ -2,7 +2,7 @@
 
 boost::hash<std::string> GameEntity::hasher;
 
-GameEntity::GameEntity() : hashId(0), mesh(0), sceneNode(0)
+GameEntity::GameEntity() : hashId(0), sceneNode(0), mesh(0)
 {
 }
 

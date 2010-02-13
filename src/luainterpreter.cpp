@@ -94,7 +94,7 @@ LuaInterpreter::State LuaInterpreter::insertLine( std::string& line, bool fInser
 
     // The statment compiled correctly, now run it.
 
-    if( ! lua_pcall( mL, 0, LUA_MULTRET, 0 ) )
+    if( lua_pcall( mL, 0, LUA_MULTRET, 0 ) )
     {
         // The error message (if any) will be added to the output as part
         // of the stack reporting.
