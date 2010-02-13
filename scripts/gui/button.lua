@@ -15,7 +15,7 @@ function Button:__init( x, y, width, caption )
     self.txt:setParameter("height","0")
     self.txt:setParameter('font_name','Console')
     self.txt:setParameter('char_height','.025')
-    self.txt:setParameter('colour','0 0 1')
+    self.txt:setParameter('colour','1 1 1')
     self.txt:setParameter('alignment','center')
     self.txt:setParameter('caption',caption)
 

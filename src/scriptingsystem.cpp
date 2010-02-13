@@ -97,7 +97,7 @@ void ScriptingSystem::initialise()
 
     LuaResourcePtr mainlua = LuaResourceManager::getSingleton().load( "main.lua" );
 
-    if( luaL_dostring( mL, mainlua->getScriptSource().c_str() ) );
+    if( luaL_dostring( mL, mainlua->getScriptSource().c_str() ) )
     {
         Ogre::LogManager::getSingleton().stream() << " ****************************** ";
         Ogre::LogManager::getSingleton().stream() << " *** main.lua failed to run     ";

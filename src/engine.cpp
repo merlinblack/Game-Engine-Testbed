@@ -53,6 +53,8 @@ bool Engine::initialise()
     Ogre::WindowEventUtilities::addWindowEventListener(renderSystem.getWindow(), this);
 
     stop = false;
+
+    return true;
 }
 
 void Engine::run()
