@@ -56,7 +56,7 @@ public:
         if( pRep == static_cast<LuaResource*>( r.getPointer() ) )
             return *this; // Already pointing at the same object.
 
-		release();
+        release();
 
         if( r.isNull() )
             return *this; // Don't copy, release() already done enough.

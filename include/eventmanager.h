@@ -13,13 +13,13 @@ struct EventData
 
 struct Event
 {
-	size_t type;
+    size_t type;
 
-	Event()                     {}
-	Event( size_t t ) : type(t) {}
-	Event( const char *strt )   { type = hash( strt ); }
+    Event()                     {}
+    Event( size_t t ) : type(t) {}
+    Event( const char *strt )   { type = hash( strt ); }
 
-	static std::size_t hash( std::string hashstr );
+    static std::size_t hash( std::string hashstr );
 
     boost::shared_ptr<EventData> data;
 };
@@ -30,9 +30,9 @@ typedef boost::shared_ptr<Event> EventPtr;
 
 class EventManager
 {
-	std::queue<EventPtr> active;
-	std::queue<EventPtr> current;
-	std::list<EventListenerSender*> listeners;
+    std::queue<EventPtr> active;
+    std::queue<EventPtr> current;
+    std::list<EventListenerSender*> listeners;
 
 public:
     EventManager();
@@ -48,18 +48,18 @@ class EventListenerSender
 {
     EventManager* eventManager;
 public:
-	virtual bool EventNotification( EventPtr event ) = 0;
+    virtual bool EventNotification( EventPtr event ) = 0;
 
-	void queueEvent( EventPtr event )
-	{
-	    if( eventManager )
+    void queueEvent( EventPtr event )
+    {
+        if( eventManager )
             eventManager->queueEvent( event );
-	}
+    }
 
-	void setEventManager( EventManager* em )
-	{
-	    eventManager = em;
-	}
+    void setEventManager( EventManager* em )
+    {
+        eventManager = em;
+    }
 };
 
 #endif // __EVENT_MANAGER_H

@@ -18,7 +18,7 @@ void msleep(int ms)
 #error "Figure out what header for some sleep func, on your platform"
 #endif
 
-void bindLuaConsole( lua_State *L );	// From luaconsolebinding.cpp
+void bindLuaConsole( lua_State *L );    // From luaconsolebinding.cpp
 
 Engine::~Engine()
 {

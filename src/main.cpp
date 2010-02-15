@@ -11,7 +11,7 @@ using namespace std;
 
 int main()
 {
-	cout << "Staring engine." << endl;
+    cout << "Staring engine." << endl;
 
     //try
     {
@@ -34,6 +34,6 @@ int main()
 #endif
     }
 */
-	return 0;
+    return 0;
 }
 
