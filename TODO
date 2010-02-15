@@ -1,3 +1,8 @@
+Game Entity
+-----------
+Finish code to load entitys. Save?
+Finish event code.
+
 Mouse picking of scene objects.
 -------------------------------
 Implemented as a Lua callable function, given x, and y co-ordinates.
