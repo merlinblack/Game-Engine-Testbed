@@ -23,6 +23,7 @@ function Button:__init( x, y, width, caption )
 
     self.state = "normal"
     self.oldstate = "normal"
+    self.key = KeyCodes.KC_UNKNOWN
 
     Button.count = Button.count+1
     console.log'Button created'
@@ -44,10 +45,26 @@ function Button:setClickAction( action )
     self.clickAction = action
 end
 
+function Button:setKeyCode( key )
+    self.key = key
+end
+
+function Button:keypressed( key )
+    if self.key ~= KeyCodes.KC_UNKNOWN then
+        if key == self.key then
+            self:onClick()
+        end
+    end
+end
+
+function Button:onClick()
+    if self.clickAction then self.clickAction() end
+end
+
 function Button:mouseMoved( x, y, button )
     if self.element:contains( x/_WIDTH, y/_HEIGHT ) then
         if button == 0 and self.state == "click" then -- click release
-            if self.clickAction then self.clickAction() end
+            self:onClick()
         end
         self.state = "hover"
     else

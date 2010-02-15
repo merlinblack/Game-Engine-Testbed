@@ -26,6 +26,12 @@ function Panel:mouseMoved( x, y, button )
     end
 end
 
+function Panel:keypressed( key )
+    for _,child in pairs(self.children) do
+        if child.keypressed then child:keypressed( key ) end
+    end
+end
+
 function Panel:addChild( widget )
     console.log'Adding child to Panel'
     if widget.element then

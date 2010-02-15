@@ -7,10 +7,10 @@ camerarotatespeed = .05
 cameraPitch:pitch(25)
 
 function updateCamera()
-	while stopcamera == false do
-		cameraNode:yaw(camerarotatespeed)
-		wait(.01)
-	end
+    while stopcamera == false do
+        cameraNode:yaw(camerarotatespeed)
+        wait(.01)
+    end
 end
 
 stopcamera = false;

@@ -6,9 +6,9 @@ function EventNotification( event )
     --print "Scripting System Received an Event"
 
     if event.type == Event.hash "EVT_KEYDOWN"  then
-        if event.data.key == KeyCodes.KC_ESCAPE then
+        if event.data.key == KeyCodes.KC_ESCAPE and #gui.modal == 0 then
             quit()
-			return true
+            return true
         end
     end
 
@@ -28,6 +28,10 @@ function EventNotification( event )
         mouseMoved( event.data.x, event.data.y, event.data.buttons )
     end
 
+    if event.type == Event.hash "EVT_KEYDOWN" then
+        keypressed( event.data.key )
+    end
+
     return false
 end
 
@@ -37,11 +41,11 @@ yield = coroutine.yield
 
 function FrameEnded( timeSinceLastFrame )
     timeSinceStart = timeSinceStart + timeSinceLastFrame
-	currentTaskId = runNextTask( currentTaskId )
+    currentTaskId = runNextTask( currentTaskId )
 end
 
 function quitProgram()
-	queueEvent( Event( "MSG_QUIT" ) )
+    queueEvent( Event( "MSG_QUIT" ) )
 end
 
 function wait( seconds )

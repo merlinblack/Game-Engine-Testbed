@@ -14,28 +14,23 @@ function quitDialogTask()
 
     local btnOK = Button( 0.0146, 0.0890, 0.1003, "Okay" )
     btnOK:setClickAction( function () quitDialog.OK=true end )
+    btnOK:setKeyCode( KeyCodes.KC_RETURN )
 
-    local btnCANCEL = Button( 0.1360, 0.0890, 0.1003, "Cancel" )
-    btnCANCEL:setClickAction( function () quitDialog.CANCEL=true end )
+    local btnCancel = Button( 0.1360, 0.0890, 0.1003, "Cancel" )
+    btnCancel:setClickAction( function () quitDialog.Cancel=true end )
+    btnCancel:setKeyCode( KeyCodes.KC_ESCAPE )
 
     window:addChild( text )
     window:addChild( icon )
     window:addChild( btnOK )
-    window:addChild( btnCANCEL )
+    window:addChild( btnCancel )
     quitDialog:add2D(window.element)
-    quitDialog.window = window
     quitDialog:show()
     
-    function quitDialog.mouseMoved( x, y, button )
-        quitDialog.window:mouseMoved( x, y, button )
-    end
-    function quitDialog.keypressed( key )
-    end
+    gui.pushModal( window )
 
-    gui.pushModal( quitDialog )
-
-    quitDialog.OK, quitDialog.CANCEL = false, false
-    while quitDialog.OK == false and quitDialog.CANCEL == false do
+    quitDialog.OK, quitDialog.Cancel = false, false
+    while quitDialog.OK == false and quitDialog.Cancel == false do
         yield()
     end
 

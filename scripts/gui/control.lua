@@ -32,12 +32,21 @@ function gui.removeModeless( obj )
 end
 
 function gui.mouseMoved( x, y, buttons )
---    print( 'gui.mouseMoved', #gui.modal )
     if #gui.modal > 0 then
         -- Send event to first (on top) modal overlay/dialog.
-        gui.modal[1].mouseMoved( x, y, buttons )
+        gui.modal[1]:mouseMoved( x, y, buttons )
     else
         -- Send event to all modless overlays/dialogs.
-        table.foreach( gui.modeless, function( i,v ) v.mouseMoved( x, y, buttons ) end )
+        table.foreach( gui.modeless, function( i,v ) v:mouseMoved( x, y, buttons ) end )
+    end
+end
+
+function gui.keypressed( key  )
+    if #gui.modal > 0 then
+        -- Send event to first (on top) modal overlay/dialog.
+        gui.modal[1]:keypressed( key )
+    else
+        -- Send event to all modless overlays/dialogs.
+        table.foreach( gui.modeless, function( i,v ) v:keypressed( key ) end )
     end
 end
