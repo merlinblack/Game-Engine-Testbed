@@ -12,56 +12,56 @@ function dowidget()
     dialog:add2D(top.element)
     dialog.top = top
 
-	function dialog.mouseMoved( x, y, buttons )
-		top:mouseMoved( x, y, buttons )
-	end
-	function dialog.keypressed( key )
-	end
+    function dialog.mouseMoved( x, y, buttons )
+        top:mouseMoved( x, y, buttons )
+    end
+    function dialog.keypressed( key )
+    end
 
-	gui.addModeless( dialog )
+    gui.addModeless( dialog )
 
     dialog:show()
-	mouse.show()
+    mouse.show()
 
     console.log'completed'
 end
 
 function undowidget()
-	gui.removeModeless( dialog )
-	dialog = nil
-	mouse.hide()
+    gui.removeModeless( dialog )
+    dialog = nil
+    mouse.hide()
 end
 
 function testButtons()
-	local testButtons = OverlayManager:createOverlay"testButtons"
-	local top = Panel( (1024-128)/1024, (768-80)/768, 128/1024, 80/768 )
-	testButtons:add2D( top.element )
-	top.element:setMaterialName"gui/dialog.background"
+    local testButtons = OverlayManager:createOverlay"testButtons"
+    local top = Panel( (1024-128)/1024, (768-80)/768, 128/1024, 80/768 )
+    testButtons:add2D( top.element )
+    top.element:setMaterialName"gui/dialog.background"
 
-	function testButtons.mouseMoved( x, y, buttons )
-		top:mouseMoved( x, y, buttons )
-	end
-	function testButtons.keypressed()
-	end
+    function testButtons.mouseMoved( x, y, buttons )
+        top:mouseMoved( x, y, buttons )
+    end
+    function testButtons.keypressed()
+    end
 
-	gui.addModeless( testButtons )
-	mouse.show()
-	testButtons:show()
+    gui.addModeless( testButtons )
+    mouse.show()
+    testButtons:show()
 
-	function removeTestButtons()
-		gui.removeModeless( testButtons )
-		testButtons:hide()
-		testButtons = nil
-	end
-	
-	print'Creating buttons'
+    function removeTestButtons()
+        gui.removeModeless( testButtons )
+        testButtons:hide()
+        testButtons = nil
+    end
+    
+    print'Creating buttons'
 
-	local quitButton = Button( 14/1024, 5/768, 100/1024, "Quit" )
-	local messageButton = Button( 14/1024, 40/768, 100/1024, "Message" )
+    local quitButton = Button( 14/1024, 5/768, 100/1024, "Quit" )
+    local messageButton = Button( 14/1024, 40/768, 100/1024, "Message" )
 
-	top:addChild( quitButton )
-	top:addChild( messageButton )
+    top:addChild( quitButton )
+    top:addChild( messageButton )
 
-	quitButton:setClickAction( quit )
-	messageButton:setClickAction( function() message( "This is a test." ) end )
+    quitButton:setClickAction( quit )
+    messageButton:setClickAction( function() message( "This is a test." ) end )
 end

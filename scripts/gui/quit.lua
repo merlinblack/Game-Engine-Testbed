@@ -1,9 +1,9 @@
 function quitDialogTask()
     console.setVisible(false)
-	mouse.show()
+    mouse.show()
 
     local quitDialog = OverlayManager:createOverlay()
-	local window = Panel( -(0.2539/2), -(0.1692/2), 0.2539, 0.1692 )
+    local window = Panel( -(0.2539/2), -(0.1692/2), 0.2539, 0.1692 )
     window.element:setMaterialName "gui/dialog.background"
     window.element:setParameter("horz_align","center")
     window.element:setParameter("vert_align","center")
@@ -25,12 +25,12 @@ function quitDialogTask()
     quitDialog:add2D(window.element)
     quitDialog.window = window
     quitDialog:show()
-	
-	function quitDialog.mouseMoved( x, y, button )
+    
+    function quitDialog.mouseMoved( x, y, button )
         quitDialog.window:mouseMoved( x, y, button )
     end
-	function quitDialog.keypressed( key )
-	end
+    function quitDialog.keypressed( key )
+    end
 
     gui.pushModal( quitDialog )
 
@@ -39,24 +39,24 @@ function quitDialogTask()
         yield()
     end
 
-	gui.popModal()
+    gui.popModal()
 
     quitDialog:hide()
-	mouse.hide()
+    mouse.hide()
     guiDialog=nil
 
     if quitDialog.OK==true then
         quitProgram()
     end
 
-	quitting = false
+    quitting = false
 end
 
 function quit()
-	if quitting == true then 
-		return 
-	end
-	quitting = true
+    if quitting == true then 
+        return 
+    end
+    quitting = true
     createTask(quitDialogTask)
 end
 

@@ -50,19 +50,19 @@ function BorderPanel:__init( x,y,w,h,name )
     self.element:setParameter("top", ""..y)
     self.element:setParameter("width", ""..w)
     self.element:setParameter("height",""..h)
-	self.element:setParameter('border_material','gui/dialog.border')
-	self.element:setParameter('border_size',           '0.0146484375 0.0146484375 0.019083969465649 0.019083969465649')
---	self.element:setParameter('border_size',           '.0146 .0146 .0190 .0190')
-	self.element:setParameter('border_topleft_uv',     '.0000 .0000 .5859375 .5859375' )
-	self.element:setParameter('border_topright_uv',    '.94140625 .0000 1.000 .5859375' )
-	self.element:setParameter('border_bottomleft_uv',  '.0000 .94140625 .5859375 1.000' )
-	self.element:setParameter('border_bottomright_uv', '.94140625 .94140625 1.000 1.000' )
-	self.element:setParameter('border_top_uv',         '.5859375 .0000 .94140625 .5859375' )
-	self.element:setParameter('border_left_uv',        '.0000 .5859375 .5859375 .94140625' )
-	self.element:setParameter('border_bottom_uv',      '.5859375 .94140625 .94140625 1.000' )
-	self.element:setParameter('border_right_uv',       '.94140625 .5859375 1.000 .94140625' )
+    self.element:setParameter('border_material','gui/dialog.border')
+    self.element:setParameter('border_size',           '0.0146484375 0.0146484375 0.019083969465649 0.019083969465649')
+--    self.element:setParameter('border_size',           '.0146 .0146 .0190 .0190')
+    self.element:setParameter('border_topleft_uv',     '.0000 .0000 .5859375 .5859375' )
+    self.element:setParameter('border_topright_uv',    '.94140625 .0000 1.000 .5859375' )
+    self.element:setParameter('border_bottomleft_uv',  '.0000 .94140625 .5859375 1.000' )
+    self.element:setParameter('border_bottomright_uv', '.94140625 .94140625 1.000 1.000' )
+    self.element:setParameter('border_top_uv',         '.5859375 .0000 .94140625 .5859375' )
+    self.element:setParameter('border_left_uv',        '.0000 .5859375 .5859375 .94140625' )
+    self.element:setParameter('border_bottom_uv',      '.5859375 .94140625 .94140625 1.000' )
+    self.element:setParameter('border_right_uv',       '.94140625 .5859375 1.000 .94140625' )
     self.element:setMaterialName'gui/dialog.background'
-	self.children={}
+    self.children={}
     console.log"BorderPanel Created"
 end
 

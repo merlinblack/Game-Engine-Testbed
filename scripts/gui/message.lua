@@ -1,6 +1,6 @@
 function messageDialog(task)
     console.setVisible(false)
-	mouse.show()
+    mouse.show()
     local messageOverlay = OverlayManager:createOverlay()
     local window = Panel( -(task.data.width/2), -(task.data.height/2), task.data.width, task.data.height)
     window.element:setParameter("horz_align","center")
@@ -24,23 +24,23 @@ function messageDialog(task)
     function messageOverlay.mouseMoved( x, y, button )
         messageOverlay.window:mouseMoved( x, y, button )
     end
-	function messageOverlay.keypressed( key )
-		if key == KeyCodes.KC_ENTER then
-			messageOverlay.OK = true
-		end
-	end
-	
-	gui.pushModal( messageOverlay )
+    function messageOverlay.keypressed( key )
+        if key == KeyCodes.KC_ENTER then
+            messageOverlay.OK = true
+        end
+    end
+    
+    gui.pushModal( messageOverlay )
 
     messageOverlay.OK = false
     while messageOverlay.OK == false do
         yield()
     end
 
-	gui.popModal()
+    gui.popModal()
 
     messageOverlay:hide()
-	mouse.hide()
+    mouse.hide()
     messageOverlay=nil
 
 end
