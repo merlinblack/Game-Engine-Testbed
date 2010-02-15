@@ -21,7 +21,7 @@ function dowidget()
 end
 
 function undowidget()
-    gui.removeModeless( dialog )
+    gui.removeModeless( top )
     dialog = nil
     mouse.hide()
 end

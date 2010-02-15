@@ -1,0 +1,9 @@
+Mouse picking of scene objects.
+-------------------------------
+Implemented as a Lua callable function, given x, and y co-ordinates.
+
+Returns first GameEntity hit, and where. Possibly use a direct Lua thunk to allow use of multiple
+return values. 
+
+Change GUI mouse code to return true, if the mouse fell in side a "dialog".  Otherwise false.
+
