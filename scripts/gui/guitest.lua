@@ -12,18 +12,12 @@ function dowidget()
     dialog:add2D(top.element)
     dialog.top = top
 
-    function dialog.mouseMoved( x, y, buttons )
-        top:mouseMoved( x, y, buttons )
-    end
-    function dialog.keypressed( key )
-    end
-
-    gui.addModeless( dialog )
+    gui.addModeless( top )
 
     dialog:show()
     mouse.show()
 
-    console.log'completed'
+    console.log'do widget completed'
 end
 
 function undowidget()
@@ -38,13 +32,7 @@ function testButtons()
     testButtons:add2D( top.element )
     top.element:setMaterialName"gui/dialog.background"
 
-    function testButtons.mouseMoved( x, y, buttons )
-        top:mouseMoved( x, y, buttons )
-    end
-    function testButtons.keypressed()
-    end
-
-    gui.addModeless( testButtons )
+    gui.addModeless( top )
     mouse.show()
     testButtons:show()
 
@@ -64,4 +52,7 @@ function testButtons()
 
     quitButton:setClickAction( quit )
     messageButton:setClickAction( function() message( "This is a test." ) end )
+
+    quitButton:setKeyCode( KeyCodes.KC_Q )
+    messageButton:setKeyCode( KeyCodes.KC_M )
 end

@@ -14,23 +14,14 @@ function messageDialog(task)
 
     local btnOK = Button( (task.data.width/2)-0.0556, task.data.height-0.0636, 0.1103, "OK" )
     btnOK:setClickAction( function () messageOverlay.OK=true end )
+    btnOK:setKeyCode( KeyCodes.KC_RETURN )
     window:addChild( text )
     window:addChild( icon )
     window:addChild( btnOK )
-    messageOverlay.window = window
     messageOverlay:add2D( window.element )
     messageOverlay:show()
 
-    function messageOverlay.mouseMoved( x, y, button )
-        messageOverlay.window:mouseMoved( x, y, button )
-    end
-    function messageOverlay.keypressed( key )
-        if key == KeyCodes.KC_ENTER then
-            messageOverlay.OK = true
-        end
-    end
-    
-    gui.pushModal( messageOverlay )
+    gui.pushModal( window )
 
     messageOverlay.OK = false
     while messageOverlay.OK == false do

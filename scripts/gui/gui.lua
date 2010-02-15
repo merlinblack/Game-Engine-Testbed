@@ -20,6 +20,10 @@ function mouseMoved(x, y, buttons)
     gui.mouseMoved(x, y, buttons)
 end
 
+function keypressed( key )
+    gui.keypressed( key )
+end
+
 function setupMouse()
     local mgr=getOverlayManager()
     mouseGui=mgr:createOverlay('MouseOverlay')

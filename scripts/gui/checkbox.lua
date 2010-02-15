@@ -4,7 +4,7 @@ end
 
 function testCheckboxDialog()
     console.setVisible(false)
-    
+
     local dialog = OverlayManager:createOverlay()
     local window = Panel( -(260/1024/2), -(150/768/2), 260/1024, 150/768 )
     window.element:setMaterialName "gui/dialog.background"
@@ -16,7 +16,6 @@ function testCheckboxDialog()
 
     local text2 = Text( 130/1024, 60/768, "Option 2:" )
     local checkbox2 = Checkbox( 180/1024, 60/768 )
-
 
     local icon = Panel( 0, 0, 32/1024, 32/768 )
     icon.element:setMaterialName "gui/icon.info"
@@ -35,18 +34,11 @@ function testCheckboxDialog()
     window:addChild( btnOK )
     window:addChild( btnCancel )
     dialog:add2D(window.element)
-    dialog.window = window
     dialog:show()
 
-    function dialog.mouseMoved( x, y, button )
-        dialog.window:mouseMoved( x, y, button )
-    end
-    function dialog.keypressed( key )
-    end
-
     mouse.show()
-    
-    gui.pushModal( dialog )
+
+    gui.pushModal( window )
 
     dialog.OK, dialog.CANCEL = false, false
     while dialog.OK == false and dialog.CANCEL == false do
@@ -91,11 +83,15 @@ function Checkbox:getState()
     return self.value
 end
 
+function Checkbox:onClick()
+    if self.clickAction then self.clickAction() end
+    self.value = not self.value
+end
+
 function Checkbox:mouseMoved( x, y, button )
     if self.element:contains( x/_WIDTH, y/_HEIGHT ) then
         if button == 0 and self.state == "click" then -- click release
-            if self.clickAction then self.clickAction() end
-        self.value = not self.value
+            self:onClick()
         end
         self.state = "hover"
     else
