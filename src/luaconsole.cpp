@@ -1,3 +1,14 @@
+/* -------------------------------------------------------------------------------
+ *
+ * The original of this file has been previously released to the public domain by
+ * Nigel Atkinson.
+ *
+ * See the wiki on www.ogre3d.org
+ *
+ * -------------------------------------------------------------------------------
+ */
+
+
 #include "luaconsole.h"
 
 #define CONSOLE_LINE_LENGTH 96
