@@ -27,7 +27,7 @@ THE SOFTWARE.
 
 struct InputEventData : public EventData
 {
-    float x, y;
+    short x, y;
     OIS::KeyCode key;
     unsigned int parm;
 };
