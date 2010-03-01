@@ -56,10 +56,7 @@ public:
     void renderOneFrame();
     void addResourceLocations();
 
-    bool EventNotification( EventPtr event )
-    {
-        return false;
-    }
+    bool EventNotification( EventPtr event );
 };
 
 #endif // RENDERSYSTEM_H_INCLUDED
