@@ -68,9 +68,6 @@ bool ::RenderSystem::initialise()
     Viewport* vp = mWindow->addViewport(mCamera);
     vp->setBackgroundColour(ColourValue(0,0,1));
 
-    // Alter the camera aspect ratio to match the viewport
-    mCamera->setAspectRatio(Real(vp->getActualWidth()) / Real(vp->getActualHeight()));
-
     mLuaResourceManager = new LuaResourceManager();
 
     addResourceLocations();
@@ -99,7 +96,18 @@ void ::RenderSystem::renderOneFrame()
     mRoot->renderOneFrame();
 }
 
-//-------------------------------------------------------------------------------------
+bool ::RenderSystem::EventNotification( EventPtr event )
+{
+    if( event->type == Event::hash( "EVT_WINDOW_RESIZE" ) )
+    {
+        boost::shared_ptr<WindowEventData> data = boost::dynamic_pointer_cast<WindowEventData>( event->data );
+
+        // Alter the camera aspect ratio
+        mCamera->setAspectRatio(Real(data->width) / Real(data->height));
+    }
+    return false;
+}
+
 void ::RenderSystem::addResourceLocations()
 {
    // Load resource paths from config file
