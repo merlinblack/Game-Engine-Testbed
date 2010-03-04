@@ -101,7 +101,7 @@ function setup()
 
     --Something to look at...
     require 'clock'
-    require 'camerarotate'
+--    require 'camerarotate'
 
     print "Setup task completed"
 end
