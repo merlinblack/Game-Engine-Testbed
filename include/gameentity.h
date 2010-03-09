@@ -25,10 +25,12 @@ THE SOFTWARE.
 #ifndef GAMEENTITY_H
 #define GAMEENTITY_H
 
-#include <OgreSceneNode.h>
+#include <OgreRoot.h>
 #include <OgreEntity.h>
+#include <OgreSceneNode.h>
 #include <OgreSingleton.h>
 #include <string>
+#include <list>
 #include <boost/shared_ptr.hpp>
 #include <boost/functional/hash.hpp>
 #include <luabind/luabind.hpp>
@@ -103,9 +105,19 @@ class GameEntityManager : public Ogre::Singleton<GameEntityManager>
     typedef std::pair<size_t, GameEntityPtr> mapping;
     
     std::map<size_t, GameEntityPtr> entities;
+
+    Ogre::SceneManager* sceneManager;
+    Ogre::RaySceneQuery* sceneQuery;
+
 public:
     static GameEntityManager* getSingletonPtr();
     static GameEntityManager& getSingleton();
+
+    GameEntityManager();
+    ~GameEntityManager();
+
+    void initialise();
+    void shutdown();
 
     bool addGameEntity( GameEntityPtr p );
     void removeGameEntity( size_t hashId );
@@ -114,6 +126,9 @@ public:
     GameEntityPtr getGameEntity( std::string name );
 
     void update();
+
+    std::list<GameEntityPtr> mousePick( float x, float y );
+    void mousePickLua( lua_State* L, float x, float y );
 };
 
 void bindGameEntityClasses( lua_State* L );
