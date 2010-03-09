@@ -25,15 +25,14 @@ THE SOFTWARE.
 #ifndef GAMEENTITY_H
 #define GAMEENTITY_H
 
-#include <OgreRoot.h>
+#include <list>
+#include <string>
 #include <OgreEntity.h>
 #include <OgreSceneNode.h>
 #include <OgreSingleton.h>
-#include <string>
-#include <list>
+#include <luabind/luabind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/functional/hash.hpp>
-#include <luabind/luabind.hpp>
 
 class GameEntity;
 class GameEntityManager;
@@ -72,7 +71,13 @@ public:
     size_t getHashId() { return hashId; }
 
     virtual void update();
-    void collide( GameEntityPtr other );
+
+    // Checks if a ray from camera at (x,y) intersects with *any* mesh triangles.
+    // Returns as soon as an intersection is found.
+    bool hitCheck( float x, float y );
+    // Returns the position of intersection with the mesh triangle that results in
+    // the smallest distance from the camera.
+    Ogre::Vector3 hitPosition( float x, float y );
 
     static boost::hash<std::string> hasher;
     size_t hash( std::string str )
@@ -127,6 +132,7 @@ public:
 
     void update();
 
+    Ogre::Ray getCameraRay( float x, float y );
     std::list<GameEntityPtr> mousePick( float x, float y );
     void mousePickLua( lua_State* L, float x, float y );
 };
