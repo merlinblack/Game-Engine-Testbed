@@ -2,7 +2,7 @@
 
 namespace OgreTools
 {
-
+    // Code from www.ogre3d.org
     void GetMeshInformation(const Ogre::MeshPtr mesh,
             size_t &vertex_count,
             Ogre::Vector3* &vertices,

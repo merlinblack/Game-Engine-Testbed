@@ -22,7 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
-#include "gameentity.h"
+#include <gameentity.h>
+#include <OgreRoot.h>
+#include <OgreMath.h>
+#include <ogretools.h>
 
 boost::hash<std::string> GameEntity::hasher;
 
@@ -62,10 +65,81 @@ void GameEntity::setName( std::string newName )
 
 void GameEntity::update()
 {
+    // Nothing, might get overidden in Lua
 }
 
-void GameEntity::collide( GameEntityPtr other )
+// Checks if a ray from camera at (x,y) intersects with *any* mesh triangles.
+// Returns as soon as an intersection is found.
+bool GameEntity::hitCheck( float x, float y )
 {
+    // Get mesh data and test each triangle for intersection.
+    // once we find one, we're out.
+    size_t vertex_count;
+    Ogre::Vector3* vertices;
+    size_t index_count;
+    unsigned long* indices;
+
+    OgreTools::GetMeshInformation( mesh->getMesh(), vertex_count, vertices, index_count, indices,
+            sceneNode->_getDerivedPosition(),
+            sceneNode->_getDerivedOrientation(),
+            sceneNode->getScale() );
+
+    Ogre::Ray ray = GameEntityManager::getSingleton().getCameraRay( x, y );
+
+    bool foundHit = false;
+
+    for( size_t i = 0; i < index_count; i += 3 )
+    {
+        std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects( ray, vertices[indices[i]], vertices[indices[i+1]], vertices[indices[i+2]], true, false );
+
+        if( hit.first )
+        {
+            foundHit = true;
+            break;
+        }
+    }
+
+    delete [] vertices;
+    delete [] indices;
+
+    return foundHit;
+}
+
+// Returns the position of intersection with the mesh triangle that results in
+// the smallest distance from the camera.
+Ogre::Vector3 GameEntity::hitPosition( float x, float y )
+{
+    // Get mesh data and test each triangle for intersection.
+
+    size_t vertex_count;
+    Ogre::Vector3* vertices;
+    size_t index_count;
+    unsigned long* indices;
+
+    OgreTools::GetMeshInformation( mesh->getMesh(), vertex_count, vertices, index_count, indices,
+            sceneNode->_getDerivedPosition(),
+            sceneNode->_getDerivedOrientation(),
+            sceneNode->getScale() );
+
+    Ogre::Ray ray = GameEntityManager::getSingleton().getCameraRay( x, y );
+
+    Ogre::Real distance = Ogre::Math::POS_INFINITY;
+
+    for( size_t i = 0; i < index_count; i += 3 )
+    {
+        std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects( ray, vertices[indices[i]], vertices[indices[i+1]], vertices[indices[i+2]], true, false );
+
+        if( hit.first )
+        {
+            if( hit.second < distance )
+                distance = hit.second;
+        }
+    }
+
+    delete [] vertices;
+    delete [] indices;
+
+    return ray.getPoint( distance );
 }
 
 template <> GameEntityManager* Ogre::Singleton<GameEntityManager>::ms_Singleton = 0;
@@ -162,15 +236,18 @@ void GameEntityManager::update()
         iter->second->update();
 }
 
+Ogre::Ray GameEntityManager::getCameraRay( float x, float y )
+{
+    Ogre::Camera* cam = sceneManager->getCamera("MainCamera");
+
+    return cam->getCameraToViewportRay( x, y );
+}
+
 std::list<GameEntityPtr> GameEntityManager::mousePick( float x, float y )
 {
     using namespace Ogre;
 
-    Camera* cam = sceneManager->getCamera("MainCamera");
-
-    Ray ray = cam->getCameraToViewportRay( x, y );
-
-    sceneQuery->setRay( ray );
+    sceneQuery->setRay( getCameraRay( x, y ) );
 
     RaySceneQueryResult& result = sceneQuery->execute();
     RaySceneQueryResult::iterator iter;
@@ -204,11 +281,7 @@ void GameEntityManager::mousePickLua( lua_State* L, float x, float y )
     luabind::object distTable = luabind::newtable( L );
     size_t index = 1;
 
-    Camera* cam = sceneManager->getCamera("MainCamera");
-
-    Ray ray = cam->getCameraToViewportRay( x, y );
-
-    sceneQuery->setRay( ray );
+    sceneQuery->setRay( getCameraRay( x, y ) );
 
     RaySceneQueryResult& result = sceneQuery->execute();
     RaySceneQueryResult::iterator iter;
@@ -257,6 +330,8 @@ void bindGameEntityClasses( lua_State* L )
             .property( "hashId", &GameEntity::getHashId )
             .def_readwrite( "parent", &GameEntity::parent )
             .def( "hash", &GameEntity::hash )
+            .def( "hitCheck", &GameEntity::hitCheck )
+            .def( "hitPosition", &GameEntity::hitPosition )
             ,
             class_<GameEntityManager>("GameEntityManager")
             .scope
