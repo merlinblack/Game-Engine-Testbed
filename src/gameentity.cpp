@@ -81,6 +81,42 @@ GameEntityManager& GameEntityManager::getSingleton()
     return *ms_Singleton;
 }
 
+GameEntityManager::GameEntityManager() : sceneManager(0), sceneQuery(0)
+{
+}
+
+GameEntityManager::~GameEntityManager()
+{
+    assert( !sceneManager );
+}
+
+void GameEntityManager::initialise()
+{
+    using namespace Ogre;
+
+    Root& root = Root::getSingleton();
+    sceneManager = root.getSceneManager("SceneManagerInstance");
+
+    assert( sceneManager );
+
+    sceneQuery = sceneManager->createRayQuery(Ray());
+    sceneQuery->setSortByDistance(true);
+}
+
+// This should be done before the scripting system is shutdown,
+// otherwise we are possibly left with shared pointers to Lua objects,
+// which when they are free'd will try and access a non-existaint
+// Lua state that they have stored a pointer to.
+void GameEntityManager::shutdown()
+{
+    if(sceneManager)
+        sceneManager->destroyQuery( sceneQuery );
+
+    sceneManager = 0;
+
+    entities.clear();
+}
+
 bool GameEntityManager::addGameEntity( GameEntityPtr p )
 {
     assert( p );
@@ -126,6 +162,86 @@ void GameEntityManager::update()
         iter->second->update();
 }
 
+std::list<GameEntityPtr> GameEntityManager::mousePick( float x, float y )
+{
+    using namespace Ogre;
+
+    Camera* cam = sceneManager->getCamera("MainCamera");
+
+    Ray ray = cam->getCameraToViewportRay( x, y );
+
+    sceneQuery->setRay( ray );
+
+    RaySceneQueryResult& result = sceneQuery->execute();
+    RaySceneQueryResult::iterator iter;
+
+    std::list<GameEntityPtr> picked;
+    std::map<size_t, GameEntityPtr>::iterator entityIter;
+
+    for( iter = result.begin(); iter != result.end(); iter++ )
+    {
+        if( iter->movable )
+        {
+            // Search for the game entity with this particular mesh instance.
+            for( entityIter = entities.begin(); entityIter != entities.end(); entityIter++ )
+            {
+                if( entityIter->second->mesh == iter->movable )
+                {
+                    picked.push_back( entityIter->second );
+                    break;
+                }
+            }
+        }
+    }
+    return picked;
+}
+
+void GameEntityManager::mousePickLua( lua_State* L, float x, float y )
+{
+    using namespace Ogre;
+
+    luabind::object geTable = luabind::newtable( L );
+    luabind::object distTable = luabind::newtable( L );
+    size_t index = 1;
+
+    Camera* cam = sceneManager->getCamera("MainCamera");
+
+    Ray ray = cam->getCameraToViewportRay( x, y );
+
+    sceneQuery->setRay( ray );
+
+    RaySceneQueryResult& result = sceneQuery->execute();
+    RaySceneQueryResult::iterator iter;
+
+    std::list<GameEntityPtr> picked;
+    std::map<size_t, GameEntityPtr>::iterator entityIter;
+
+    for( iter = result.begin(); iter != result.end(); iter++ )
+    {
+        if( iter->movable )
+        {
+            // Search for the game entity with this particular mesh instance.
+            for( entityIter = entities.begin(); entityIter != entities.end(); entityIter++ )
+            {
+                if( entityIter->second->mesh == iter->movable )
+                {
+                    geTable[index] = entityIter->second;
+                    distTable[index] = iter->distance;
+                    index++;
+                    break;
+                }
+            }
+        }
+    }
+
+    // Push return values (tables) onto the Lua stack.
+
+    geTable.push( L );
+    distTable.push( L );
+
+    return;
+}
+
 void bindGameEntityClasses( lua_State* L )
 {
     using namespace luabind;
@@ -152,6 +268,7 @@ void bindGameEntityClasses( lua_State* L )
             .def( "remove", (void (GameEntityManager::*)(size_t)) &GameEntityManager::removeGameEntity )
             .def( "get", (GameEntityPtr (GameEntityManager::*)(std::string)) &GameEntityManager::getGameEntity )
             .def( "get", (GameEntityPtr (GameEntityManager::*)(size_t)) &GameEntityManager::getGameEntity )
+            .def( "mousePick", &GameEntityManager::mousePickLua )
             //.def( "update", &GameEntityManager::update ) // Usally done every game loop.
     ];
 }

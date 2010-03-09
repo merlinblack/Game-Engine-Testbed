@@ -24,6 +24,8 @@ end
 function mouseMoved(x, y, buttons)
     setMouseCursorPosition(x,y)
     gui.mouseMoved(x, y, buttons)
+    _X=x/_WIDTH
+    _Y=y/_HEIGHT
 end
 
 function keypressed( key )

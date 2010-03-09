@@ -48,6 +48,7 @@ Engine::~Engine()
 {
     // Order of shutdown matters.
     console             .shutdown();
+    gameEntityManager   .shutdown();
     scriptingSystem     .shutdown();
     inputSystem         .shutdown();
     renderSystem        .shutdown();
@@ -73,6 +74,8 @@ bool Engine::initialise()
 
     console.init( renderSystem.getRoot(), scriptingSystem.getInterpreter() );
     bindLuaConsole( scriptingSystem.getInterpreter() );
+
+    gameEntityManager.initialise();
 
     Ogre::WindowEventUtilities::addWindowEventListener(renderSystem.getWindow(), this);
 
