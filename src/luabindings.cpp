@@ -177,6 +177,33 @@ void bindGui( lua_State *L )
     ];
 }
 
+void bindQuaternion( lua_State* L )
+{
+    module(L)
+    [
+        class_<Quaternion>( "Quaternion" )
+        .def(tostring(self))
+        .def_readwrite( "x", &Quaternion::x )
+        .def_readwrite( "y", &Quaternion::y )
+        .def_readwrite( "z", &Quaternion::z )
+        .def_readwrite( "w", &Quaternion::w )
+        .def(constructor<>())
+        .def(constructor<Real,Real,Real,Real>())
+        .def("dot", &Quaternion::Dot )
+
+        // Operators
+        .def( self + other<Quaternion>() )
+        .def( self - other<Quaternion>() )
+        .def( self * other<Quaternion>() )
+        .def( self * Real() )
+    ];
+
+    LUA_CONST_START( Quaternion )
+        LUA_CONST( Quaternion, ZERO );
+        LUA_CONST( Quaternion, IDENTITY );
+    LUA_CONST_END;
+}
+
 void bindVector3( lua_State* L )
 {
     module(L)
@@ -351,6 +378,11 @@ void SceneNode_roll( SceneNode *obj, const Real degrees )
     return obj->roll( Degree( degrees ) );
 }
 
+void SceneNode_rotate( SceneNode *obj, const Quaternion& q )
+{
+    return obj->rotate( q );
+}
+
 void bindSceneNode( lua_State* L )
 {
     module(L)
@@ -363,6 +395,10 @@ void bindSceneNode( lua_State* L )
         .def("roll", SceneNode_roll )
         .def("setPosition", (void( SceneNode::*)(const Vector3&))&SceneNode::setPosition )
         .def("setPosition", (void( SceneNode::*)(Real,Real,Real))&SceneNode::setPosition )
+        .def("scale", (void( SceneNode::*)(Real,Real,Real))&SceneNode::scale )
+        .def("scale", (void( SceneNode::*)(const Vector3&))&SceneNode::scale )
+        .def("showBoundingBox", &SceneNode::showBoundingBox )
+        .def("rotate", &SceneNode_rotate )
     ];
 }
 
@@ -384,6 +420,7 @@ void bindCamera( lua_State* L )
 void bindEngine( lua_State* L )
 {
     bindGui( L );
+    bindQuaternion( L );
     bindVector3( L );
     bindVector2( L );
     bindColourValue( L );
