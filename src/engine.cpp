@@ -28,6 +28,9 @@ THE SOFTWARE.
 #include <OgreLogManager.h>
 #include <luaresource.h>
 
+//For testing
+#include <navigationmesh.h>
+
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 #include <time.h>
 void msleep(int ms)
@@ -134,6 +137,23 @@ bool Engine::EventNotification( EventPtr event )
         {
             OIS::KeyEvent arg( 0, data->key, data->parm );
             console.injectKeyPress( arg );
+            return true;
+        }
+        if( data->key == OIS::KC_T )
+        {
+            // Testing.
+            Ogre::Root *root = Ogre::Root::getSingletonPtr();
+            Ogre::SceneManager* mgr = root->getSceneManager( "SceneManagerInstance" );
+            Ogre::Entity *eTest = mgr->createEntity( "navtest.nav" );
+
+            NavigationMesh navMesh;
+
+            navMesh.BuildFromOgreMesh( eTest->getMesh() );
+
+            mgr->destroyEntity( eTest );
+
+            navMesh.DebugTextDump( std::cout );
+
             return true;
         }
     }
