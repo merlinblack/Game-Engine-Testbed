@@ -3,6 +3,8 @@
 
 #include <OgreMesh.h>
 #include <OgreSubMesh.h>
+#include <OgreVector3.h>
+#include <OgreQuaternion.h>
 
 namespace OgreTools
 {
