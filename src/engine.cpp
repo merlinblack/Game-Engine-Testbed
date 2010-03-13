@@ -152,6 +152,15 @@ bool Engine::EventNotification( EventPtr event )
 
             mgr->destroyEntity( eTest );
 
+            // Test out pathfinding.
+            NavigationPath* path = navMesh.findNavigationPath( Ogre::Vector3( 8, 0, 8 ), Ogre::Vector3( -8, 0, -8 ) );
+
+            if( path )
+            {
+                for( NavigationPath::iterator i = path->begin(); i != path->end(); i++ )
+                    std::cout << "NavPoint: " << *i << std::endl;
+            }
+
             navMesh.DebugTextDump( std::cout );
 
             return true;

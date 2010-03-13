@@ -2,7 +2,8 @@
 
 namespace OgreTools
 {
-    // Code from www.ogre3d.org
+    // Following function from www.ogre3d.org - see that site for License.
+    // http://www.ogre3d.org/wiki/index.php/RetrieveVertexData
     void GetMeshInformation(const Ogre::MeshPtr mesh,
             size_t &vertex_count,
             Ogre::Vector3* &vertices,
