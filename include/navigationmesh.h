@@ -34,6 +34,9 @@ The mesh cells are triangles and assumed to have normals no more than 90 degrees
 the up/down Y axis.  This allows us to treat it as a flat 2D structure at times.
 
 Path finding from cell to cell uses A*.
+
+Ogre::Vector3.squaredDistance is used rather than Ogre::Vector3.distance for costs as
+this avoids calling sqrt, and the costs are only ever compared against each other.
 */
 
 

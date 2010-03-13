@@ -227,7 +227,7 @@ NavigationCellList* NavigationMesh::findNavigationCellPath( NavigationCell* posi
             if( currentCell->parent == neighbour )  // Kinda pointless
                 continue;
 
-            Ogre::Real newcost = currentCell->g_cost + neighbour->mCentre.distance( currentCell->mCentre );
+            Ogre::Real newcost = currentCell->g_cost + neighbour->mCentre.squaredDistance( currentCell->mCentre );
 
             if( neighbour->isClosed == false && neighbour->isOpen == false )
             {
@@ -288,7 +288,7 @@ NavigationCellList* NavigationMesh::findNavigationCellPath( NavigationCell* posi
 Ogre::Real NavigationMesh::aStarHeuristic( NavigationCell* cell, NavigationCell* destination )
 {
     // Tweek here!
-    return cell->mCentre.distance( destination->mCentre );
+    return cell->mCentre.squaredDistance( destination->mCentre );
 }
 
 void NavigationMesh::resetPathfinding()
