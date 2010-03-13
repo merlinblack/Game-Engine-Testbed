@@ -1,5 +1,41 @@
+/*
+-----------------------------------------------------------------------------
+Copyright (c) 2010 Nigel Atkinson
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-----------------------------------------------------------------------------
+*/
+
 #ifndef NAVIGATIONMESH_H
 #define NAVIGATIONMESH_H
+
+/*
+Implemenation Notes:
+
+Based roughly on "Simplfied 3D Movement and Pathfinding Using Navigation Meshes" from
+Game Programming Gems 1 - Page 288.
+The mesh cells are triangles and assumed to have normals no more than 90 degrees from
+the up/down Y axis.  This allows us to treat it as a flat 2D structure at times.
+
+Path finding from cell to cell uses A*.
+*/
+
 
 #include <ogretools.h>
 #include <OgreVector3.h>
@@ -9,21 +45,46 @@
 #include <ostream>
 
 class NavigationMesh;
+struct NavigationCellComparison;
 
 class NavigationCell
 {
     friend class NavigationMesh;
+    friend class NavigationCellComparison;
 
     Ogre::Vector3 mVertices[3];
+    Ogre::Vector3 mCentre;
+
+    // Pointers to cell's neighbours.
     NavigationCell* mLinks[3];
 
-    int SerialisationID;
+    // *** Pathfinding
+    // Which neighbour is next in the found path.
+    int path;
+    bool isOpen;
+    bool isClosed;
+    Ogre::Real g_cost;
+    Ogre::Real h_cost;
+    Ogre::Real totalcost;
+    NavigationCell* parent;
+    // ***
 
     bool hasVertex( Ogre::Vector3& vec );
 
 public:
     NavigationCell( Ogre::Vector3 a, Ogre::Vector3 b, Ogre::Vector3 c );
 };
+
+struct NavigationCellComparison
+{
+    bool operator() ( NavigationCell* first, NavigationCell* second )
+    {
+        return first->totalcost < second->totalcost;
+    }
+};
+
+typedef std::vector<Ogre::Vector3> NavigationPath;
+typedef std::vector<NavigationCell*> NavigationCellList;
 
 class NavigationMesh
 {
@@ -34,6 +95,9 @@ class NavigationMesh
     Ogre::Quaternion mRotation;
     Ogre::Vector3 mScale;
 
+    // This is used as a binary heap.
+    NavigationCellList mOpenList;
+
 public:
     NavigationMesh( Ogre::Vector3 position = Ogre::Vector3::ZERO,
                     Ogre::Quaternion rotation = Ogre::Quaternion::IDENTITY,
@@ -42,7 +106,19 @@ public:
 
     void BuildFromOgreMesh( Ogre::MeshPtr mesh );
 
+    NavigationCell* getCellContainingPoint( Ogre::Vector3& p );
+
+    NavigationPath* findNavigationPath( Ogre::Vector3 position, Ogre::Vector3 destination );
+    NavigationCellList* findNavigationCellPath( NavigationCell* position, NavigationCell* destination );
+
     void DebugTextDump( std::ostream &out );
+
+private:
+    inline Ogre::Real aStarHeuristic( NavigationCell* cell, NavigationCell* destination );
+    void resetPathfinding();
+    inline void pushIntoOpenList( NavigationCell* cell );
+    inline NavigationCell* popFromOpenList();
+    inline void promoteCellInOpenList( NavigationCell* cell );
 };
 
 #endif // NAVIGATIONMESH_H
