@@ -25,8 +25,9 @@ THE SOFTWARE.
 #include <Ogre.h>
 #include <luabind/luabind.hpp>
 
-// Prototype this before operator.hpp so it can be found for tostring() operator.
+// Prototype these before operator.hpp so it can be found for tostring() operator.
 std::ostream& operator<<( std::ostream& stream, const Ogre::Entity ent );
+std::ostream& operator<<( std::ostream& stream, const Ogre::SceneNode node );
 
 #include <luabind/operator.hpp>
 
@@ -237,6 +238,7 @@ void bindVector3( lua_State* L )
         .def("reflect", &Vector3::reflect )
         .def("squaredDistance", &Vector3::squaredDistance )
         .def("squaredLength", &Vector3::squaredLength )
+        .def("angleBetween", &Vector3::angleBetween )
 
         // Operators
 
@@ -324,6 +326,7 @@ void bindColourValue( lua_State* L )
         .def( self * other<ColourValue>() )
         .def( self * Real() )
         .def( self / Real() )
+        .def(tostring(self))
     ];
 
     LUA_CONST_START( ColourValue )
@@ -335,7 +338,6 @@ void bindColourValue( lua_State* L )
         LUA_CONST( ColourValue, Blue);
     LUA_CONST_END;
 }
-
 
 std::ostream& operator<<( std::ostream& stream, const Entity ent )
 {
@@ -383,6 +385,11 @@ void SceneNode_rotate( SceneNode *obj, const Quaternion& q )
     return obj->rotate( q );
 }
 
+std::ostream& operator<<( std::ostream& stream, const SceneNode node )
+{
+    return stream << node.getName();
+}
+
 void bindSceneNode( lua_State* L )
 {
     module(L)
@@ -399,6 +406,7 @@ void bindSceneNode( lua_State* L )
         .def("scale", (void( SceneNode::*)(const Vector3&))&SceneNode::scale )
         .def("showBoundingBox", &SceneNode::showBoundingBox )
         .def("rotate", &SceneNode_rotate )
+        .def(tostring(self))
     ];
 }
 
@@ -413,6 +421,18 @@ void bindCamera( lua_State* L )
         .def("lookAt", (void( Camera::*)(Real,Real,Real))&Camera::lookAt )
         .def("setNearClipDistance", &Camera::setNearClipDistance )
         .def("setFarClipDistance", &Camera::setFarClipDistance )
+        .def(tostring(self))
+    ];
+}
+
+void bindRadian( lua_State* L )
+{
+    module(L)
+    [
+        class_<Radian>("Radian")
+        .def(tostring(self))
+        .def_readonly( "rad", &Radian::valueRadians )
+        .def_readonly( "deg", &Radian::valueDegrees )
     ];
 }
 
@@ -427,6 +447,7 @@ void bindEngine( lua_State* L )
     bindEntity( L );
     bindSceneNode( L );
     bindCamera( L );
+    bindRadian( L );
 
     module(L)
     [

@@ -42,6 +42,71 @@ bool NavigationCell::hasVertex( Ogre::Vector3& vec )
     return false;
 }
 
+NavigationCell::LINE_CLASSIFICATION NavigationCell::classifyLine2D( Ogre::Vector3& start, Ogre::Vector3& end, NavigationCell* from, NavigationCell*& next )
+{
+    // Flatten line to 2D
+    Ogre::Vector2 s( start.x, start.z );
+    Ogre::Vector2 e( end.x, end.z );
+
+    // Flatten triangle co-ordinates.
+    Ogre::Vector2 a( mVertices[0].x, mVertices[0].z );
+    Ogre::Vector2 b( mVertices[1].x, mVertices[1].z );
+    Ogre::Vector2 c( mVertices[2].x, mVertices[2].z );
+
+    // Check line against each side.
+    // Note that the value in mLinks may be 0, indicating that there is no cell in that direction.
+    // If a line 'exits' a side without a 'neighbour', it has left the confines of the navigation mesh.
+
+    // Side 1
+    if( mLinks[0] != from && OgreTools::LinesIntersect2D( s, e, a, b ) )
+    {
+        next = mLinks[0];
+        return LINE_EXITS;
+    }
+    // Side 2
+    if( mLinks[1] != from && OgreTools::LinesIntersect2D( s, e, b, c ) )
+    {
+        next = mLinks[1];
+        return LINE_EXITS;
+    }
+    // Side 3
+    if( mLinks[2] != from && OgreTools::LinesIntersect2D( s, e, c, a ) )
+    {
+        next = mLinks[2];
+        return LINE_EXITS;
+    }
+
+    // Line did not cross any sides except the one we share with the cell the line came from.
+
+    if( Ogre::Math::pointInTri2D( e, a, b, c ) )
+        return LINE_STOPS;
+
+    next = 0;
+
+    return LINE_MISSED;
+}
+
+Ogre::Vector3 NavigationCell::getExitPoint()
+{
+    // Use the mid point of the cell side we should use to leave this cell.
+    switch( path )
+    {
+        case 0: // Leave via side 0
+            return mVertices[0].midPoint( mVertices[1] );
+
+        case 1: // Leave via side 1
+            return mVertices[1].midPoint( mVertices[2] );
+
+        case 2: // Leave via side 2
+            return mVertices[2].midPoint( mVertices[0] );
+    }
+
+    // What? the path should be set if the cell is in the list....
+    assert(0);
+
+    return Ogre::Vector3::ZERO;
+}
+
 NavigationMesh::NavigationMesh( Ogre::Vector3 position /* = Ogre::Vector3::ZERO */ ,
                                 Ogre::Quaternion rotation /* = Ogre::Quaternion::IDENTITY */ ,
                                 Ogre::Vector3 scale /* = Ogre::Vector3::UNIT_SCALE */ ) :
@@ -158,26 +223,12 @@ NavigationPath* NavigationMesh::findNavigationPath( Ogre::Vector3 position, Ogre
     // Create point path from returned cell path.
     NavigationPath* path = new NavigationPath;
 
-    path->push_back( position );   // Will be needed for path smoothing.
+    path->push_back( position );
 
     for( NavigationCellList::iterator i = cellPath->begin(); i != cellPath->end(); i++ )
     {
         // Use the mid point of the cell side we should use to leave this cell.
-        switch( (*i)->path )
-        {
-            case 0: // Leave via side 0
-                path->push_back( (*i)->mVertices[0].midPoint( (*i)->mVertices[1] ) );
-                break;
-            case 1: // Leave via side 1
-                path->push_back( (*i)->mVertices[1].midPoint( (*i)->mVertices[2] ) );
-                break;
-            case 2: // Leave via side 2
-                path->push_back( (*i)->mVertices[2].midPoint( (*i)->mVertices[0] ) );
-                break;
-            default:
-                // What? the mPath should be set if the cell is in the list....
-                assert(0);
-        }
+        path->push_back( (*i)->getExitPoint() );
     }
 
     path->push_back( destination );
@@ -187,6 +238,92 @@ NavigationPath* NavigationMesh::findNavigationPath( Ogre::Vector3 position, Ogre
     // Smooth out path? Catmull Rom thingy goes here... ( or called seperately on path ).
 
     return path;
+}
+
+NavigationPath* NavigationMesh::straightenPath( NavigationPath* path, Ogre::Radian maxTurnAngle )
+{
+    // Straighten path.
+    // Move along the generated path, skipping points until the line between our current
+    // position and the current endpoint, either:
+    // - Is the end of the entire path.
+    //      We stop processing.
+    // - Leaves the navmesh.
+    //      We back up one point, save the position, and start skipping points again.
+
+    NavigationPath* straightenedPath = new NavigationPath;
+    NavigationCell* prevCell;
+    NavigationCell* testCell;
+    NavigationCell* newTestCell;
+    Ogre::Vector3 destination = *(path->rbegin());
+    NavigationPath::iterator currentPoint = path->begin();
+    NavigationPath::iterator testPoint = currentPoint + 1;
+    Ogre::Vector3 prevDirection = *testPoint - *currentPoint;
+
+    straightenedPath->push_back( *(path->begin()) );
+
+    while( *currentPoint != destination )
+    {
+        // Test if our new direction is too far off from our previous direction
+        Ogre::Radian angle = prevDirection.angleBetween( (*testPoint - *currentPoint) );
+        std::cout << "Angle: " << Ogre::Degree(angle) << std::endl;
+        if( angle > maxTurnAngle )
+        {
+            // New starting position (one point before the maxAngle was topped).
+            // Straighten from here...
+            currentPoint = testPoint - 1;
+            prevDirection = *testPoint - *currentPoint;
+            // Save
+            straightenedPath->push_back( *currentPoint );
+        }
+
+        // If we start going up or down, place a waypoint
+        if( currentPoint->y != testPoint->y )
+        {
+            currentPoint = testPoint -1;
+            straightenedPath->push_back( *currentPoint );
+        }
+
+        prevCell = getCellContainingPoint( *currentPoint );
+
+        // Figure out which is the next cell from "prevCell"
+        testCell = prevCell->mLinks[prevCell->path];
+
+        while( *testPoint != destination )
+        {
+            NavigationCell::LINE_CLASSIFICATION ret = testCell->classifyLine2D( *currentPoint, *testPoint, prevCell, newTestCell );
+            if( ret == NavigationCell::LINE_STOPS )
+            {
+                    // Line stops in testCell.  Try next point in path.
+                    testPoint++;
+                    break;
+            }
+
+            // ret == NavigationCell::LINE_EXITS || ret == NavigationCell::LINE_MISSED
+            if( newTestCell == 0 )
+            {
+                // Line exits the navigation mesh.
+                // New starting position (one before the exit from the mesh happened)
+                assert( currentPoint != testPoint - 1 );    // oh oh loopy loopy!
+
+                // Straighten from here...
+                currentPoint = testPoint - 1;
+
+                // Save
+                straightenedPath->push_back( *currentPoint );
+                break;
+            }
+
+            prevCell = testCell;
+            testCell = newTestCell;
+        }
+
+        if( *testPoint == destination )
+            break;  // We have reached the end.
+    }
+
+    straightenedPath->push_back( destination );
+
+    return straightenedPath;
 }
 
 NavigationCellList* NavigationMesh::findNavigationCellPath( NavigationCell* position, NavigationCell* destination )

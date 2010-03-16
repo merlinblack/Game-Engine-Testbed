@@ -38,8 +38,13 @@ void msleep(int ms)
     struct timespec time;
     time.tv_sec = ms / 1000;
     time.tv_nsec = (ms % 1000) * (1000 * 1000);
+    /*
     while( nanosleep(&time, &time) == -1 && errno == EINTR )
-        continue; // We got woken by a system signal, go back to sleep
+        continue; // We got woken by a system signal, go back to sleep.
+    */
+    // Since this function is only called to play 'nice' with the OS
+    // we will just stop sleeping if we get a signal.
+    nanosleep(&time, &time);
 }
 #else
 #error "Figure out what header for some sleep func, on your platform"
@@ -59,7 +64,7 @@ Engine::~Engine()
 
 bool Engine::initialise()
 {
-    // Managers may enque events as the start
+    // Managers may enque events as they start
     eventManager.addListener( this );
     eventManager.addListener( &renderSystem );
     eventManager.addListener( &scriptingSystem );
@@ -113,10 +118,25 @@ void Engine::run()
 
 bool Engine::EventNotification( EventPtr event )
 {
+    // These are for testing. TOREMOVE!
+    static float _X;
+    static float _Y;
+    static short _WIDTH;
+    static short _HEIGHT;
+
     if( event->type == Event::hash( "MSG_QUIT" ) )
     {
         stop = true;
         return true;
+    }
+
+    if( event->type == Event::hash( "EVT_WINDOW_RESIZE" ) )
+    {
+        boost::shared_ptr<WindowEventData> data = boost::dynamic_pointer_cast<WindowEventData>( event->data );
+        _WIDTH = data->width;
+        _HEIGHT = data->height;
+
+        return false;   // We don't eat this event as other listeners may need to know too.
     }
 
     if( event->type == Event::hash( "EVT_KEYDOWN" ) )
@@ -133,18 +153,32 @@ bool Engine::EventNotification( EventPtr event )
             console.setVisible( ! console.isVisible() );
             return true;
         }
+        if( data->key == OIS::KC_NUMPADENTER )
+        {
+            // Map the Enter key on the keypad to Return on the main keyboard
+            EventPtr newevent( new Event( "EVT_KEYDOWN" ) );
+            boost::shared_ptr<InputEventData> newdata( new InputEventData );
+
+            newdata->key = OIS::KC_RETURN;
+            newdata->parm = data->parm;
+            newevent->data = newdata;
+
+            queueEvent( newevent );
+
+            return true;
+        }
         if( console.isVisible() )
         {
             OIS::KeyEvent arg( 0, data->key, data->parm );
             console.injectKeyPress( arg );
             return true;
         }
-        if( data->key == OIS::KC_T )
+        if( data->key == OIS::KC_T )    // T for Test!
         {
             // Testing.
             Ogre::Root *root = Ogre::Root::getSingletonPtr();
             Ogre::SceneManager* mgr = root->getSceneManager( "SceneManagerInstance" );
-            Ogre::Entity *eTest = mgr->createEntity( "navtest.nav" );
+            Ogre::Entity *eTest = mgr->createEntity( "FloorNav.mesh" );
 
             NavigationMesh navMesh;
 
@@ -152,19 +186,91 @@ bool Engine::EventNotification( EventPtr event )
 
             mgr->destroyEntity( eTest );
 
+            // Get where the mouse is pointing on the floor
+            GameEntityPtr base = gameEntityManager.getGameEntity( "Floor" );
+
+            if( !base ) // test scene not yet loaded.
+            {
+                Ogre::LogManager::getSingleton().stream() << "Load the test scene first you doofus.";
+                return true;
+            }
+
+            Ogre::Vector3 pos = base->hitPosition( _X, _Y );
+
+            if( pos.x == Ogre::Math::POS_INFINITY )
+                return true;    // Mouse was not over the Floor.
+
             // Test out pathfinding.
-            NavigationPath* path = navMesh.findNavigationPath( Ogre::Vector3( 8, 0, 8 ), Ogre::Vector3( -8, 0, -8 ) );
+            NavigationPath* path = navMesh.findNavigationPath( Ogre::Vector3( 0, 25, 0 ), pos );
+
+            mgr->destroyManualObject( "path" );
 
             if( path )
             {
+                NavigationPath *straightenedPath = navMesh.straightenPath( path, Ogre::Radian( Ogre::Math::PI ) );
+                NavigationPath *straightenedPath2 = navMesh.straightenPath( path, Ogre::Radian( Ogre::Math::PI/2 ) );
+
+                Ogre::SceneNode* myManualObjectNode;
+
+                if( mgr->hasSceneNode( "path_node" ) )
+                    myManualObjectNode = mgr->getSceneNode( "path_node" );
+                else
+                    myManualObjectNode = mgr->getRootSceneNode()->createChildSceneNode("path_node");
+
+                Ogre::ManualObject* myManualObject =  mgr->createManualObject("path");
+
+                myManualObject->begin("debug/yellow", Ogre::RenderOperation::OT_LINE_STRIP);
+
                 for( NavigationPath::iterator i = path->begin(); i != path->end(); i++ )
-                    std::cout << "NavPoint: " << *i << std::endl;
+                {
+                    //std::cout << "NavPoint: " << *i << std::endl;
+                    myManualObject->position(i->x, i->y+2, i->z);
+                }
+
+                myManualObject->end();
+
+                myManualObject->begin("debug/blue", Ogre::RenderOperation::OT_LINE_STRIP);
+
+                for( NavigationPath::iterator i = straightenedPath->begin(); i != straightenedPath->end(); i++ )
+                {
+                    //std::cout << "NavPoint: " << *i << std::endl;
+                    myManualObject->position(i->x, i->y+3, i->z);
+                }
+
+                myManualObject->end();
+
+                myManualObject->begin("debug/cyan", Ogre::RenderOperation::OT_LINE_STRIP);
+
+                for( NavigationPath::iterator i = straightenedPath2->begin(); i != straightenedPath2->end(); i++ )
+                {
+                    //std::cout << "NavPoint: " << *i << std::endl;
+                    myManualObject->position(i->x, i->y+4, i->z);
+                }
+
+                myManualObject->end();
+
+                myManualObject->setQueryFlags( 0 );
+                myManualObject->setRenderQueueGroup( Ogre::RENDER_QUEUE_OVERLAY );
+
+                myManualObjectNode->attachObject(myManualObject);
+
+                delete path;
+                delete straightenedPath;
+                delete straightenedPath2;
             }
 
-            navMesh.DebugTextDump( std::cout );
+            //navMesh.DebugTextDump( std::cout );
 
             return true;
         }
+    }
+
+    if( event->type == Event::hash("EVT_MOUSEMOVE") )
+    {
+        boost::shared_ptr<InputEventData> data = boost::dynamic_pointer_cast<InputEventData>( event->data );
+
+        _X = (float)data->x / _WIDTH;
+        _Y = (float)data->y / _HEIGHT;
     }
 
     return false;

@@ -1,8 +1,43 @@
 #include <ogretools.h>
 
+// Functions / Snippets from www.ogre3d.org - see that site for License.
+
 namespace OgreTools
 {
-    // Following function from www.ogre3d.org - see that site for License.
+    //http://www.ogre3d.org/wiki/index.php/2D_line_intersection
+    bool LinesIntersect2D( Ogre::Vector2 firstStart, Ogre::Vector2 firstEnd,
+                              Ogre::Vector2 secondStart, Ogre::Vector2 secondEnd )
+    {
+
+        Ogre::Vector2 v1 = firstEnd - firstStart;
+
+        Ogre::Vector2 v2 = secondStart - firstStart;
+        Ogre::Vector2 v3 = secondEnd - firstStart;
+
+        Ogre::Real crossProd1 = v1.crossProduct(v2);
+        Ogre::Real crossProd2 = v1.crossProduct(v3);
+
+        if ( (crossProd1 > 0 && crossProd2 < 0) || (crossProd1 < 0 && crossProd2 > 0)
+            || (crossProd1 == 0 && crossProd2 == 0) )
+        {
+
+            v1 = secondStart - secondEnd;
+
+            v2 = firstStart - secondEnd;
+            v3 = firstEnd - secondEnd;
+
+            crossProd1 = v1.crossProduct(v2);
+            crossProd2 = v1.crossProduct(v3);
+
+            if ( (crossProd1 > 0 && crossProd2 < 0) || (crossProd1 < 0 && crossProd2 > 0)
+                || (crossProd1 == 0 && crossProd2 == 0) )
+            {
+              return true;
+            }
+        }
+        return false;
+    }
+
     // http://www.ogre3d.org/wiki/index.php/RetrieveVertexData
     void GetMeshInformation(const Ogre::MeshPtr mesh,
             size_t &vertex_count,

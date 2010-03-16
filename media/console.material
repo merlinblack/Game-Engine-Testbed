@@ -1,15 +1,14 @@
 material console/background
 {
-	technique
-	{
-		pass
-		{
-			scene_blend modulate
+    technique
+    {
+        pass
+        {
+            scene_blend modulate
             texture_unit
-			{
-			    texture console.png
-			}
-		}
-	}
+            {
+                texture console.png
+            }
+        }
+    }
 }
-

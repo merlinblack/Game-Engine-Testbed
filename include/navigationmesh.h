@@ -62,27 +62,39 @@ class NavigationCell
     NavigationCell* mLinks[3];
 
     // *** Pathfinding
-    // Which neighbour is next in the found path.
-    int path;
+    int path;               // Which neighbour is next in the found path.
     bool isOpen;
     bool isClosed;
-    Ogre::Real g_cost;
-    Ogre::Real h_cost;
+    Ogre::Real g_cost;      // cost to get here.
+    Ogre::Real h_cost;      // guess at cost to destination
     Ogre::Real totalcost;
-    NavigationCell* parent;
+    NavigationCell* parent; // cell that we got here from.
     // ***
 
     bool hasVertex( Ogre::Vector3& vec );
 
 public:
     NavigationCell( Ogre::Vector3 a, Ogre::Vector3 b, Ogre::Vector3 c );
+
+    enum LINE_CLASSIFICATION
+    {
+        LINE_EXITS,
+        LINE_STOPS,
+        LINE_MISSED
+    };
+
+    // Y component of the line and cell's triangle is ignored
+    LINE_CLASSIFICATION classifyLine2D( Ogre::Vector3& start, Ogre::Vector3& end,
+                                        NavigationCell* from, NavigationCell* &next );
+
+    Ogre::Vector3 getExitPoint();
 };
 
 struct NavigationCellComparison
 {
     bool operator() ( NavigationCell* first, NavigationCell* second )
     {
-        return first->totalcost < second->totalcost;
+        return first->totalcost > second->totalcost;
     }
 };
 
@@ -113,6 +125,8 @@ public:
 
     NavigationPath* findNavigationPath( Ogre::Vector3 position, Ogre::Vector3 destination );
     NavigationCellList* findNavigationCellPath( NavigationCell* position, NavigationCell* destination );
+
+    NavigationPath* straightenPath( NavigationPath* path, Ogre::Radian maxTurnAngle );
 
     void DebugTextDump( std::ostream &out );
 

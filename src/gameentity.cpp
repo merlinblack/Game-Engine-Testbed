@@ -139,6 +139,9 @@ Ogre::Vector3 GameEntity::hitPosition( float x, float y )
     delete [] vertices;
     delete [] indices;
 
+    if( distance == Ogre::Math::POS_INFINITY )
+        return Ogre::Vector3( Ogre::Math::POS_INFINITY );
+
     return ray.getPoint( distance );
 }
 
