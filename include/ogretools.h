@@ -8,6 +8,9 @@
 
 namespace OgreTools
 {
+    bool LinesIntersect2D( Ogre::Vector2 firstStart, Ogre::Vector2 firstEnd,
+                              Ogre::Vector2 secondStart, Ogre::Vector2 secondEnd );
+
     void GetMeshInformation(const Ogre::MeshPtr mesh,
             size_t &vertex_count,
             Ogre::Vector3* &vertices,
