@@ -25,6 +25,9 @@ THE SOFTWARE.
 #include <navigationmesh.h>
 #include <algorithm>
 
+//For debugDrawClassification
+#include <Ogre.h>
+
 NavigationCell::NavigationCell( Ogre::Vector3 a, Ogre::Vector3 b, Ogre::Vector3 c )
 {
     mVertices[0] = a;
@@ -42,8 +45,39 @@ bool NavigationCell::hasVertex( Ogre::Vector3& vec )
     return false;
 }
 
+void NavigationCell::debugDrawClassification( Ogre::Vector3 start, Ogre::Vector3 end )
+{
+    Ogre::Root *root = Ogre::Root::getSingletonPtr();
+    Ogre::SceneManager* mgr = root->getSceneManager( "SceneManagerInstance" );
+    Ogre::ManualObject* debug;
+
+    if( mgr->hasManualObject( "debugDrawClassification" ) )
+        debug = mgr->getManualObject( "debugDrawClassification" );
+    else
+    {
+        debug = mgr->createManualObject( "debugDrawClassification" );
+        mgr->getRootSceneNode()->attachObject( debug );
+        debug->setQueryFlags( 0 );
+        debug->setRenderQueueGroup( Ogre::RENDER_QUEUE_OVERLAY );
+    }
+
+    debug->begin( "debug/blue", Ogre::RenderOperation::OT_LINE_LIST );
+    debug->position( start );
+    debug->position( end );
+    debug->end();
+
+    debug->begin( "debug/yellow", Ogre::RenderOperation::OT_LINE_STRIP );
+    debug->position( mVertices[0] );
+    debug->position( mVertices[1] );
+    debug->position( mVertices[2] );
+    debug->position( mVertices[0] );
+    debug->end();
+}
+
 NavigationCell::LINE_CLASSIFICATION NavigationCell::classifyLine2D( Ogre::Vector3& start, Ogre::Vector3& end, NavigationCell* from, NavigationCell*& next )
 {
+    debugDrawClassification( start, end);
+
     // Flatten line to 2D
     Ogre::Vector2 s( start.x, start.z );
     Ogre::Vector2 e( end.x, end.z );
@@ -79,7 +113,10 @@ NavigationCell::LINE_CLASSIFICATION NavigationCell::classifyLine2D( Ogre::Vector
     // Line did not cross any sides except the one we share with the cell the line came from.
 
     if( Ogre::Math::pointInTri2D( e, a, b, c ) )
+    {
+        next = from;
         return LINE_STOPS;
+    }
 
     next = 0;
 
@@ -240,88 +277,107 @@ NavigationPath* NavigationMesh::findNavigationPath( Ogre::Vector3 position, Ogre
     return path;
 }
 
-NavigationPath* NavigationMesh::straightenPath( NavigationPath* path, Ogre::Radian maxTurnAngle )
+NavigationPath* NavigationMesh::straightenPath( NavigationPath* path, Ogre::Radian maxTurnAngle, Ogre::Real pathWidth )
 {
-    // Straighten path.
-    // Move along the generated path, skipping points until the line between our current
-    // position and the current endpoint, either:
-    // - Is the end of the entire path.
-    //      We stop processing.
-    // - Leaves the navmesh.
-    //      We back up one point, save the position, and start skipping points again.
-
     NavigationPath* straightenedPath = new NavigationPath;
-    NavigationCell* prevCell;
-    NavigationCell* testCell;
-    NavigationCell* newTestCell;
-    Ogre::Vector3 destination = *(path->rbegin());
-    NavigationPath::iterator currentPoint = path->begin();
-    NavigationPath::iterator testPoint = currentPoint + 1;
-    Ogre::Vector3 prevDirection = *testPoint - *currentPoint;
+    NavigationPath::iterator startPoint = path->begin();
+    NavigationPath::iterator endPoint;
+    Ogre::Vector3 rightAngleOffset;
+    Ogre::Vector3 originalDirection;
+    Ogre::Vector3 currentDirection;
+    Ogre::Real slope;
 
-    straightenedPath->push_back( *(path->begin()) );
+    startPoint = path->begin();
 
-    while( *currentPoint != destination )
+    straightenedPath->push_back( *startPoint );
+
+    while( startPoint != path->end() )
     {
-        // Test if our new direction is too far off from our previous direction
-        Ogre::Radian angle = prevDirection.angleBetween( (*testPoint - *currentPoint) );
-        std::cout << "Angle: " << Ogre::Degree(angle) << std::endl;
-        if( angle > maxTurnAngle )
+        endPoint = startPoint;
+        endPoint++;
+
+        originalDirection = *endPoint - *startPoint;
+        originalDirection.normalise();
+        currentDirection = originalDirection;
+
+        while( endPoint != path->end() )
         {
-            // New starting position (one point before the maxAngle was topped).
-            // Straighten from here...
-            currentPoint = testPoint - 1;
-            prevDirection = *testPoint - *currentPoint;
-            // Save
-            straightenedPath->push_back( *currentPoint );
-        }
+            slope = currentDirection.y;
+            currentDirection = *endPoint - *startPoint;
+            currentDirection.normalise();
+            rightAngleOffset.x = currentDirection.z;
+            rightAngleOffset.y = 0;
+            rightAngleOffset.z = -currentDirection.x;
+            rightAngleOffset *= pathWidth;
 
-        // If we start going up or down, place a waypoint
-        if( currentPoint->y != testPoint->y )
-        {
-            currentPoint = testPoint -1;
-            straightenedPath->push_back( *currentPoint );
-        }
+            // Test this line: startPoint -> endPoint
 
-        prevCell = getCellContainingPoint( *currentPoint );
-
-        // Figure out which is the next cell from "prevCell"
-        testCell = prevCell->mLinks[prevCell->path];
-
-        while( *testPoint != destination )
-        {
-            NavigationCell::LINE_CLASSIFICATION ret = testCell->classifyLine2D( *currentPoint, *testPoint, prevCell, newTestCell );
-            if( ret == NavigationCell::LINE_STOPS )
-            {
-                    // Line stops in testCell.  Try next point in path.
-                    testPoint++;
-                    break;
-            }
-
-            // ret == NavigationCell::LINE_EXITS || ret == NavigationCell::LINE_MISSED
-            if( newTestCell == 0 )
-            {
-                // Line exits the navigation mesh.
-                // New starting position (one before the exit from the mesh happened)
-                assert( currentPoint != testPoint - 1 );    // oh oh loopy loopy!
-
-                // Straighten from here...
-                currentPoint = testPoint - 1;
-
-                // Save
-                straightenedPath->push_back( *currentPoint );
+            // Do we turn to much in one spot?
+            if( originalDirection.angleBetween( currentDirection ) > maxTurnAngle )
                 break;
+
+            // Does the path slope change?
+            if( Ogre::Math::Abs(slope - currentDirection.y) > 0.01 )
+                break;
+
+            NavigationCell* prevCell;
+            NavigationCell* testCell;
+            NavigationCell* nextCell;
+
+            Ogre::Vector3 sideStartPoint;
+            Ogre::Vector3 sideEndPoint;
+            NavigationCell::LINE_CLASSIFICATION ret;
+
+            sideStartPoint = *startPoint + rightAngleOffset;
+            sideEndPoint   = *endPoint   + rightAngleOffset;
+
+            prevCell = getCellContainingPoint( sideStartPoint );
+            ret = prevCell->classifyLine2D( sideStartPoint, sideEndPoint, prevCell, testCell );
+            while( ret == NavigationCell::LINE_EXITS && testCell != 0 )
+            {
+                ret = testCell->classifyLine2D( sideStartPoint, sideEndPoint, prevCell, nextCell );
+                prevCell = testCell;
+                testCell = nextCell;
             }
 
-            prevCell = testCell;
-            testCell = newTestCell;
+            if( testCell == 0 ) // Line leaves the navigation mesh.
+                break;
+
+            sideStartPoint = *startPoint - rightAngleOffset;
+            sideEndPoint   = *endPoint   - rightAngleOffset;
+
+            prevCell = getCellContainingPoint( sideStartPoint );
+            ret = prevCell->classifyLine2D( sideStartPoint, sideEndPoint, prevCell, testCell );
+            while( ret == NavigationCell::LINE_EXITS && testCell != 0 )
+            {
+                ret = testCell->classifyLine2D( sideStartPoint, sideEndPoint, prevCell, nextCell );
+                prevCell = testCell;
+                testCell = nextCell;
+            }
+
+            if( testCell == 0 ) // Line leaves the navigation mesh.
+                break;
+
+            // We survived all the tests.  Move to next the point.
+            endPoint++;
         }
 
-        if( *testPoint == destination )
-            break;  // We have reached the end.
-    }
+        // Either we have got to the end of the points, or a point failed a test.
 
-    straightenedPath->push_back( destination );
+        if( startPoint >= (endPoint - 1))
+        {
+            // Point directly after startPoint failed a test... all we can do is just move along.
+            startPoint++;
+        }
+        else
+        {
+            // We can skip some points.
+            startPoint = endPoint - 1;
+        }
+
+        if( startPoint != path->end() )
+            straightenedPath->push_back( *startPoint );
+    }
 
     return straightenedPath;
 }
@@ -439,6 +495,10 @@ void NavigationMesh::resetPathfinding()
         i->isOpen = false;
         i->isClosed = false;
     }
+
+    Ogre::Root *root = Ogre::Root::getSingletonPtr();
+    Ogre::SceneManager* mgr = root->getSceneManager( "SceneManagerInstance" );
+    mgr->destroyManualObject( "debugDrawClassification" );
 }
 
 void NavigationMesh::pushIntoOpenList( NavigationCell* cell )

@@ -201,14 +201,15 @@ bool Engine::EventNotification( EventPtr event )
                 return true;    // Mouse was not over the Floor.
 
             // Test out pathfinding.
-            NavigationPath* path = navMesh.findNavigationPath( Ogre::Vector3( 0, 25, 0 ), pos );
+            NavigationPath* path = navMesh.findNavigationPath( Ogre::Vector3( 0, 25.6, 0 ), pos );
 
             mgr->destroyManualObject( "path" );
 
             if( path )
             {
-                NavigationPath *straightenedPath = navMesh.straightenPath( path, Ogre::Radian( Ogre::Math::PI ) );
-                NavigationPath *straightenedPath2 = navMesh.straightenPath( path, Ogre::Radian( Ogre::Math::PI/2 ) );
+                const Ogre::Real width = 5.0;
+
+                NavigationPath *straightenedPath = navMesh.straightenPath( path, Ogre::Radian( Ogre::Math::PI/2 ), width );
 
                 Ogre::SceneNode* myManualObjectNode;
 
@@ -221,30 +222,48 @@ bool Engine::EventNotification( EventPtr event )
 
                 myManualObject->begin("debug/yellow", Ogre::RenderOperation::OT_LINE_STRIP);
 
-                for( NavigationPath::iterator i = path->begin(); i != path->end(); i++ )
+                myManualObject->position(*(path->begin()));
+                for( NavigationPath::iterator i = path->begin() + 1; i != path->end(); i++ )
                 {
-                    //std::cout << "NavPoint: " << *i << std::endl;
+                    Ogre::Vector3 tick;
+                    Ogre::Vector3 direction = *i - *(i-1);
+                    Ogre::Vector3 rightAngle( direction.z, 0, -direction.x );
+                    rightAngle.normalise();
+
                     myManualObject->position(i->x, i->y+2, i->z);
-                }
 
-                myManualObject->end();
+                    tick = *i + rightAngle * width;
+                    myManualObject->position( tick );
+                    myManualObject->position(i->x, i->y+2, i->z);
 
-                myManualObject->begin("debug/blue", Ogre::RenderOperation::OT_LINE_STRIP);
-
-                for( NavigationPath::iterator i = straightenedPath->begin(); i != straightenedPath->end(); i++ )
-                {
-                    //std::cout << "NavPoint: " << *i << std::endl;
-                    myManualObject->position(i->x, i->y+3, i->z);
+                    tick = *i - rightAngle * width;
+                    myManualObject->position( tick );
+                    myManualObject->position(i->x, i->y+2, i->z);
                 }
 
                 myManualObject->end();
 
                 myManualObject->begin("debug/cyan", Ogre::RenderOperation::OT_LINE_STRIP);
 
-                for( NavigationPath::iterator i = straightenedPath2->begin(); i != straightenedPath2->end(); i++ )
+                myManualObject->position(*(straightenedPath->begin()));
+                for( NavigationPath::iterator i = straightenedPath->begin() + 1; i != straightenedPath->end(); i++ )
                 {
-                    //std::cout << "NavPoint: " << *i << std::endl;
-                    myManualObject->position(i->x, i->y+4, i->z);
+                    std::cout << *i << std::endl;
+
+                    Ogre::Vector3 tick;
+                    Ogre::Vector3 direction = *i - *(i-1);
+                    Ogre::Vector3 rightAngle( direction.z, 0, -direction.x );
+                    rightAngle.normalise();
+
+                    myManualObject->position(i->x, i->y+2.5, i->z);
+
+                    tick = *i + rightAngle * width;
+                    myManualObject->position( tick );
+                    myManualObject->position(i->x, i->y+2.5, i->z);
+
+                    tick = *i - rightAngle * width;
+                    myManualObject->position( tick );
+                    myManualObject->position(i->x, i->y+2.5, i->z);
                 }
 
                 myManualObject->end();
@@ -256,7 +275,6 @@ bool Engine::EventNotification( EventPtr event )
 
                 delete path;
                 delete straightenedPath;
-                delete straightenedPath2;
             }
 
             //navMesh.DebugTextDump( std::cout );

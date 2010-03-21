@@ -2,6 +2,15 @@ require 'scheduler'
 require 'keys'
 require 'gui/gui'
 
+local old_dofile = dofile
+function dofile( f )
+    if f == nil then
+        print 'stdin dofile tomfoolery not availible.'
+        return
+    end
+    old_dofile( f )
+end
+
 function EventNotification( event )
     --print "Scripting System Received an Event"
 
