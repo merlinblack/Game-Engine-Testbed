@@ -72,6 +72,7 @@ class NavigationCell
     // ***
 
     bool hasVertex( Ogre::Vector3& vec );
+    void debugDrawClassification( Ogre::Vector3 start, Ogre::Vector3 end );
 
 public:
     NavigationCell( Ogre::Vector3 a, Ogre::Vector3 b, Ogre::Vector3 c );
@@ -126,7 +127,7 @@ public:
     NavigationPath* findNavigationPath( Ogre::Vector3 position, Ogre::Vector3 destination );
     NavigationCellList* findNavigationCellPath( NavigationCell* position, NavigationCell* destination );
 
-    NavigationPath* straightenPath( NavigationPath* path, Ogre::Radian maxTurnAngle );
+    NavigationPath* straightenPath( NavigationPath* path, Ogre::Radian maxTurnAngle, Ogre::Real width );
 
     void DebugTextDump( std::ostream &out );
 
