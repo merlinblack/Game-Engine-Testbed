@@ -436,6 +436,30 @@ void bindRadian( lua_State* L )
     ];
 }
 
+RenderWindow::FrameStats getFrameStats()
+{
+    Root* root = Root::getSingletonPtr();
+    RenderWindow* window = root->getAutoCreatedWindow();
+
+    return window->getStatistics();
+}
+
+void bindFrameStats( lua_State* L )
+{
+    module(L)
+    [
+        class_<RenderWindow::FrameStats>( "FrameStats" )
+        .def_readonly( "lastFPS", &RenderWindow::FrameStats::lastFPS )
+        .def_readonly( "avgFPS", &RenderWindow::FrameStats::avgFPS )
+        .def_readonly( "bestFPS", &RenderWindow::FrameStats::bestFPS )
+        .def_readonly( "worstFPS", &RenderWindow::FrameStats::worstFPS )
+        .def_readonly( "bestFrameTime", &RenderWindow::FrameStats::bestFrameTime )
+        .def_readonly( "worstFrameTime", &RenderWindow::FrameStats::worstFrameTime )
+        .def_readonly( "triangleCount", &RenderWindow::FrameStats::triangleCount )
+        .def_readonly( "batchCount", &RenderWindow::FrameStats::batchCount )
+    ];
+}
+
 // Keep this at the bottom so we don't need prototypes for other bind functions.
 void bindEngine( lua_State* L )
 {
@@ -448,6 +472,7 @@ void bindEngine( lua_State* L )
     bindSceneNode( L );
     bindCamera( L );
     bindRadian( L );
+    bindFrameStats( L );
 
     module(L)
     [
@@ -455,7 +480,8 @@ void bindEngine( lua_State* L )
         [
             def("getRootSceneNode", &getRootSceneNode ),
             def("getCamera", &getCamera ),
-            def("createEntity", &createEntity )
+            def("createEntity", &createEntity ),
+            def("getStats", &getFrameStats )
         ]
     ];
 }

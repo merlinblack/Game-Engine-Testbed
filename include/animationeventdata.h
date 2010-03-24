@@ -22,38 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
-#ifndef ENGINE_H_INCLUDED
-#define ENGINE_H_INCLUDED
+#ifndef ANIMATIONEVENTDATA_H_INCLUDED
+#define ANIMATIONEVENTDATA_H_INCLUDED
 
-#include "rendersystem.h"
-#include "inputsystem.h"
-#include "scriptingsystem.h"
-#include "eventmanager.h"
-#include "luaconsole.h"
-#include "gameentity.h"
-#include "animation.h"
+#include <animation.h>
 
-class Engine : public EventListenerSender, public Ogre::WindowEventListener
+struct AnimationEventData : public EventData
 {
-    RenderSystem renderSystem;
-    InputSystem inputSystem;
-    ScriptingSystem scriptingSystem;
-    EventManager eventManager;
-    LuaConsole console;
-    GameEntityManager gameEntityManager;
-    AnimationManager animationManager;
-    bool stop;
-
-public:
-    virtual ~Engine();
-    bool initialise();
-    void run();
-
-    bool EventNotification( EventPtr event );
-
-    void windowResized(Ogre::RenderWindow* rw);
-    void windowClosed(Ogre::RenderWindow* rw);
-
+    AnimationPtr animation;
 };
 
-#endif // ENGINE_H_INCLUDED
+#endif // ANIMATIONEVENTDATA_H_INCLUDED

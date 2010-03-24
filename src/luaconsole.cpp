@@ -8,7 +8,6 @@
  * -------------------------------------------------------------------------------
  */
 
-
 #include "luaconsole.h"
 
 #define CONSOLE_LINE_LENGTH 96
@@ -20,6 +19,17 @@ using namespace Ogre;
 using namespace std;
 
 template<> LuaConsole *Singleton<LuaConsole>::ms_Singleton=0;
+
+LuaConsole* LuaConsole::getSingletonPtr()
+{
+    return ms_Singleton;
+}
+
+LuaConsole& LuaConsole::getSingleton()
+{
+    assert( ms_Singleton );
+    return *ms_Singleton;
+}
 
 LuaConsole::LuaConsole()
 {

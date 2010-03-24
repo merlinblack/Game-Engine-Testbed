@@ -109,6 +109,7 @@ function setup()
     clear = console.clear
 
     --Something to look at...
+    require 'fps'
     require 'clock'
     require 'camerarotate'
     --have to fix a bug in luabind before we can do the folling...

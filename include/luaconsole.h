@@ -46,6 +46,10 @@ public:
     bool    isLogging();
     void    setLogging( bool enable );
 
+    // Singleton
+    static LuaConsole& getSingleton();
+    static LuaConsole* getSingletonPtr();
+
 protected:
     bool                    visible;
     bool                    textChanged;
