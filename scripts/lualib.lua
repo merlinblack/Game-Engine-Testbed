@@ -25,3 +25,8 @@ function table.indexOf( t, e )
     end
     return nil
 end
+
+function round( num, digits )
+    local shift = 10 ^ digits
+    return math.floor( num * shift + 0.5 ) / shift
+end

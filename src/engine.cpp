@@ -55,6 +55,7 @@ void bindLuaConsole( lua_State *L );    // From luaconsolebinding.cpp
 Engine::~Engine()
 {
     // Order of shutdown matters.
+    animationManager    .shutdown();
     console             .shutdown();
     gameEntityManager   .shutdown();
     scriptingSystem     .shutdown();
@@ -69,15 +70,15 @@ bool Engine::initialise()
     eventManager.addListener( &renderSystem );
     eventManager.addListener( &scriptingSystem );
     eventManager.addListener( &inputSystem );
+    eventManager.addListener( &animationManager );
 
     if( ! renderSystem.initialise() )
         return false;
 
     inputSystem.initialise( renderSystem.getWindow(), false );
     scriptingSystem.initialise();
+    animationManager.initailise();
 
-    // TODO: This could be better done by making the renderSystem a listener,
-    // and send frame events.
     renderSystem.addFrameListener( &scriptingSystem );
 
     console.init( renderSystem.getRoot(), scriptingSystem.getInterpreter() );
