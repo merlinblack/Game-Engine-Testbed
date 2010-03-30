@@ -26,8 +26,8 @@ THE SOFTWARE.
 #include <luabind/luabind.hpp>
 
 // Prototype these before operator.hpp so it can be found for tostring() operator.
-std::ostream& operator<<( std::ostream& stream, const Ogre::Entity ent );
-std::ostream& operator<<( std::ostream& stream, const Ogre::SceneNode node );
+std::ostream& operator<<( std::ostream& stream, const Ogre::Entity& ent );
+std::ostream& operator<<( std::ostream& stream, const Ogre::SceneNode& node );
 
 #include <luabind/operator.hpp>
 
@@ -129,6 +129,22 @@ SceneNode* getRootSceneNode()
     return sceneManager->getRootSceneNode();
 }
 
+bool sceneNodeExists( const String name )
+{
+    Root* root = Root::getSingletonPtr();
+    SceneManager* sceneManager = root->getSceneManager("SceneManagerInstance");
+
+    return sceneManager->hasSceneNode( name );
+}
+
+SceneNode *getSceneNode( const String name )
+{
+    Root* root = Root::getSingletonPtr();
+    SceneManager* sceneManager = root->getSceneManager("SceneManagerInstance");
+
+    return sceneManager->getSceneNode( name );
+}
+
 Camera* getCamera()
 {
     Root* root = Root::getSingletonPtr();
@@ -143,6 +159,14 @@ Entity* createEntity( String name, String meshfile )
     SceneManager* sceneManager = root->getSceneManager("SceneManagerInstance");
 
     return sceneManager->createEntity( name, meshfile );
+}
+
+void destroyEntity( String name )
+{
+    Root* root = Root::getSingletonPtr();
+    SceneManager* sceneManager = root->getSceneManager("SceneManagerInstance");
+
+    sceneManager->destroyEntity( name );
 }
 
 void bindGui( lua_State *L )
@@ -260,7 +284,6 @@ void bindVector3( lua_State* L )
     LUA_CONST_END;
 }
 
-
 void bindVector2( lua_State* L )
 {
     module(L)
@@ -339,7 +362,7 @@ void bindColourValue( lua_State* L )
     LUA_CONST_END;
 }
 
-std::ostream& operator<<( std::ostream& stream, const Entity ent )
+std::ostream& operator<<( std::ostream& stream, const Entity& ent )
 {
     return stream << ent.getName();
 }
@@ -365,6 +388,14 @@ SceneNode *createChildSceneNode( SceneNode *obj, const String name )
     return obj->createChildSceneNode( name );
 }
 
+void SceneNode_destroy( SceneNode *obj )
+{
+    Root* root = Root::getSingletonPtr();
+    SceneManager* sceneManager = root->getSceneManager("SceneManagerInstance");
+
+    sceneManager->destroySceneNode( obj );
+}
+
 void SceneNode_yaw( SceneNode *obj, const Real degrees )
 {
     return obj->yaw( Degree( degrees ) );
@@ -385,7 +416,7 @@ void SceneNode_rotate( SceneNode *obj, const Quaternion& q )
     return obj->rotate( q );
 }
 
-std::ostream& operator<<( std::ostream& stream, const SceneNode node )
+std::ostream& operator<<( std::ostream& stream, const SceneNode& node )
 {
     return stream << node.getName();
 }
@@ -406,6 +437,7 @@ void bindSceneNode( lua_State* L )
         .def("scale", (void( SceneNode::*)(const Vector3&))&SceneNode::scale )
         .def("showBoundingBox", &SceneNode::showBoundingBox )
         .def("rotate", &SceneNode_rotate )
+        .def("destroy", &SceneNode_destroy )
         .def(tostring(self))
     ];
 }
@@ -479,8 +511,11 @@ void bindEngine( lua_State* L )
         namespace_("Ogre")
         [
             def("getRootSceneNode", &getRootSceneNode ),
+            def("getSceneNode", &getSceneNode ),
+            def( "sceneNodeExists", sceneNodeExists ),
             def("getCamera", &getCamera ),
             def("createEntity", &createEntity ),
+            def("destroyEntity", &destroyEntity ),
             def("getStats", &getFrameStats )
         ]
     ];
