@@ -6,7 +6,7 @@
 #include <OgreSceneNode.h>
 #include <OgreAnimation.h>
 
-MeshAnimation::MeshAnimation( Ogre::Entity* ent, Ogre::String& name )
+MeshAnimation::MeshAnimation( Ogre::Entity* ent, Ogre::String name )
         : mFadingIn(false), mFadingOut(false), mRemoveWhenFinished(true)
 {
     mState = ent->getAnimationState( name );
@@ -156,7 +156,8 @@ bool MovementAnimation::isFinished()
 template<> AnimationManager *Ogre::Singleton<AnimationManager>::ms_Singleton=0;
 
 AnimationManager::AnimationManager() :
-        finishEvent( Event::hash( "EVT_ANIMATIONFINISHED" ) )
+        finishEvent( Event::hash( "EVT_ANIMATIONFINISHED" ) ),
+        timeSinceLastFrame(0)
 {
 }
 
@@ -232,13 +233,8 @@ void AnimationManager::update()
     }
 }
 
-bool AnimationManager::FrameStarted( Ogre::FrameEvent& evt )
+bool AnimationManager::frameStarted( const Ogre::FrameEvent& evt )
 {
     timeSinceLastFrame = evt.timeSinceLastFrame;
-    return true;
-}
-
-bool AnimationManager::FrameEnded( Ogre::FrameEvent& evt )
-{
     return true;
 }
