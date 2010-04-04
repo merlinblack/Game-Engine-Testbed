@@ -101,6 +101,7 @@ void Engine::run()
         inputSystem.capture();
         eventManager.processEvents();
         gameEntityManager.update();
+        animationManager.update();
         renderSystem.renderOneFrame();
 
         // Play nice with the operating system by sleeping a little.
@@ -157,16 +158,12 @@ bool Engine::EventNotification( EventPtr event )
         if( data->key == OIS::KC_NUMPADENTER )
         {
             // Map the Enter key on the keypad to Return on the main keyboard
-            EventPtr newevent( new Event( "EVT_KEYDOWN" ) );
-            boost::shared_ptr<InputEventData> newdata( new InputEventData );
+            // Re-use old event and most of the data, reference counting will sort it out...
+            data->key = OIS::KC_RETURN;
 
-            newdata->key = OIS::KC_RETURN;
-            newdata->parm = data->parm;
-            newevent->data = newdata;
+            queueEvent( event );
 
-            queueEvent( newevent );
-
-            return true;
+            return true; // We want the event taken out of the current queue.
         }
         if( console.isVisible() )
         {
@@ -281,6 +278,22 @@ bool Engine::EventNotification( EventPtr event )
             //navMesh.DebugTextDump( std::cout );
 
             return true;
+        }
+        if( data->key == OIS::KC_Y )    // Yet another test.
+        {
+            // Get the robot and animate him.
+
+            GameEntityPtr robot = gameEntityManager.getGameEntity( "Mike" );
+
+            if( !robot ) // test scene not yet loaded.
+            {
+                Ogre::LogManager::getSingleton().stream() << "Load the test scene first you doofus.";
+                return true;
+            }
+
+            AnimationPtr anim( new MeshAnimation( robot->mesh, "Idle" ) );
+            AnimationManager::getSingleton().addAnimation( anim );
+            anim->start();
         }
     }
 
