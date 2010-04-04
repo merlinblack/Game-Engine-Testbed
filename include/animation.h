@@ -42,7 +42,7 @@ class MeshAnimation : public Animation
     bool mRemoveWhenFinished;
 
     public:
-    MeshAnimation( Ogre::Entity* ent, Ogre::String& name );
+    MeshAnimation( Ogre::Entity* ent, Ogre::String name );
 
     void addTime( Ogre::Real timeSinceLastFrame );
     void setWeighting( Ogre::Real weighting );
@@ -108,8 +108,7 @@ class AnimationManager :
     static AnimationManager& getSingleton();
     static AnimationManager* getSingletonPtr();
 
-    bool FrameStarted( Ogre::FrameEvent& evt );
-    bool FrameEnded( Ogre::FrameEvent& evt );
+    bool frameStarted( const Ogre::FrameEvent& evt );
 
     bool EventNotification( EventPtr event )
     { return false; }
