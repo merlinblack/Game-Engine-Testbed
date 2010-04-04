@@ -39,9 +39,9 @@ using namespace Ogre;
 // object table = g["class"];
 // table["constant"] = class::constant;
 
-#define LUA_CONST_START( class ) { object g = globals(L); object table = g[#class];
-#define LUA_CONST( class, name ) table[#name] = class::name
-#define LUA_CONST_END }
+#define LUA_STATIC_START( class ) { object g = globals(L); object table = g[#class];
+#define LUA_STATIC( class, name ) table[#name] = class::name
+#define LUA_STATIC_END }
 
 void AddChild( OverlayElement* element, OverlayElement* child )
 {
@@ -223,10 +223,10 @@ void bindQuaternion( lua_State* L )
         .def( self * Real() )
     ];
 
-    LUA_CONST_START( Quaternion )
-        LUA_CONST( Quaternion, ZERO );
-        LUA_CONST( Quaternion, IDENTITY );
-    LUA_CONST_END;
+    LUA_STATIC_START( Quaternion )
+        LUA_STATIC( Quaternion, ZERO );
+        LUA_STATIC( Quaternion, IDENTITY );
+    LUA_STATIC_END;
 }
 
 void bindVector3( lua_State* L )
@@ -272,16 +272,16 @@ void bindVector3( lua_State* L )
         .def( self * Real() )
     ];
 
-    LUA_CONST_START( Vector3 )
-        LUA_CONST( Vector3, ZERO);
-        LUA_CONST( Vector3, UNIT_X);
-        LUA_CONST( Vector3, UNIT_Y);
-        LUA_CONST( Vector3, UNIT_Z);
-        LUA_CONST( Vector3, NEGATIVE_UNIT_X);
-        LUA_CONST( Vector3, NEGATIVE_UNIT_Y);
-        LUA_CONST( Vector3, NEGATIVE_UNIT_Z);
-        LUA_CONST( Vector3, UNIT_SCALE);
-    LUA_CONST_END;
+    LUA_STATIC_START( Vector3 )
+        LUA_STATIC( Vector3, ZERO);
+        LUA_STATIC( Vector3, UNIT_X);
+        LUA_STATIC( Vector3, UNIT_Y);
+        LUA_STATIC( Vector3, UNIT_Z);
+        LUA_STATIC( Vector3, NEGATIVE_UNIT_X);
+        LUA_STATIC( Vector3, NEGATIVE_UNIT_Y);
+        LUA_STATIC( Vector3, NEGATIVE_UNIT_Z);
+        LUA_STATIC( Vector3, UNIT_SCALE);
+    LUA_STATIC_END;
 }
 
 void bindVector2( lua_State* L )
@@ -317,14 +317,14 @@ void bindVector2( lua_State* L )
         .def( self * Real() )
     ];
 
-    LUA_CONST_START( Vector2 )
-        LUA_CONST( Vector2, ZERO);
-        LUA_CONST( Vector2, UNIT_X);
-        LUA_CONST( Vector2, UNIT_Y);
-        LUA_CONST( Vector2, NEGATIVE_UNIT_X);
-        LUA_CONST( Vector2, NEGATIVE_UNIT_Y);
-        LUA_CONST( Vector2, UNIT_SCALE);
-    LUA_CONST_END;
+    LUA_STATIC_START( Vector2 )
+        LUA_STATIC( Vector2, ZERO);
+        LUA_STATIC( Vector2, UNIT_X);
+        LUA_STATIC( Vector2, UNIT_Y);
+        LUA_STATIC( Vector2, NEGATIVE_UNIT_X);
+        LUA_STATIC( Vector2, NEGATIVE_UNIT_Y);
+        LUA_STATIC( Vector2, UNIT_SCALE);
+    LUA_STATIC_END;
 }
 
 void bindColourValue( lua_State* L )
@@ -352,14 +352,14 @@ void bindColourValue( lua_State* L )
         .def(tostring(self))
     ];
 
-    LUA_CONST_START( ColourValue )
-        LUA_CONST( ColourValue, ZERO);
-        LUA_CONST( ColourValue, Black);
-        LUA_CONST( ColourValue, White);
-        LUA_CONST( ColourValue, Red);
-        LUA_CONST( ColourValue, Green);
-        LUA_CONST( ColourValue, Blue);
-    LUA_CONST_END;
+    LUA_STATIC_START( ColourValue )
+        LUA_STATIC( ColourValue, ZERO);
+        LUA_STATIC( ColourValue, Black);
+        LUA_STATIC( ColourValue, White);
+        LUA_STATIC( ColourValue, Red);
+        LUA_STATIC( ColourValue, Green);
+        LUA_STATIC( ColourValue, Blue);
+    LUA_STATIC_END;
 }
 
 std::ostream& operator<<( std::ostream& stream, const Entity& ent )
@@ -416,6 +416,11 @@ void SceneNode_rotate( SceneNode *obj, const Quaternion& q )
     return obj->rotate( q );
 }
 
+void SceneNode_translate( SceneNode *obj, const Vector3& v )
+{
+    return obj->translate( v );
+}
+
 Vector3 SceneNode_getPosition( SceneNode* obj )
 {
     // This function returns a reference which confuses luabind.
@@ -453,9 +458,17 @@ void bindSceneNode( lua_State* L )
         .def("scale", (void( SceneNode::*)(const Vector3&))&SceneNode::scale )
         .def("showBoundingBox", &SceneNode::showBoundingBox )
         .def("rotate", &SceneNode_rotate )
+        .def("translate", &SceneNode_translate )
+        .def("translate", (void( SceneNode::*)(const Vector3&, SceneNode::TransformSpace))&SceneNode::translate )
         .def("destroy", &SceneNode_destroy )
         .def(tostring(self))
     ];
+
+    LUA_STATIC_START( SceneNode )
+        LUA_STATIC( SceneNode, TS_LOCAL );
+        LUA_STATIC( SceneNode, TS_PARENT );
+        LUA_STATIC( SceneNode, TS_WORLD );
+    LUA_STATIC_END;
 }
 
 void bindCamera( lua_State* L )
@@ -528,7 +541,7 @@ void bindEngine( lua_State* L )
         [
             def("getRootSceneNode", &getRootSceneNode ),
             def("getSceneNode", &getSceneNode ),
-            def( "sceneNodeExists", sceneNodeExists ),
+            def("sceneNodeExists", sceneNodeExists ),
             def("getCamera", &getCamera ),
             def("createEntity", &createEntity ),
             def("destroyEntity", &destroyEntity ),

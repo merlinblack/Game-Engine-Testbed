@@ -29,11 +29,6 @@ base.mesh = floor
 base.node = floorNode
 gm:add(base)
 
-cam = Ogre.getCamera()
-cam:setPosition(-100,70,-100)
-cam:lookAt(0,25,0)
-cam:setNearClipDistance(1)
-
 mouse:show()
 
 function test()
