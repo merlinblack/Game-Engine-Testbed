@@ -440,7 +440,7 @@ NavigationCellList* NavigationMesh::findNavigationCellPath( NavigationCell* posi
                 // either re-add or promote in the open list.
                 neighbour->g_cost = newcost;
                 // h cost does not change.
-                neighbour->totalcost + neighbour->g_cost + neighbour->h_cost;
+                neighbour->totalcost = neighbour->g_cost + neighbour->h_cost;
                 neighbour->parent = currentCell;
 
                 // possibly undo closed status
