@@ -70,6 +70,7 @@ void MeshAnimation::addTime( Ogre::Real timeSinceLastFrame )
             {
                 mFadingOut = false;
                 weight = 0.0;
+                mState->setEnabled( false );
             }
 
             mState->setWeight( weight );
@@ -96,7 +97,8 @@ void MeshAnimation::fadeIn()
 void MeshAnimation::fadeOut()
 {
     mFadingIn = false;
-    mFadingOut = true;}
+    mFadingOut = true;
+}
 
 bool MeshAnimation::isFadingIn()
 {

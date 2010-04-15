@@ -33,7 +33,7 @@ THE SOFTWARE.
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 #include <time.h>
-void msleep(int ms)
+void Sleep(int ms)
 {
     struct timespec time;
     time.tv_sec = ms / 1000;
@@ -105,16 +105,7 @@ void Engine::run()
         renderSystem.renderOneFrame();
 
         // Play nice with the operating system by sleeping a little.
-#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-        msleep( 10 );
-#endif
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-        sleep( ??? );   // Might be the same as Linux.
-#endif
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-        Sleep( 10 );    // TODO: Check this func takes milliseconds!
-#endif
-
+        // Sleep( 10 );
     }
 }
 
@@ -291,8 +282,10 @@ bool Engine::EventNotification( EventPtr event )
                 return true;
             }
 
-            AnimationPtr anim( new MeshAnimation( robot->mesh, "Idle" ) );
+            MeshAnimationPtr anim( new MeshAnimation( robot->mesh, "Idle" ) );
             AnimationManager::getSingleton().addAnimation( anim );
+            anim->setWeighting( 0.0f );
+            anim->fadeIn();
             anim->start();
         }
     }

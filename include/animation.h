@@ -108,6 +108,8 @@ class MovementAnimation : public Animation
 };
 
 typedef boost::shared_ptr<Animation> AnimationPtr;
+typedef boost::shared_ptr<MeshAnimation> MeshAnimationPtr;
+typedef boost::shared_ptr<MovementAnimation> MovementAnimationPtr;
 
 class AnimationManager : 
     public Ogre::Singleton<AnimationManager>,
