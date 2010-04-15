@@ -1,20 +1,21 @@
 cmake_minimum_required(VERSION 2.6)
 PROJECT(engine)
 
-set(CMAKE_MODULE_PATH /usr/local/lib/OGRE/cmake ${PROJECT_SOURCE_DIR}/cmake )
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} /usr/local/lib/OGRE/cmake ${PROJECT_SOURCE_DIR}/cmake )
 
 FIND_PACKAGE(OpenGL)
 FIND_PACKAGE(OGRE)
 FIND_PACKAGE(OIS)
 FIND_PACKAGE(Lua51)
+FIND_PACKAGE(Luabind)
 
 INCLUDE_DIRECTORIES(
 	${OpenGL_INCLUDE_DIR}
 	${OGRE_INCLUDE_DIRS}
 	${OIS_INCLUDE_DIRS}
 	${LUA_INCLUDE_DIR}
+	${LUABIND_INCLUDE_DIR}
 	${PROJECT_SOURCE_DIR}/include
-	/usr/local/include	# Luabind
 	)
 
 FILE(GLOB SRCS src/*.cpp)
@@ -30,5 +31,5 @@ TARGET_LINK_LIBRARIES(engine
 	${OIS_LIBRARIES}
 	${OGRE_LIBRARIES}
 	${LUA_LIBRARIES}
-	luabind	# Luabind
+    ${LUABIND_LIBRARIES}
 	)
