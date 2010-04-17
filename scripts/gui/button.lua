@@ -2,7 +2,7 @@ class 'Button' (Panel)
 Button.count = 0
 
 function Button:__init( x, y, width, caption )
-    console.log'creating Button'
+    guiLog 'creating Button'
 
     Panel.__init( self, x, y, width, 0.03689, "Button"..Button.count )
 
@@ -26,11 +26,11 @@ function Button:__init( x, y, width, caption )
     self.key = KeyCodes.KC_UNKNOWN
 
     Button.count = Button.count+1
-    console.log'Button created'
+    guiLog 'Button created'
 end
 
 function Button:__finalize()
-    print 'Destroying Button.'
+    guiLog 'Destroying Button.'
 end
 
 function Button:changeCaption( caption )

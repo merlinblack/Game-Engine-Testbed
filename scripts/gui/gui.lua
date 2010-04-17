@@ -31,3 +31,7 @@ end
 function keypressed( key )
     gui.keypressed( key )
 end
+
+function guiLog( str )
+--    log( str )
+end

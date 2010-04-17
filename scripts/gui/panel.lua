@@ -6,18 +6,18 @@ function Panel:__init( x,y,w,h,name )
         name = "Panel"..Panel.count
         Panel.count = Panel.count + 1
     end
-    console.log( "Creating Panel: "..name )
+    guiLog ( "Creating Panel: "..name )
     self.element = OverlayManager:createElement( "Panel", name, false )
     self.element:setParameter("left", ""..x)
     self.element:setParameter("top", ""..y)
     self.element:setParameter("width", ""..w)
     self.element:setParameter("height",""..h)
     self.children={}
-    console.log"Panel Created"
+    guiLog "Panel Created"
 end
 
 function Panel:__finalize()
-    print 'Destroying Panel.'
+    guiLog 'Destroying Panel.'
 end
 
 function Panel:mouseMoved( x, y, button )
@@ -33,14 +33,14 @@ function Panel:keypressed( key )
 end
 
 function Panel:addChild( widget )
-    console.log'Adding child to Panel'
+    guiLog 'Adding child to Panel'
     if widget.element then
         table.insert(self.children, widget)
         self.element:addChild( widget.element )
     else
         error( 'Not a valid widget' )
     end
-    console.log'Child now added to Panel'
+    guiLog 'Child now added to Panel'
 end
 
 class 'BorderPanel'( Panel )
@@ -50,7 +50,7 @@ function BorderPanel:__init( x,y,w,h,name )
         name = "BorderPanel"..Panel.count
         Panel.count = Panel.count + 1
     end
-    console.log( "Creating BorderPanel: "..name )
+    guiLog ( "Creating BorderPanel: "..name )
     self.element = OverlayManager:createElement( "BorderPanel", name, false )
     self.element:setParameter("left", ""..x)
     self.element:setParameter("top", ""..y)
@@ -69,6 +69,6 @@ function BorderPanel:__init( x,y,w,h,name )
     self.element:setParameter('border_right_uv',       '.94140625 .5859375 1.000 .94140625' )
     self.element:setMaterialName'gui/dialog.background'
     self.children={}
-    console.log"BorderPanel Created"
+    guiLog "BorderPanel Created"
 end
 

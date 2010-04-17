@@ -43,7 +43,7 @@ function message( mess )
 
     height = (#m * 0.025 ) + 0.1272
 
-    print( 'Lines:',#m, height )
+    guiLog( 'Lines:',#m, height )
 
     local maxline=0
     for i,str in ipairs(m) do
