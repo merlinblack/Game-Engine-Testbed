@@ -112,9 +112,7 @@ function setup()
     require 'fps'
     require 'clock'
     require 'cameracontrol'
-    --have to fix a bug in luabind before we can do the folling...
-    --dofile 'test.lua'
-    --Lua panics when calling the update method on class instances, created in a thread that no longer exists.
+    require 'test'
 
     print "Setup task completed"
 end

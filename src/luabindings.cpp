@@ -93,13 +93,13 @@ void OverlayAdd2D( Overlay* overlay, OverlayElement* element )
 
 void DestroyOverlay( Overlay* overlay )
 {
-    LogManager::getSingleton().stream() << "Destroying overlay: " << overlay->getName();
+    //LogManager::getSingleton().stream() << "Destroying overlay: " << overlay->getName();
     OverlayManager::getSingleton().destroy( overlay );
 }
 
 void DestroyOverlayElement( OverlayElement* element )
 {
-    LogManager::getSingleton().stream() << "Destroying overlay element: " << element->getName();
+    //LogManager::getSingleton().stream() << "Destroying overlay element: " << element->getName();
     OverlayManager::getSingleton().destroyOverlayElement( element );
 }
 

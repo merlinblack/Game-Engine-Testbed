@@ -51,14 +51,14 @@ function testCheckboxDialog()
     mouse.hide()
     dialog=nil
 
-    print( "Setting #1: "..tostring(checkbox1:getState()))
-    print( "Setting #2: "..tostring(checkbox2:getState()))
+    guiLog( "Setting #1: "..tostring(checkbox1:getState()))
+    guiLog( "Setting #2: "..tostring(checkbox2:getState()))
 end
 
 class 'Checkbox' (Button)
 
 function Checkbox:__init( x, y )
-    console.log'creating Button'
+    guiLog 'creating Button'
 
     Panel.__init( self, x, y, 16/1024, 16/768, "Button"..Button.count )
 
@@ -71,7 +71,7 @@ function Checkbox:__init( x, y )
     self.y = y
 
     Button.count = Button.count+1
-    console.log'Checkbox created'
+    guiLog 'Checkbox created'
 end
 
 function Checkbox:setState( state )
