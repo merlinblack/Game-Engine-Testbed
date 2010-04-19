@@ -52,9 +52,9 @@ int main()
     catch( exception& e )
     {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-        MessageBox( NULL, e.what(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+        MessageBox( NULL, e.what(), "An exception has occurred!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 #else
-        std::cerr << "An exception has occured: " << e.what() << std::endl;
+        std::cerr << "An exception has occurred: " << e.what() << std::endl;
 #endif
     }
 */

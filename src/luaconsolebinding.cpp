@@ -167,7 +167,7 @@ void bindLuaConsole( lua_State *L )
 }
 
 // Change console functions so that any remaining Lua code
-// left to run, for example in finalisers, does not explode.
+// left to run, for example in finalises, does not explode.
 void unBindConsole( lua_State *L )
 {
     luaL_dostring( L, "console.print = console.log "

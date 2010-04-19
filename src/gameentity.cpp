@@ -65,7 +65,7 @@ void GameEntity::setName( std::string newName )
 
 void GameEntity::update()
 {
-    // Nothing, might get overidden in Lua
+    // Nothing, might get overridden in Lua
 }
 
 // Checks if a ray from camera at (x,y) intersects with *any* mesh triangles.
@@ -182,7 +182,7 @@ void GameEntityManager::initialise()
 
 // This should be done before the scripting system is shutdown,
 // otherwise we are possibly left with shared pointers to Lua objects,
-// which when they are free'd will try and access a non-existaint
+// which when they are freed will try and access a non-existing
 // Lua state that they have stored a pointer to.
 void GameEntityManager::shutdown()
 {
@@ -347,6 +347,6 @@ void bindGameEntityClasses( lua_State* L )
             .def( "get", (GameEntityPtr (GameEntityManager::*)(std::string)) &GameEntityManager::getGameEntity )
             .def( "get", (GameEntityPtr (GameEntityManager::*)(size_t)) &GameEntityManager::getGameEntity )
             .def( "mousePick", &GameEntityManager::mousePickLua )
-            //.def( "update", &GameEntityManager::update ) // Usally done every game loop.
+            //.def( "update", &GameEntityManager::update ) // Usually done every game loop.
     ];
 }

@@ -198,7 +198,7 @@ bool Engine::EventNotification( EventPtr event )
             if( pos.x == Ogre::Math::POS_INFINITY )
                 return true;    // Mouse was not over the Floor.
 
-            // Test out pathfinding.
+            // Test out path finding.
             NavigationPath* path = navMesh.findNavigationPath( Ogre::Vector3( 0, 25.6, 0 ), pos );
 
             mgr->destroyManualObject( "path" );
