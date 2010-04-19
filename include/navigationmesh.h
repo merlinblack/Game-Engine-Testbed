@@ -122,7 +122,10 @@ public:
 
     void BuildFromOgreMesh( Ogre::MeshPtr mesh );
 
+    // Finds cell that contains the specified point, but not necessarily on its surface.
     NavigationCell* getCellContainingPoint( Ogre::Vector3& p );
+    // Finds cell that contains the specified point, which must be within tolerance of its surface.
+    NavigationCell* getExactCellContainingPoint( Ogre::Vector3& p );
 
     NavigationPath* findNavigationPath( Ogre::Vector3 position, Ogre::Vector3 destination );
     NavigationCellList* findNavigationCellPath( NavigationCell* position, NavigationCell* destination );

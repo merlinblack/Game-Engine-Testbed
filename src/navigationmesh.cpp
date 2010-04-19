@@ -76,7 +76,7 @@ void NavigationCell::debugDrawClassification( Ogre::Vector3 start, Ogre::Vector3
 
 NavigationCell::LINE_CLASSIFICATION NavigationCell::classifyLine2D( Ogre::Vector3& start, Ogre::Vector3& end, NavigationCell* from, NavigationCell*& next )
 {
-    debugDrawClassification( start, end);
+    //debugDrawClassification( start, end);
 
     // Flatten line to 2D
     Ogre::Vector2 s( start.x, start.z );
@@ -217,26 +217,43 @@ void NavigationMesh::BuildFromOgreMesh( Ogre::MeshPtr mesh )
     return;
 }
 
-// This assumes a nearly flat navigation mesh. I.e. there are no triangle normals more than 90deg
-// away from the Y axis (UP/DOWN).
+// Finds cell that contains the specified point, but not necessarily on its surface.
 NavigationCell* NavigationMesh::getCellContainingPoint( Ogre::Vector3& p )
 {
     using namespace Ogre;
 
-    Vector2 a;
-    Vector2 b;
-    Vector2 c;
-    Vector2 p2D( p.x, p.z );
+    for( CellVector::iterator i = mCells.begin(); i != mCells.end(); i++ )
+    {
+        if( Math::pointInTri3D( p, i->mVertices[0], i->mVertices[1], i->mVertices[2],
+            Math::calculateBasicFaceNormal( i->mVertices[0], i->mVertices[1], i->mVertices[2] ) ) )
+        {
+            return &(*i);
+        }
+    }
+
+    return 0;
+}
+
+// Finds cell that contains the specified point, which must be within tolerance of its surface.
+NavigationCell* NavigationMesh::getExactCellContainingPoint( Ogre::Vector3& p )
+{
+    using namespace Ogre;
+
+    Plane plane;
 
     for( CellVector::iterator i = mCells.begin(); i != mCells.end(); i++ )
     {
-        // Chuck away Y component
-        a.x = i->mVertices[0].x;        a.y = i->mVertices[0].z;
-        b.x = i->mVertices[1].x;        b.y = i->mVertices[1].z;
-        c.x = i->mVertices[2].x;        c.y = i->mVertices[2].z;
+        plane.redefine(  i->mVertices[0], i->mVertices[1], i->mVertices[2] );
 
-        if( Math::pointInTri2D( p2D, a, b, c ) )
+        // Tolerance found by experiment.
+        if( ! Math::RealEqual( plane.getDistance( p ), 0, 0.001f ) )
+            continue;   // Point is not on the plane.
+
+        if( Math::pointInTri3D( p, i->mVertices[0], i->mVertices[1], i->mVertices[2],
+            Math::calculateBasicFaceNormal( i->mVertices[0], i->mVertices[1], i->mVertices[2] ) ) )
+        {
             return &(*i);
+        }
     }
 
     return 0;
@@ -244,7 +261,7 @@ NavigationCell* NavigationMesh::getCellContainingPoint( Ogre::Vector3& p )
 
 NavigationPath* NavigationMesh::findNavigationPath( Ogre::Vector3 position, Ogre::Vector3 destination )
 {
-    NavigationCell* destinationCell = getCellContainingPoint( destination );
+    NavigationCell* destinationCell = getExactCellContainingPoint( destination );
     if( destinationCell == 0 )
         return 0;   // Destination is not within the navigation mesh.
 
@@ -255,7 +272,7 @@ NavigationPath* NavigationMesh::findNavigationPath( Ogre::Vector3 position, Ogre
     NavigationCellList* cellPath = findNavigationCellPath( currentCell, destinationCell );
 
     if( cellPath == 0 )
-        return 0;   // No posible path to destination.
+        return 0;   // No possible path to destination.
 
     // Create point path from returned cell path.
     NavigationPath* path = new NavigationPath;
@@ -272,7 +289,7 @@ NavigationPath* NavigationMesh::findNavigationPath( Ogre::Vector3 position, Ogre
 
     delete cellPath;
 
-    // Smooth out path? Catmull Rom thingy goes here... ( or called seperately on path ).
+    // Smooth out path? Catmull Rom thingy goes here... ( or called separately on path ).
 
     return path;
 }
@@ -332,31 +349,37 @@ NavigationPath* NavigationMesh::straightenPath( NavigationPath* path, Ogre::Radi
             sideEndPoint   = *endPoint   + rightAngleOffset;
 
             prevCell = getCellContainingPoint( sideStartPoint );
-            ret = prevCell->classifyLine2D( sideStartPoint, sideEndPoint, prevCell, testCell );
-            while( ret == NavigationCell::LINE_EXITS && testCell != 0 )
+            if( prevCell )
             {
-                ret = testCell->classifyLine2D( sideStartPoint, sideEndPoint, prevCell, nextCell );
-                prevCell = testCell;
-                testCell = nextCell;
-            }
+                ret = prevCell->classifyLine2D( sideStartPoint, sideEndPoint, prevCell, testCell );
+                while( ret == NavigationCell::LINE_EXITS && testCell != 0 )
+                {
+                    ret = testCell->classifyLine2D( sideStartPoint, sideEndPoint, prevCell, nextCell );
+                    prevCell = testCell;
+                    testCell = nextCell;
+                }
 
-            if( testCell == 0 ) // Line leaves the navigation mesh.
-                break;
+                if( testCell == 0 ) // Line leaves the navigation mesh.
+                    break;
+            }
 
             sideStartPoint = *startPoint - rightAngleOffset;
             sideEndPoint   = *endPoint   - rightAngleOffset;
 
             prevCell = getCellContainingPoint( sideStartPoint );
-            ret = prevCell->classifyLine2D( sideStartPoint, sideEndPoint, prevCell, testCell );
-            while( ret == NavigationCell::LINE_EXITS && testCell != 0 )
+            if( prevCell )
             {
-                ret = testCell->classifyLine2D( sideStartPoint, sideEndPoint, prevCell, nextCell );
-                prevCell = testCell;
-                testCell = nextCell;
-            }
+                ret = prevCell->classifyLine2D( sideStartPoint, sideEndPoint, prevCell, testCell );
+                while( ret == NavigationCell::LINE_EXITS && testCell != 0 )
+                {
+                    ret = testCell->classifyLine2D( sideStartPoint, sideEndPoint, prevCell, nextCell );
+                    prevCell = testCell;
+                    testCell = nextCell;
+                }
 
-            if( testCell == 0 ) // Line leaves the navigation mesh.
-                break;
+                if( testCell == 0 ) // Line leaves the navigation mesh.
+                    break;
+            }
 
             // We survived all the tests.  Move to next the point.
             endPoint++;
@@ -406,7 +429,7 @@ NavigationCellList* NavigationMesh::findNavigationCellPath( NavigationCell* posi
             break;
         }
 
-        // This cell has now been visted.
+        // This cell has now been visited.
         currentCell->isClosed = true;
 
         // For each neighbour of the current cell.
@@ -480,7 +503,7 @@ NavigationCellList* NavigationMesh::findNavigationCellPath( NavigationCell* posi
 
 Ogre::Real NavigationMesh::aStarHeuristic( NavigationCell* cell, NavigationCell* destination )
 {
-    // Tweek here!
+    // Tweak here!
     return cell->mCentre.squaredDistance( destination->mCentre );
 }
 
