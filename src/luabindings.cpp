@@ -379,8 +379,8 @@ void bindEntity( lua_State* L ) // And Movable Object for now.
     ];
 }
 
-// Fake member function for simplifing binding, as the real functions
-// have optional aguments, which I don't want to use in the Lua script.
+// Fake member function for simplifying binding, as the real functions
+// have optional arguments, which I don't want to use in the Lua script.
 // However luabind does not support optional arguments.
 // Think of "obj" as "this"
 SceneNode *createChildSceneNode( SceneNode *obj, const String name )

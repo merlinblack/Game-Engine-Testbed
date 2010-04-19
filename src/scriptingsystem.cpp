@@ -84,7 +84,7 @@ int luaLibraryLoader( lua_State *L )
 void installLibraryLoader( lua_State *L )
 {
     // Insert the c++ func 'luaLibraryLoader' into package.loaders.
-    // Inserted at the start of the table in order to take precedance.
+    // Inserted at the start of the table in order to take precedence.
     lua_getglobal( L, "table" );
     lua_getfield( L, -1, "insert" );
     lua_remove( L, -2 );    // table

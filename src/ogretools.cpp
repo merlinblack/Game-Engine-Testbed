@@ -112,7 +112,7 @@ namespace OgreTools
 
                 // There is _no_ baseVertexPointerToElement() which takes an Ogre::Real or a double
                 //  as second argument. So make it float, to avoid trouble when Ogre::Real will
-                //  be comiled/typedefed as double:
+                //  be compiled/typedefed as double:
                 //      Ogre::Real* pReal;
                 float* pReal;
 

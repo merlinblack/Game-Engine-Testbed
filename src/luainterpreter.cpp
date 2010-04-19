@@ -13,8 +13,8 @@
 
 using std::string;
 
-// The address of this int in memory is used as a garenteed unique id
-// in the lua registry
+// The address of this int in memory is used as a guaranteed unique id
+// in the Lua registry
 static const char LuaRegistryGUID = 0;
 
 LuaInterpreter::LuaInterpreter(lua_State *L) : mL(L), mState(LI_READY), mFirstLine(true)
@@ -72,7 +72,7 @@ LuaInterpreter::State LuaInterpreter::insertLine( std::string& line, bool fInser
         string error( lua_tostring( mL, -1 ) );
         lua_pop( mL, 1 );
 
-        // If the error is not a syntax error cuased by not enough of the
+        // If the error is not a syntax error caused by not enough of the
         // statement been yet entered...
         if( error.substr( error.length()-6, 5 ) != "<eof>" )
         {
@@ -103,7 +103,7 @@ LuaInterpreter::State LuaInterpreter::insertLine( std::string& line, bool fInser
         }
     }
 
-    // The statment compiled correctly, now run it.
+    // The statement compiled correctly, now run it.
 
     if( lua_pcall( mL, 0, LUA_MULTRET, 0 ) )
     {
@@ -132,10 +132,10 @@ LuaInterpreter::State LuaInterpreter::insertLine( std::string& line, bool fInser
     return mState;
 }
 
-// Callback for lua to provide output.
+// Callback for Lua to provide output.
 int LuaInterpreter::insertOutputFromLua( lua_State *L )
 {
-    // Retreive the current interpreter for current lua state.
+    // Retrieve the current interpreter for current Lua state.
     LuaInterpreter *interpreter;
 
     lua_pushlightuserdata( L, (void *)&LuaRegistryGUID );
