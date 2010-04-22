@@ -70,7 +70,6 @@ void MeshAnimation::addTime( Ogre::Real timeSinceLastFrame )
             {
                 mFadingOut = false;
                 weight = 0.0;
-                mState->setEnabled( false );
             }
 
             mState->setWeight( weight );
@@ -151,14 +150,23 @@ void MovementAnimation::addTime( Ogre::Real timeSinceLastFrame )
 {
     if( mMoving )
     {
+        Ogre::Real move = mSpeed * timeSinceLastFrame;
+
         Ogre::Vector3 position = mNode->getPosition();
 
-        // We work out direction each time, as the node may have been re-positioned by other code.
-        Ogre::Vector3 direction = mDestination - position;
+        if( position.distance( mDestination ) < move )
+        {
+            position = mDestination;
+        }
+        else
+        {
+            // We work out direction each time, as the node may have been re-positioned by other code.
+            Ogre::Vector3 direction = mDestination - position;
 
-        direction.normalise();
+            direction.normalise();
 
-        position += direction * mSpeed * timeSinceLastFrame;
+            position += direction * move;
+        }
 
         mNode->setPosition( position );
     }
@@ -166,17 +174,60 @@ void MovementAnimation::addTime( Ogre::Real timeSinceLastFrame )
 
 void MovementAnimation::stop()
 {
-    mMoving = true;
+    mMoving = false;
 }
 
 void MovementAnimation::start()
 {
-    mMoving = false;
+    mMoving = true;
 }
 
 bool MovementAnimation::isFinished()
 {
     return mNode->getPosition() == mDestination;
+}
+
+RotationAnimation::RotationAnimation( Ogre::SceneNode* nodeToRotate, Ogre::Quaternion rotation, Ogre::Real speed )
+        : mRotating(false)
+{
+    mNode = nodeToRotate;
+    mInitialOrientation = mNode->getOrientation();
+    mDestOrientation = rotation * mInitialOrientation;
+    mProgress = 0;
+    mSpeed = speed;
+}
+
+void RotationAnimation::addTime( Ogre::Real timeSinceLastFrame )
+{
+    if( mRotating )
+    {
+        mProgress += mSpeed * timeSinceLastFrame;
+
+        if( mProgress > 1 )
+        {
+            mRotating = false;
+        }
+        else
+        {
+            Ogre::Quaternion delta = Ogre::Quaternion::Slerp( mProgress, mInitialOrientation, mDestOrientation, true );
+            mNode->setOrientation( delta );
+        }
+    }
+}
+
+void RotationAnimation::stop()
+{
+    mRotating = false;
+}
+
+void RotationAnimation::start()
+{
+    mRotating = true;
+}
+
+bool RotationAnimation::isFinished()
+{
+    return mProgress > 1;
 }
 
 template<> AnimationManager *Ogre::Singleton<AnimationManager>::ms_Singleton=0;
