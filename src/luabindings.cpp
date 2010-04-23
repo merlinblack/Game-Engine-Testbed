@@ -491,9 +491,18 @@ void bindRadian( lua_State* L )
     module(L)
     [
         class_<Radian>("Radian")
+        .def(constructor< Real >() )
+        .def(constructor< Degree& >() )
         .def(tostring(self))
         .def_readonly( "rad", &Radian::valueRadians )
-        .def_readonly( "deg", &Radian::valueDegrees )
+        .def_readonly( "deg", &Radian::valueDegrees ),
+
+        class_<Degree>("Degree")
+        .def(constructor< Real >() )
+        .def(constructor< Radian& >() )
+        .def(tostring(self))
+        .def_readonly( "rad", &Degree::valueRadians )
+        .def_readonly( "deg", &Degree::valueDegrees )
     ];
 }
 

@@ -28,6 +28,10 @@ THE SOFTWARE.
 //For debugDrawClassification
 #include <Ogre.h>
 
+//For Lua glue.
+#include <luabind/luabind.hpp>
+#include <luabind/object.hpp>
+
 NavigationCell::NavigationCell( Ogre::Vector3 a, Ogre::Vector3 b, Ogre::Vector3 c )
 {
     mVertices[0] = a;
@@ -216,6 +220,10 @@ void NavigationMesh::BuildFromOgreMesh( Ogre::MeshPtr mesh )
 
     return;
 }
+void NavigationMesh::BuildFromOgreEntity( Ogre::Entity *entity )
+{
+    BuildFromOgreMesh( entity->getMesh() );
+}
 
 // Finds cell that contains the specified point, but not necessarily on its surface.
 NavigationCell* NavigationMesh::getCellContainingPoint( Ogre::Vector3& p )
@@ -292,6 +300,35 @@ NavigationPath* NavigationMesh::findNavigationPath( Ogre::Vector3 position, Ogre
     // Smooth out path? Catmull Rom thingy goes here... ( or called separately on path ).
 
     return path;
+}
+
+void NavigationMesh::findNavigationPathLua( lua_State* L, Ogre::Vector3 position, Ogre::Vector3 destination, Ogre::Radian maxTurnAngle, Ogre::Real pathWidth )
+{
+    NavigationPath* path = findNavigationPath( position, destination );
+
+    if( path )
+    {
+        straightenPath( path, maxTurnAngle, pathWidth );
+    }
+    else
+    {
+        lua_pushnil( L );
+        return;
+    }
+
+    // Create a table and populate with the path points.
+    lua_newtable( L );
+    luabind::object table( luabind::from_stack( L, -1 ) );
+
+    NavigationPath::iterator i;
+    int index = 1;
+
+    for( i = path->begin(); i != path->end(); i++ )
+    {
+        table[index++] = *i;
+    }
+
+    return;
 }
 
 NavigationPath* NavigationMesh::straightenPath( NavigationPath* path, Ogre::Radian maxTurnAngle, Ogre::Real pathWidth )
