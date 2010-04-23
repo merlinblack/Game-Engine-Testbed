@@ -75,10 +75,10 @@ class MeshAnimation : public Animation
 
     void fadeIn();
     void fadeOut();
-    inline bool isFadingIn();
-    inline bool isFadingOut();
+    bool isFadingIn();
+    bool isFadingOut();
 
-    inline void setLoop( bool loop );
+    void setLoop( bool loop );
 
     void stop();
     void start();
@@ -92,7 +92,7 @@ class MeshAnimation : public Animation
 class MovementAnimation : public Animation
 {
     Ogre::SceneNode* mNode;
-        Ogre::Vector3 mDestination;
+    Ogre::Vector3 mDestination;
     Ogre::Real mSpeed;
     bool mMoving;
 
@@ -107,7 +107,30 @@ class MovementAnimation : public Animation
     inline bool isFinished();
 };
 
+class RotationAnimation : public Animation
+{
+    Ogre::SceneNode* mNode;
+    Ogre::Quaternion mInitialOrientation;
+    Ogre::Quaternion mDestOrientation;
+    Ogre::Real mProgress;
+    Ogre::Real mSpeed;
+
+    bool mRotating;
+    public:
+    RotationAnimation( Ogre::SceneNode* nodeToRotate, Ogre::Quaternion rotation, Ogre::Real speed );
+
+    void addTime( Ogre::Real timeSinceLastFrame );
+
+    void stop();
+    void start();
+
+    inline bool isFinished();
+};
+
 typedef boost::shared_ptr<Animation> AnimationPtr;
+typedef boost::shared_ptr<MeshAnimation> MeshAnimationPtr;
+typedef boost::shared_ptr<MovementAnimation> MovementAnimationPtr;
+typedef boost::shared_ptr<RotationAnimation> RotationAnimationPtr;
 
 class AnimationManager : 
     public Ogre::Singleton<AnimationManager>,

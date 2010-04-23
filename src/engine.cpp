@@ -33,7 +33,7 @@ THE SOFTWARE.
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 #include <time.h>
-void msleep(int ms)
+void Sleep(int ms)
 {
     struct timespec time;
     time.tv_sec = ms / 1000;
@@ -105,16 +105,7 @@ void Engine::run()
         renderSystem.renderOneFrame();
 
         // Play nice with the operating system by sleeping a little.
-#if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
-        msleep( 10 );
-#endif
-#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
-        sleep( ??? );   // Might be the same as Linux.
-#endif
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-        Sleep( 10 );    // TODO: Check this func takes milliseconds!
-#endif
-
+        // Sleep( 10 );
     }
 }
 
@@ -291,9 +282,37 @@ bool Engine::EventNotification( EventPtr event )
                 return true;
             }
 
-            AnimationPtr anim( new MeshAnimation( robot->mesh, "Idle" ) );
+            MeshAnimationPtr anim( new MeshAnimation( robot->mesh, "Idle" ) );
+            AnimationManager::getSingleton().addAnimation( anim );
+            anim->setWeighting( 0.0f );
+            anim->fadeIn();
+            anim->start();
+        }
+        if( data->key == OIS::KC_U )
+        {
+            // Get the robot and animate him.
+
+            GameEntityPtr robot = gameEntityManager.getGameEntity( "Mike" );
+
+            if( !robot ) // test scene not yet loaded.
+            {
+                Ogre::LogManager::getSingleton().stream() << "Load the test scene first you doofus.";
+                return true;
+            }
+
+            MovementAnimationPtr anim( new MovementAnimation( robot->sceneNode,
+                                                              robot->sceneNode->getPosition() + Ogre::Vector3( 10, 0, 0 ),
+                                                              10.0f ) );
+
             AnimationManager::getSingleton().addAnimation( anim );
             anim->start();
+
+            Ogre::Quaternion q( Ogre::Degree(180), Ogre::Vector3::UNIT_Y);
+
+            RotationAnimationPtr anim2( new RotationAnimation( robot->sceneNode, q, 2 ));
+
+            AnimationManager::getSingleton().addAnimation( anim2 );
+            anim2->start();
         }
     }
 

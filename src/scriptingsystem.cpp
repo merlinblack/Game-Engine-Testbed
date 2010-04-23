@@ -31,6 +31,7 @@ THE SOFTWARE.
 #include <gameentity.h>
 
 void bindEngine( lua_State* L ); // From luabindings.cpp
+void bindAnimation( lua_State* L ); // From animationbinding.cpp
 void bindNavigationMesh( lua_State* L); // From navmeshbinding.cpp
 
 int ScriptingSystem::GUID = 0;
@@ -119,6 +120,7 @@ void ScriptingSystem::initialise()
     bind();
     bindEngine( mL );
     bindGameEntityClasses( mL );
+    bindAnimation( mL );
     bindNavigationMesh( mL );
 
     LuaResourcePtr mainlua = LuaResourceManager::getSingleton().load( "main.lua" );
