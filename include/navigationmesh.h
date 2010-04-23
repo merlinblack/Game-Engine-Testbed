@@ -102,6 +102,9 @@ struct NavigationCellComparison
 typedef std::vector<Ogre::Vector3> NavigationPath;
 typedef std::vector<NavigationCell*> NavigationCellList;
 
+// Forward ref.
+struct lua_State;
+
 class NavigationMesh
 {
     typedef std::vector<NavigationCell> CellVector;
@@ -121,6 +124,7 @@ public:
     ~NavigationMesh();
 
     void BuildFromOgreMesh( Ogre::MeshPtr mesh );
+    void BuildFromOgreEntity( Ogre::Entity *entity );
 
     // Finds cell that contains the specified point, but not necessarily on its surface.
     NavigationCell* getCellContainingPoint( Ogre::Vector3& p );
@@ -129,6 +133,8 @@ public:
 
     NavigationPath* findNavigationPath( Ogre::Vector3 position, Ogre::Vector3 destination );
     NavigationCellList* findNavigationCellPath( NavigationCell* position, NavigationCell* destination );
+
+    void findNavigationPathLua( lua_State* L, Ogre::Vector3 position, Ogre::Vector3 destination, Ogre::Radian maxTurnAngle, Ogre::Real pathWidth );
 
     NavigationPath* straightenPath( NavigationPath* path, Ogre::Radian maxTurnAngle, Ogre::Real width );
 
@@ -141,5 +147,7 @@ private:
     inline NavigationCell* popFromOpenList();
     inline void promoteCellInOpenList( NavigationCell* cell );
 };
+
+typedef boost::shared_ptr<NavigationMesh> NavigationMeshPtr;
 
 #endif // NAVIGATIONMESH_H
