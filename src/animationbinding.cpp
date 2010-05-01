@@ -70,7 +70,7 @@ void bindAnimation( lua_State* L )
 
     module(L)
     [
-            class_< MovementAnimation, Animation, AnimationPtr >( "MovmentAnimation" )
+            class_< MovementAnimation, Animation, AnimationPtr >( "MovementAnimation" )
             .def( constructor< Ogre::SceneNode*, Ogre::Vector3, Ogre::Real >())
             //.def( "start", &MeshAnimation::start )
             //.def( "stop", &MeshAnimation::stop )

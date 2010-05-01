@@ -214,6 +214,7 @@ void bindQuaternion( lua_State* L )
         .def_readwrite( "w", &Quaternion::w )
         .def(constructor<>())
         .def(constructor<Real,Real,Real,Real>())
+        .def(constructor<const Radian&, const Vector3& >())
         .def("dot", &Quaternion::Dot )
 
         // Operators
@@ -221,6 +222,7 @@ void bindQuaternion( lua_State* L )
         .def( self - other<Quaternion>() )
         .def( self * other<Quaternion>() )
         .def( self * Real() )
+        .def( self * other<Vector3>() )
     ];
 
     LUA_STATIC_START( Quaternion )

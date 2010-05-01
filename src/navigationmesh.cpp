@@ -305,10 +305,11 @@ NavigationPath* NavigationMesh::findNavigationPath( Ogre::Vector3 position, Ogre
 void NavigationMesh::findNavigationPathLua( lua_State* L, Ogre::Vector3 position, Ogre::Vector3 destination, Ogre::Radian maxTurnAngle, Ogre::Real pathWidth )
 {
     NavigationPath* path = findNavigationPath( position, destination );
+    NavigationPath* straightendPath;
 
     if( path )
     {
-        straightenPath( path, maxTurnAngle, pathWidth );
+        straightendPath = straightenPath( path, maxTurnAngle, pathWidth );
     }
     else
     {
@@ -323,10 +324,13 @@ void NavigationMesh::findNavigationPathLua( lua_State* L, Ogre::Vector3 position
     NavigationPath::iterator i;
     int index = 1;
 
-    for( i = path->begin(); i != path->end(); i++ )
+    for( i = straightendPath->begin(); i != straightendPath->end(); i++ )
     {
         table[index++] = *i;
     }
+
+    delete path;
+    delete straightendPath;
 
     return;
 }
