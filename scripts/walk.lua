@@ -35,6 +35,8 @@ function followList( list )
     wa:setFadeSpeed(2)
     wa:start()
     wa:fadeIn()
+    player.walking = true
+    player.stopwalking = false
     for i, vector in pairs(list) do
         print( 'Turning to face ', vector )
         local r = rotateTo( getDirectionTo( vector ) )
@@ -43,10 +45,16 @@ function followList( list )
 --        end
         print( 'Heading off to ', vector )
         local m = moveTo( vector )
-        while not m:isFinished() do
+        while not m:isFinished() and not player.stopwalking do
             yield()
         end
+        if player.stopwalking == true then
+            m:stop()
+            am:remove(m)
+            break
+        end
     end
+    player.walking = false
     wa:fadeOut()
     while wa:isFadingOut() do
         yield()
@@ -63,6 +71,10 @@ function getpath()
 end
 
 function walkTask()
+    player.stopwalking = true
+    while player.walking == true do
+        yield()
+    end
     followList(path)
 end
 
