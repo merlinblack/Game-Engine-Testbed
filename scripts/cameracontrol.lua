@@ -61,6 +61,12 @@ function cameraControl:keypressed( key )
         if key == KeyCodes.KC_END then
             cameraControl.pitchNode:pitch( 1 );
         end
+        if key == KeyCodes.KC_PGUP then
+            cameraControl.mainNode:translate( Vector3( 0, 25, 0 ))
+        end
+        if key == KeyCodes.KC_PGDOWN then
+            cameraControl.mainNode:translate( Vector3( 0, -25, 0 ))
+        end
     end
 end
 
