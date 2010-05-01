@@ -6,6 +6,7 @@ require 'gui/checkbox'
 require 'gui/overlay'
 require 'gui/control'
 require 'gui/mouse'
+require 'gui/keybinding'
 
 -- Higher level parts.
 require 'gui/quit'
@@ -29,6 +30,7 @@ function mouseMoved(x, y, buttons)
 end
 
 function keypressed( key )
+    keybinder.keypressed( key )
     gui.keypressed( key )
 end
 
