@@ -5,7 +5,7 @@ ne = Ogre.createEntity( 'Nav', 'FloorNav.mesh' )
 nv:buildFromEntity( ne )
 
 function moveTo( v )
-    local ma = MovementAnimation( player.node, v, 20 )
+    local ma = MovementAnimation( player.node, v, player.walkspeed )
     am:add(ma)
     ma:start()
     return ma
@@ -29,6 +29,7 @@ function getDirectionTo( v )
 end
 
 function followList( list )
+    if type(list) ~= 'table' then return end
     local wa = MeshAnimation( player.mesh, 'Walk' )
     am:add(wa)
     wa:setWeight(0)
@@ -37,12 +38,10 @@ function followList( list )
     wa:fadeIn()
     player.walking = true
     player.stopwalking = false
+    player.walkspeed = 15
     for i, vector in pairs(list) do
         print( 'Turning to face ', vector )
         local r = rotateTo( getDirectionTo( vector ) )
---        while not r:isFinished() do
---            yield()
---        end
         print( 'Heading off to ', vector )
         local m = moveTo( vector )
         while not m:isFinished() and not player.stopwalking do
@@ -82,3 +81,5 @@ function walk()
     path = getpath()
     createTask( walkTask )
 end
+
+bind( KeyCodes.KC_G, walk )
