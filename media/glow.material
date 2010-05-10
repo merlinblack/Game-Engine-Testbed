@@ -1,0 +1,19 @@
+# This is similar to what is added with
+# GameEntity::highlight()
+
+material glow 
+{
+    technique
+    {
+        pass
+        {
+            scene_blend alpha_blend
+            depth_check on
+            depth_write off
+            texture_unit
+            {
+                texture glow.png
+            }
+        }
+    }
+}
