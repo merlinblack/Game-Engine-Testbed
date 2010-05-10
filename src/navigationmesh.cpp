@@ -254,7 +254,7 @@ NavigationCell* NavigationMesh::getExactCellContainingPoint( Ogre::Vector3& p )
         plane.redefine(  i->mVertices[0], i->mVertices[1], i->mVertices[2] );
 
         // Tolerance found by experiment.
-        if( ! Math::RealEqual( plane.getDistance( p ), 0, 0.001f ) )
+        if( ! Math::RealEqual( plane.getDistance( p ), 0, 1.0f ) )
             continue;   // Point is not on the plane.
 
         if( Math::pointInTri3D( p, i->mVertices[0], i->mVertices[1], i->mVertices[2],
@@ -273,7 +273,7 @@ NavigationPath* NavigationMesh::findNavigationPath( Ogre::Vector3 position, Ogre
     if( destinationCell == 0 )
         return 0;   // Destination is not within the navigation mesh.
 
-    NavigationCell* currentCell = getCellContainingPoint( position );
+    NavigationCell* currentCell = getExactCellContainingPoint( position );
     if( currentCell == 0 )
         return 0;   // Current position is not within the navigation mesh.
 
