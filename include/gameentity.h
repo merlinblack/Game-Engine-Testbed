@@ -47,6 +47,10 @@ class GameEntity
     std::string name;
     // HashID
     size_t hashId;
+    // Original material
+    Ogre::MaterialPtr originalMaterial;
+    // Material used for highlight.
+    Ogre::MaterialPtr highlightMaterial;
 
 public: // TODO: Make private and add accessor funcs.
 
@@ -84,6 +88,9 @@ public:
     {
         return hasher(str);
     }
+
+    void highlight( bool on = true );
+    void createHighlightMaterial();
 };
 
 // This allows GameEntities past from Lua to C++ and back

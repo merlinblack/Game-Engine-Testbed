@@ -25,11 +25,12 @@ THE SOFTWARE.
 #include <gameentity.h>
 #include <OgreRoot.h>
 #include <OgreMath.h>
+#include <OgreSubEntity.h>
 #include <ogretools.h>
 
 boost::hash<std::string> GameEntity::hasher;
 
-GameEntity::GameEntity() : hashId(0), sceneNode(0), mesh(0)
+GameEntity::GameEntity() : hashId(0), sceneNode(0), mesh(0), originalMaterial(0), highlightMaterial(0)
 {
 }
 
@@ -143,6 +144,40 @@ Ogre::Vector3 GameEntity::hitPosition( float x, float y )
         return Ogre::Vector3( Ogre::Math::POS_INFINITY );
 
     return ray.getPoint( distance );
+}
+
+void GameEntity::highlight( bool on /* = true */ )
+{
+    if( highlightMaterial.isNull() )
+        createHighlightMaterial();
+
+    if( on )
+        mesh->setMaterial( highlightMaterial );
+    else
+        mesh->setMaterial( originalMaterial );
+}
+
+void GameEntity::createHighlightMaterial()
+{
+    originalMaterial = mesh->getSubEntity( 0 )->getMaterial();
+    Ogre::String name = originalMaterial->getName() + "_highLight";
+
+    if( Ogre::MaterialManager::getSingleton().resourceExists( name ) )
+    {
+        highlightMaterial = Ogre::MaterialManager::getSingleton().getByName( name );
+    }
+    else
+    {
+        highlightMaterial = originalMaterial->clone( name );
+
+        Ogre::Technique* technique = highlightMaterial->getBestTechnique();
+
+        Ogre::Pass* pass = technique->createPass();
+        pass->setDepthCheckEnabled( true );
+        pass->setDepthWriteEnabled( false );
+        pass->setSceneBlending( Ogre::SBT_TRANSPARENT_ALPHA );
+        pass->createTextureUnitState( "glow.png" );
+    }
 }
 
 template <> GameEntityManager* Ogre::Singleton<GameEntityManager>::ms_Singleton = 0;
@@ -335,6 +370,8 @@ void bindGameEntityClasses( lua_State* L )
             .def( "hash", &GameEntity::hash )
             .def( "hitCheck", &GameEntity::hitCheck )
             .def( "hitPosition", &GameEntity::hitPosition )
+            .def( "highlight", &GameEntity::highlight )
+            .def( "createHighlightMaterial", &GameEntity::createHighlightMaterial )
             ,
             class_<GameEntityManager>("GameEntityManager")
             .scope

@@ -162,6 +162,7 @@ bool Engine::EventNotification( EventPtr event )
             console.injectKeyPress( arg );
             return true;
         }
+ /*
         if( data->key == OIS::KC_T )    // T for Test!
         {
             // Testing.
@@ -270,6 +271,8 @@ bool Engine::EventNotification( EventPtr event )
 
             return true;
         }
+*/
+ /*
         if( data->key == OIS::KC_Y )    // Yet another test.
         {
             // Get the robot and animate him.
@@ -288,6 +291,8 @@ bool Engine::EventNotification( EventPtr event )
             anim->fadeIn();
             anim->start();
         }
+ */
+ /*
         if( data->key == OIS::KC_U )
         {
             // Get the robot and animate him.
@@ -314,6 +319,7 @@ bool Engine::EventNotification( EventPtr event )
             AnimationManager::getSingleton().addAnimation( anim2 );
             anim2->start();
         }
+*/
     }
 
     if( event->type == Event::hash("EVT_MOUSEMOVE") )
