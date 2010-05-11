@@ -112,6 +112,7 @@ function setup()
     require 'fps'
     require 'clock'
     require 'cameracontrol'
+    require 'walk'
     require 'test'
 
     print "Setup task completed"
