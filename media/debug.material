@@ -1,52 +1,52 @@
 material debug/yellow
 {
-    recieve_shadows off
+    receive_shadows off
     technique
     {
         pass
         {
             ambient 1 1 0
             diffuse 1 1 0 0
-            emisive 1 1 0 0
+            emissive 1 1 0 0
         }
     }
 }
 material debug/blue
 {
-	recieve_shadows off
+	receive_shadows off
 	technique
 	{
 		pass
 		{
 			ambient 0.05859375 0.86328125 0.921875
 			diffuse 0.05859375 0.86328125 0.921875 0
-			emisive 0.05859375 0.86328125 0.921875 0
+			emissive 0.05859375 0.86328125 0.921875 0
 		}
 	}
 }
 material debug/cyan
 {
-	recieve_shadows off
+	receive_shadows off
 	technique
 	{
 		pass
 		{
 			ambient 0.94140625 0.06640625 0.72265625
 			diffuse 0.94140625 0.06640625 0.72265625 0
-			emisive 0.94140625 0.06640625 0.72265625 0
+			emissive 0.94140625 0.06640625 0.72265625 0
 		}
 	}
 }
 material Navigation
 {
-	recieve_shadows off
+	receive_shadows off
 	technique
 	{
 		pass
 		{
 			ambient 0 1 0
 			diffuse 0 1 0 0
-			emisive 0 1 0 0
+			emissive 0 1 0 0
 		}
 	}
 }
