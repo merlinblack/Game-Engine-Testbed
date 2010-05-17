@@ -26,6 +26,7 @@ THE SOFTWARE.
 #include <OgreRoot.h>
 #include <OgreMath.h>
 #include <OgreSubEntity.h>
+#include <OgreMaterialManager.h>
 #include <ogretools.h>
 
 boost::hash<std::string> GameEntity::hasher;
