@@ -43,6 +43,7 @@ this avoids calling sqrt, and the costs are only ever compared against each othe
 #include <ogretools.h>
 #include <OgreVector3.h>
 #include <OgreMesh.h>
+#include <boost/shared_ptr.hpp>
 
 #include <vector>
 #include <ostream>

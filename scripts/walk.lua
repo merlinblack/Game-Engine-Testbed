@@ -40,17 +40,19 @@ function followList( list )
     player.stopwalking = false
     player.walkspeed = 15
     for i, vector in pairs(list) do
-        print( 'Turning to face ', vector )
-        local r = rotateTo( getDirectionTo( vector ) )
-        print( 'Heading off to ', vector )
-        local m = moveTo( vector )
-        while not m:isFinished() and not player.stopwalking do
-            yield()
-        end
-        if player.stopwalking == true then
-            m:stop()
-            am:remove(m)
-            break
+        if i ~= 1 then
+            print( 'Turning to face ', vector )
+            local r = rotateTo( getDirectionTo( vector ) )
+            print( 'Heading off to ', vector )
+            local m = moveTo( vector )
+            while not m:isFinished() and not player.stopwalking do
+                yield()
+            end
+            if player.stopwalking == true then
+                m:stop()
+                am:remove(m)
+                break
+            end
         end
     end
     player.walking = false
@@ -65,7 +67,7 @@ function getpath()
     local p = player.node:getPosition()
     local d = base:hitPosition(_X,_Y)
     local maxAngle = Radian( Degree(90) )
-    
+
     return nv:findPath( p, d, maxAngle, 5 )
 end
 
