@@ -1,0 +1,16 @@
+// Same as below, but for use when rendering texture shadows
+vertex_program Ogre/HardwareSkinningOneWeightShadowCaster cg
+{
+	source Example_Basic.cg
+	entry_point hardwareSkinningOneWeightCaster_vp
+	profiles vs_1_1 arbvp1
+	includes_skeletal_animation true
+}
+// Basic hardware skinning using one indexed weight per vertex
+vertex_program Ogre/HardwareSkinningOneWeight cg
+{
+   source Example_Basic.cg
+   entry_point hardwareSkinningOneWeight_vp
+   profiles vs_1_1 arbvp1
+   includes_skeletal_animation true   
+}
