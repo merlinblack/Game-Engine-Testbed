@@ -4,8 +4,8 @@ Nigel's wizzy test game engine thingy.
 ** What is it?
 This is a one man hobby project, to test out 
 game and programming ideas, methods, etc.
-Its heading towards first or third person shooter/RPG
-but is pretty generic at present.
+Its heading towards a simple click'n'go adventure game but
+could be used for other game styles.
 
 ** License
 Er, um. MIT I guess.  Same as Ogre3d 1.7
@@ -13,18 +13,15 @@ Er, um. MIT I guess.  Same as Ogre3d 1.7
 ** Warranty
 None whatsoever.  Use at your own risk.
 
-
 ** Features so far:
 Uses Ogre3d.
 Integrates Lua scripting, including a Lua console.
 Some bindings of Ogre3d to Lua, amongst other things.
 Basic GUI implemented.
 
-
 ** Planned features:
-Physics
-Networking - an authoritative game server.
-
+Game quest management, and other systems for adventure
+style games.
 
 ** Running:
 
