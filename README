@@ -8,7 +8,7 @@ Its heading towards a simple click'n'go adventure game but
 could be used for other game styles.
 
 ** License
-Er, um. MIT I guess.  Same as Ogre3d 1.7
+MIT.  Same as Ogre3d 1.7
 
 ** Warranty
 None whatsoever.  Use at your own risk.
@@ -18,6 +18,7 @@ Uses Ogre3d.
 Integrates Lua scripting, including a Lua console.
 Some bindings of Ogre3d to Lua, amongst other things.
 Basic GUI implemented.
+Path finding using a navigation mesh, generated from a Ogre mesh.
 
 ** Planned features:
 Game quest management, and other systems for adventure
