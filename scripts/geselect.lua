@@ -29,7 +29,6 @@ function geSelect:mouseMoved( x, y, buttons )
         -- Select any hit entities that can be selected.
         table.foreach( hit,
             function( i, v )
-                print( i, v )
                 if v.selectable then
                     if v:hitCheck( _X, _Y ) then
                         v:highlight( true )
