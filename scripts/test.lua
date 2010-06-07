@@ -1,10 +1,11 @@
-root = Ogre.getRootSceneNode()
+scene = Ogre.getSceneManager()
+root = scene:getRootSceneNode()
 
 robotNode = root:createChildSceneNode'Robot'
 floorNode = root:createChildSceneNode'Floor'
 
-robot = Ogre.createEntity('Robot', 'robot.mesh')
-floor = Ogre.createEntity('Floor', 'Floor.mesh')
+robot = scene:createEntity('robot.mesh')
+floor = scene:createEntity('Floor.mesh')
 
 robotNode:attachObject( robot )
 floorNode:attachObject( floor )

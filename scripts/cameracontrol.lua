@@ -1,13 +1,15 @@
-if Ogre.sceneNodeExists 'Pivot' then
-    Ogre.getSceneNode'Pivot' : destroy()
+local scene = Ogre.getSceneManager()
+
+if scene:hasSceneNode 'Pivot' then
+    scene:destroySceneNode'Pivot'
 end
 
-if Ogre.sceneNodeExists 'CameraNode' then
-    Ogre.getSceneNode'CameraNode' : destroy()
+if scene:hasSceneNode 'CameraNode' then
+    scene:destroySceneNode'CameraNode'
 end
 
-if Ogre.sceneNodeExists 'CameraPitch' then
-    Ogre.getSceneNode'CameraPitch' : destroy()
+if scene:hasSceneNode 'CameraPitch' then
+    scene:destroySceneNode'CameraPitch'
 end
 
 if cameraControl then
@@ -15,18 +17,18 @@ if cameraControl then
 end
 
 cameraControl = {}
-local root = Ogre.getRootSceneNode()
+local root = scene:getRootSceneNode()
 cameraControl.pivotNode = root:createChildSceneNode"Pivot"
 cameraControl.mainNode = cameraControl.pivotNode:createChildSceneNode"CameraNode"
 cameraControl.pitchNode = cameraControl.mainNode:createChildSceneNode"CameraPitch"
-local cam = Ogre.getCamera()
+local cam = scene:getCamera("MainCamera")
 cam:setNearClipDistance(0.1)
 cameraControl.pitchNode:attachObject(cam)
-cameraControl.pitchNode:pitch(25)
+cameraControl.pitchNode:pitch(-25)
 cameraControl.mainNode:translate( Vector3( -80, 75, 0 ) )
+cameraControl.mainNode:yaw( -90 )
 cameraControl.autoRotateSpeed = .05
-cameraControl.autoRotate = true
-
+cameraControl.autoRotate = false
 cameraControl.stop = false;
 
 function cameraControl.update()

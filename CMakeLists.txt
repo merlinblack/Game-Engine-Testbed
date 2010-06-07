@@ -20,10 +20,12 @@ INCLUDE_DIRECTORIES(
 
 FILE(GLOB SRCS src/*.cpp)
 FILE(GLOB HDRS include/*.h)
+FILE(GLOB SCRIPTS scripts/*.lua scripts/gui/*.lua)
 
 ADD_EXECUTABLE(engine 
 	${SRCS}
 	${HDRS}
+    ${SCRIPTS}
 	)
 
 TARGET_LINK_LIBRARIES(engine
