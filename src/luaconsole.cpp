@@ -70,6 +70,7 @@ void LuaConsole::init(Ogre::Root *root, lua_State *L)
     textbox->setParameter("colour_top","1 1 1");
     textbox->setParameter("colour_bottom","0.5 0.5 0.5");
     textbox->setParameter("char_height","0.03");
+    textbox->setParameter("space_width", "0.02");
 
     panel = static_cast<OverlayContainer*>(overlayManager.createOverlayElement("Panel", "ConsolePanel"));
     panel->setMetricsMode(Ogre::GMM_RELATIVE);

@@ -28,6 +28,7 @@ THE SOFTWARE.
 // Prototype these before operator.hpp so it can be found for tostring() operator.
 std::ostream& operator<<( std::ostream& stream, const Ogre::Entity& ent );
 std::ostream& operator<<( std::ostream& stream, const Ogre::SceneNode& node );
+std::ostream& operator<<( std::ostream& stream, const Ogre::SceneManager& mgr );
 
 #include <luabind/operator.hpp>
 
@@ -120,54 +121,6 @@ class OverlayElementWrapper : public OverlayElement, public wrap_base
 class OverlayWrapper : public Overlay, public wrap_base
 {
 };
-
-SceneNode* getRootSceneNode()
-{
-    Root* root = Root::getSingletonPtr();
-    SceneManager* sceneManager = root->getSceneManager("SceneManagerInstance");
-
-    return sceneManager->getRootSceneNode();
-}
-
-bool sceneNodeExists( const String name )
-{
-    Root* root = Root::getSingletonPtr();
-    SceneManager* sceneManager = root->getSceneManager("SceneManagerInstance");
-
-    return sceneManager->hasSceneNode( name );
-}
-
-SceneNode *getSceneNode( const String name )
-{
-    Root* root = Root::getSingletonPtr();
-    SceneManager* sceneManager = root->getSceneManager("SceneManagerInstance");
-
-    return sceneManager->getSceneNode( name );
-}
-
-Camera* getCamera()
-{
-    Root* root = Root::getSingletonPtr();
-    SceneManager* sceneManager = root->getSceneManager("SceneManagerInstance");
-
-    return sceneManager->getCamera("MainCamera");
-}
-
-Entity* createEntity( String name, String meshfile )
-{
-    Root* root = Root::getSingletonPtr();
-    SceneManager* sceneManager = root->getSceneManager("SceneManagerInstance");
-
-    return sceneManager->createEntity( name, meshfile );
-}
-
-void destroyEntity( String name )
-{
-    Root* root = Root::getSingletonPtr();
-    SceneManager* sceneManager = root->getSceneManager("SceneManagerInstance");
-
-    sceneManager->destroyEntity( name );
-}
 
 void bindGui( lua_State *L )
 {
@@ -489,6 +442,56 @@ void bindCamera( lua_State* L )
     ];
 }
 
+void bindSceneManager( lua_State* L )
+{
+    module(L)
+    [
+        class_<SceneManager>("SceneManager")
+        .def("getCamera", &SceneManager::getCamera )
+        .def("getRootSceneNode", &SceneManager::getRootSceneNode )
+        .def("getSceneNode", &SceneManager::getSceneNode )
+        .def("hasSceneNode", &SceneManager::hasSceneNode )
+        .def("destroySceneNode", (void (SceneManager::*)(const String&))&SceneManager::destroySceneNode )
+        .def("destroySceneNode", (void (SceneManager::*)(SceneNode*))&SceneManager::destroySceneNode )
+        .def("createEntity", (Entity* (SceneManager::*)(const String&, const String&, const String&))&SceneManager::createEntity )
+        .def("createEntity", (Entity* (SceneManager::*)(const String&))&SceneManager::createEntity )
+        .def("getEntity", &SceneManager::getEntity )
+        .def("hasEntity", &SceneManager::hasEntity )
+        .def("destroyEntity", (void (SceneManager::*)(Entity*))&SceneManager::destroyEntity )
+        .def("destroyEntity", (void (SceneManager::*)(const String&))&SceneManager::destroyEntity )
+        .def("destroyAllEntities", &SceneManager::destroyAllEntities)
+        .def("clearScene", &SceneManager::clearScene )
+        .def("setAmbientLight", &SceneManager::setAmbientLight )
+        .def("getAmbientLight", &SceneManager::getAmbientLight )
+        .def("setDisplaySceneNodes", &SceneManager::setDisplaySceneNodes )
+        .def("setShadowTechnique", &SceneManager::setShadowTechnique )
+
+        .def(tostring(self))
+    ];
+
+    LUA_STATIC_START( SceneManager )
+        table["AUTODETECT_RESOURCE_GROUP_NAME"] = ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME;
+        table["SHADOWTYPE_NONE"] = SHADOWTYPE_NONE;
+        table["SHADOWTYPE_STENCIL_ADDITIVE"] = SHADOWTYPE_STENCIL_ADDITIVE;
+        table["SHADOWTYPE_STENCIL_MODULATIVE"] = SHADOWTYPE_STENCIL_MODULATIVE;
+        table["SHADOWTYPE_TEXTURE_ADDITIVE"] = SHADOWTYPE_TEXTURE_ADDITIVE;
+        table["SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED"] = SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED;
+        table["SHADOWTYPE_TEXTURE_MODULATIVE"] = SHADOWTYPE_TEXTURE_MODULATIVE;
+        table["SHADOWTYPE_TEXTURE_MODULATIVE_INTEGRATED"] = SHADOWTYPE_TEXTURE_MODULATIVE_INTEGRATED;
+    LUA_STATIC_END;
+}
+
+std::ostream& operator<<( std::ostream& stream, const Ogre::SceneManager& mgr )
+{
+    stream << "Scene Manager: " << mgr.getName();
+}
+
+SceneManager* getSceneManager()
+{
+    Root* root = Root::getSingletonPtr();
+    return root->getSceneManager("SceneManagerInstance");
+}
+
 void bindRadian( lua_State* L )
 {
     module(L)
@@ -544,6 +547,7 @@ void bindEngine( lua_State* L )
     bindEntity( L );
     bindSceneNode( L );
     bindCamera( L );
+    bindSceneManager( L );
     bindRadian( L );
     bindFrameStats( L );
 
@@ -551,13 +555,8 @@ void bindEngine( lua_State* L )
     [
         namespace_("Ogre")
         [
-            def("getRootSceneNode", &getRootSceneNode ),
-            def("getSceneNode", &getSceneNode ),
-            def("sceneNodeExists", sceneNodeExists ),
-            def("getCamera", &getCamera ),
-            def("createEntity", &createEntity ),
-            def("destroyEntity", &destroyEntity ),
-            def("getStats", &getFrameStats )
+            def("getStats", &getFrameStats ),
+            def("getSceneManager", &getSceneManager)
         ]
     ];
 }

@@ -1,7 +1,8 @@
+local scene = Ogre.getSceneManager()
 am = AnimationManager.getSingleton()
 nv = NavigationMesh( Vector3.ZERO, Quaternion.IDENTITY, Vector3.UNIT_SCALE )
-Ogre.destroyEntity'Nav'
-ne = Ogre.createEntity( 'Nav', 'FloorNav.mesh' )
+scene:destroyEntity'Nav'
+ne = scene:createEntity( 'FloorNav.mesh' )
 nv:buildFromEntity( ne )
 
 function moveTo( v )

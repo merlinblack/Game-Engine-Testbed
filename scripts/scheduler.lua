@@ -24,7 +24,11 @@ function runTask( id )
         return
     end
 
-    coroutine.resume( task.co, task )
+    local ret, errstr = coroutine.resume( task.co, task )
+
+    if ret == false then
+        log( "\nError running coroutine: " .. errstr.."\n" )
+    end
 
     if task.status() == 'dead' then
         tasks[task.id] = nil
