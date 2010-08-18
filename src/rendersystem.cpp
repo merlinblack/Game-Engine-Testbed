@@ -89,7 +89,7 @@ bool ::RenderSystem::initialise()
     mSceneManager->setSkyBox( true, "CloudyNoonSkyBox" );
 
     mSceneManager->setAmbientLight( ColourValue( 0.25, 0.25, 0.25 ) );
-    mSceneManager->setShadowTechnique( SHADOWTYPE_STENCIL_ADDITIVE );
+    //mSceneManager->setShadowTechnique( SHADOWTYPE_STENCIL_ADDITIVE );
 
     Light* light = mSceneManager->createLight( "Light1" );
     light->setDiffuseColour( 1.0, 1.0, 1.0 );
