@@ -4,10 +4,10 @@ material console/background
     {
         pass
         {
-            scene_blend modulate
+            scene_blend alpha_blend
             texture_unit
             {
-                texture console.png
+                texture dialog.background.png
             }
         }
     }
