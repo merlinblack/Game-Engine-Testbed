@@ -143,8 +143,11 @@ bool Engine::EventNotification( EventPtr event )
         }
         if( data->key == OIS::KC_GRAVE )
         {
-            console.setVisible( ! console.isVisible() );
-            return true;
+            if( ! console.isVisible() || data->parm != '~' ) // If console is up, check for shift key
+            {
+                console.setVisible( ! console.isVisible() );
+                return true;
+            }
         }
         if( data->key == OIS::KC_NUMPADENTER )
         {
