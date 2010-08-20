@@ -40,7 +40,6 @@ end
 function Button:setClickAction( action )
     if type(action) ~= "function" then
         error( "Click Action can only be set to a function." )
-        return
     end
     self.clickAction = action
 end
