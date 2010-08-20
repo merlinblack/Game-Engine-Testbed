@@ -92,6 +92,7 @@ function Checkbox:mouseMoved( x, y, button )
     if self.element:contains( x/_WIDTH, y/_HEIGHT ) then
         if button == 0 and self.state == "click" then -- click release
             self:onClick()
+            self.element:setMaterialName("gui/checkbox."..tostring(self.value))
         end
         self.state = "hover"
     else
