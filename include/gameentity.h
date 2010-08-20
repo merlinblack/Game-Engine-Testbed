@@ -69,7 +69,7 @@ public:
     virtual ~GameEntity();
 
     //Accessors
-    std::string getName() { return name; }
+    std::string getName() const { return name; }
     void setName( std::string newName );
 
     size_t getHashId() { return hashId; }

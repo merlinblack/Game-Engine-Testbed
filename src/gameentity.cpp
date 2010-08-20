@@ -28,6 +28,12 @@ THE SOFTWARE.
 #include <OgreSubEntity.h>
 #include <OgreMaterialManager.h>
 #include <ogretools.h>
+#include <ostream>
+
+std::ostream& operator<<( std::ostream& stream, const GameEntity& ge );
+std::ostream& operator<<( std::ostream& stream, const GameEntityManager& gm );
+
+#include <luabind/operator.hpp>
 
 boost::hash<std::string> GameEntity::hasher;
 
@@ -354,6 +360,16 @@ void GameEntityManager::mousePickLua( lua_State* L, float x, float y )
     return;
 }
 
+std::ostream& operator<<( std::ostream& stream, const GameEntity& ge )
+{
+    stream << "Game Entity: " << ge.getName();
+}
+
+std::ostream& operator<<( std::ostream& stream, const GameEntityManager& gm )
+{
+    stream << "Game Entity Manager (Singleton)";
+}
+
 void bindGameEntityClasses( lua_State* L )
 {
     using namespace luabind;
@@ -373,6 +389,7 @@ void bindGameEntityClasses( lua_State* L )
             .def( "hitPosition", &GameEntity::hitPosition )
             .def( "highlight", &GameEntity::highlight )
             .def( "createHighlightMaterial", &GameEntity::createHighlightMaterial )
+            .def(tostring(self))
             ,
             class_<GameEntityManager>("GameEntityManager")
             .scope
@@ -385,6 +402,7 @@ void bindGameEntityClasses( lua_State* L )
             .def( "get", (GameEntityPtr (GameEntityManager::*)(std::string)) &GameEntityManager::getGameEntity )
             .def( "get", (GameEntityPtr (GameEntityManager::*)(size_t)) &GameEntityManager::getGameEntity )
             .def( "mousePick", &GameEntityManager::mousePickLua )
+            .def(tostring(self))
             //.def( "update", &GameEntityManager::update ) // Usually done every game loop.
     ];
 }

@@ -1,34 +1,27 @@
 scene = Ogre.getSceneManager()
 root = scene:getRootSceneNode()
 
-robotNode = root:createChildSceneNode'Robot'
-floorNode = root:createChildSceneNode'Floor'
-
-robot = scene:createEntity('robot.mesh')
-floor = scene:createEntity('Floor.mesh')
-
-robotNode:attachObject( robot )
-floorNode:attachObject( floor )
-
-robotNode:yaw(180)
-robotNode:scale(.25,.25,.25)
-robotNode:setPosition(0,25,0)
-
-
 gm = GameEntityManager.getSingleton()
 
-player = GameEntity()
-player.name = "Mike"
-player.mesh = robot;
-player.node = robotNode;
+function createGameEntity( parentNode, name, mesh )
+    local e = GameEntity()
+    
+    e.name = name
+    e.mesh = scene:createEntity( mesh )
+    e.node = parentNode:createChildSceneNode( name .. 'Node' )
+    e.node:attachObject( e.mesh )
+    gm:add( e )
 
-gm:add( player )
+    return e
+end
 
-base = GameEntity()
-base.name = "Floor"
-base.mesh = floor
-base.node = floorNode
-gm:add(base)
+player = createGameEntity( root, 'Robot', 'robot.mesh' )
+
+player.node:yaw(180)
+player.node:scale(.25,.25,.25)
+player.node:setPosition(0,25,0)
+
+base = createGameEntity( root, 'Floor', 'Floor.mesh' )
 
 mouse:show()
 
