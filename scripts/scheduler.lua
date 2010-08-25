@@ -1,3 +1,5 @@
+require 'lualib'
+
 if tasks == nil then
     tasks = {}
 end
@@ -55,9 +57,11 @@ function runNextTask( prevId )
 end
 
 function showTasks()
+	local skip = {}
+	skip[tasks]=true
     print( 'Id','Function         ','Thread          ','Status' )
     for k,v in pairs(tasks) do
-        print( k, v.fn, v.co, v.status() )
+        print( k, getName(v.fn, skip), v.co, v.status() )
     end
 end
 
