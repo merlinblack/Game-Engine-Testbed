@@ -338,7 +338,7 @@ void NavigationMesh::findNavigationPathLua( lua_State* L, Ogre::Vector3 position
 NavigationPath* NavigationMesh::straightenPath( NavigationPath* path, Ogre::Radian maxTurnAngle, Ogre::Real pathWidth )
 {
     NavigationPath* straightenedPath = new NavigationPath;
-    NavigationPath::iterator startPoint = path->begin();
+    NavigationPath::iterator startPoint;
     NavigationPath::iterator endPoint;
     Ogre::Vector3 rightAngleOffset;
     Ogre::Vector3 originalDirection;
@@ -389,7 +389,7 @@ NavigationPath* NavigationMesh::straightenPath( NavigationPath* path, Ogre::Radi
             sideStartPoint = *startPoint + rightAngleOffset;
             sideEndPoint   = *endPoint   + rightAngleOffset;
 
-            prevCell = getCellContainingPoint( sideStartPoint );
+            prevCell = getExactCellContainingPoint( sideStartPoint );
             if( prevCell )
             {
                 ret = prevCell->classifyLine2D( sideStartPoint, sideEndPoint, prevCell, testCell );
@@ -407,7 +407,7 @@ NavigationPath* NavigationMesh::straightenPath( NavigationPath* path, Ogre::Radi
             sideStartPoint = *startPoint - rightAngleOffset;
             sideEndPoint   = *endPoint   - rightAngleOffset;
 
-            prevCell = getCellContainingPoint( sideStartPoint );
+            prevCell = getExactCellContainingPoint( sideStartPoint );
             if( prevCell )
             {
                 ret = prevCell->classifyLine2D( sideStartPoint, sideEndPoint, prevCell, testCell );
