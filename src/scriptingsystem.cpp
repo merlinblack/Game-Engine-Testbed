@@ -63,6 +63,12 @@ int luaLibraryLoader( lua_State *L )
     }
 
     std::string libraryFile = lua_tostring( L, 1 );
+    // In order to be compatible with the normal Lua file loader,
+    // translate '.' to the file system seperator character.
+    // In this case (An ogre resource) '/'
+    while( libraryFile.find('.') != std::string::npos )
+        libraryFile.replace( libraryFile.find('.'), 1, "/" );
+
     libraryFile += ".lua";
 
     if( ! Ogre::ResourceGroupManager::getSingleton().resourceExistsInAnyGroup( libraryFile ) )
