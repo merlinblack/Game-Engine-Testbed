@@ -32,6 +32,7 @@ THE SOFTWARE.
 #include "luaconsole.h"
 #include "gameentity.h"
 #include "animation.h"
+#include "Gorilla.h"
 
 class Engine : public EventListenerSender, public Ogre::WindowEventListener
 {
@@ -42,6 +43,8 @@ class Engine : public EventListenerSender, public Ogre::WindowEventListener
     LuaConsole console;
     GameEntityManager gameEntityManager;
     AnimationManager animationManager;
+    Gorilla::Silverback *mGorilla;
+    Gorilla::Screen *mGorillaScreen;
     bool stop;
 
 public:

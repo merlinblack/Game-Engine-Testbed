@@ -10,10 +10,11 @@
 
 #include "luaconsole.h"
 
-#define CONSOLE_LINE_LENGTH 96
-#define CONSOLE_LINE_COUNT 24
+#define CONSOLE_LINE_LENGTH 75
+#define CONSOLE_LINE_COUNT 20
 #define CONSOLE_MAX_LINES 32000
 #define CONSOLE_MAX_HISTORY 64
+#define CONSOLE_FONT_INDEX 14
 
 using namespace Ogre;
 using namespace std;
@@ -37,73 +38,68 @@ LuaConsole::LuaConsole()
 
 LuaConsole::~LuaConsole()
 {
-    if( root )
+    if( interpreter )
         shutdown();
 }
 
-void LuaConsole::init(Ogre::Root *root, lua_State *L)
+void LuaConsole::init(Gorilla::Screen *screen, lua_State *L)
 {
-    SceneManager *scene;
     OverlayManager &overlayManager = OverlayManager::getSingleton();
 
-    if(!root->getSceneManagerIterator().hasMoreElements())
-      OGRE_EXCEPT( Exception::ERR_INTERNAL_ERROR, "No scene manager found!", "init" );
-
-    this->root=root;
-    scene=root->getSceneManagerIterator().getNext();
-    root->addFrameListener(this);
+    Root::getSingletonPtr()->addFrameListener(this);
 
     visible = false;
-    height = 0;
     start_line = 0;
     cursor_blinkTime = 0;
     cursor_blink = false;
+    enableLogging = false;
 
     interpreter = new LuaInterpreter( L );
     print( interpreter->getOutput() );
     interpreter->clearOutput();
 
-    textbox = overlayManager.createOverlayElement("TextArea","ConsoleText");
-    textbox->setMetricsMode(GMM_RELATIVE);
-    textbox->setPosition(0,0);
-    textbox->setParameter("font_name","Console");
-    textbox->setParameter("colour_top","1 1 1");
-    textbox->setParameter("colour_bottom","0.5 0.5 0.5");
-    textbox->setParameter("char_height","0.03");
-    textbox->setParameter("space_width", "0.02");
+    mScreen = screen;
+    mLayer = mScreen->createLayer(15);
+    mGlyphData = mLayer->_getGlyphData( CONSOLE_FONT_INDEX );
+    
+    mConsoleText = mLayer->createMarkupText( CONSOLE_FONT_INDEX, 10, 10, Ogre::StringUtil::BLANK );
+    mConsoleText->width( mScreen->getViewportWidth() - 20 );
+    
+    mDecoration = mLayer->createRectangle( 8, 8, mScreen->getViewportWidth() - 16,
+                                           (mGlyphData->mLineHeight * CONSOLE_LINE_COUNT) + 2 );
+    mDecoration->background_gradient( Gorilla::Gradient_NorthSouth,
+                                      Gorilla::rgb( 128, 128, 128, 128 ),
+                                      Gorilla::rgb(  64,  64,  64, 128 ) );
+    mDecoration->border(2, Gorilla::rgb( 128, 128, 128, 128 ) );
+    mPromptLine = mLayer->createCaption( CONSOLE_FONT_INDEX, 10, 10, interpreter->getPrompt() );
+    mPromptLine->width( mScreen->getViewportWidth() - 20 );
 
-    panel = static_cast<OverlayContainer*>(overlayManager.createOverlayElement("Panel", "ConsolePanel"));
-    panel->setMetricsMode(Ogre::GMM_RELATIVE);
-    panel->setPosition(0, 0);
-    panel->setDimensions(1, 0);
-    panel->setMaterialName("console/background");
-    panel->addChild(textbox);
+    print( "%5Lua Console %3'Gorilla'%5 Edition. %RPress %3`%R (Grave) to hide." );
 
-    overlay = overlayManager.create("Console");
-    overlay->add2D(panel);
-    overlay->show();
+    mLayer->setVisible( visible );
 
     LogManager::getSingleton().getDefaultLog()->addListener(this);
 }
 
 void LuaConsole::shutdown()
 {
-    if( root )
+    if( interpreter )
     {
         delete interpreter;
 
-        OverlayManager::getSingleton().destroyOverlayElement( textbox );
-        OverlayManager::getSingleton().destroyOverlayElement( panel );
-        OverlayManager::getSingleton().destroy( overlay );
+        mScreen->destroy( mLayer );
+
+        Root::getSingletonPtr()->removeFrameListener(this);
 
         LogManager::getSingleton().getDefaultLog()->removeListener(this);
     }
-    root = NULL;
+    interpreter = NULL;
 }
 
 void LuaConsole::setVisible(bool fVisible)
 {
     visible = fVisible;
+    mLayer->setVisible( visible );
 }
 
 void LuaConsole::messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName )
@@ -136,29 +132,6 @@ bool LuaConsole::frameStarted(const Ogre::FrameEvent &evt)
         }
     }
 
-    if(visible && height < 1)
-    {
-        height += evt.timeSinceLastFrame * 10;
-        textbox->show();
-
-        if(height >= 1)
-        {
-            height = 1;
-        }
-    }
-    else if( !visible && height > 0)
-    {
-        height -= evt.timeSinceLastFrame * 10;
-        if(height <= 0)
-        {
-            height = 0;
-            textbox->hide();
-        }
-    }
-
-    textbox->setPosition(0, (height - 1) * 0.75);
-    panel->setDimensions( 1, height * 0.75 );
-
     if(textChanged)
     {
         String text;
@@ -179,24 +152,29 @@ bool LuaConsole::frameStarted(const Ogre::FrameEvent &evt)
 
         end = start;
 
-        for(int c = 0; c < CONSOLE_LINE_COUNT; c++)
+        int line_count = 0;
+        for(int c = 0; c < CONSOLE_LINE_COUNT-1; c++)
         {
             if(end == lines.end())
                 break;
             end++;
+            line_count++;
         }
 
         for(i = start; i != end; i++)
             text += (*i) + "\n";
 
         //add the edit line with cursor
+
         string editlineText( editline.getText() + " " );
+
         if( cursor_blink )
             editlineText[editline.getPosition()] = '_';
 
-        text += interpreter->getPrompt() + editlineText;
+        mConsoleText->text( text.c_str() );
 
-        textbox->setCaption(text);
+        mPromptLine->text( ( interpreter->getPrompt() + editlineText ).c_str() );
+        mPromptLine->top( 10 + (line_count * mGlyphData->mLineHeight) );
 
         textChanged = false;
     }
@@ -224,7 +202,7 @@ void LuaConsole::print( std::string text )
         {
             lines.push_back( line );
             line.clear();
-            if( column > CONSOLE_LINE_LENGTH )
+            if( *pos != '\n' )
                 pos--;      //we want the current char for the next line
             column = 0;
         }
@@ -244,8 +222,8 @@ void LuaConsole::print( std::string text )
     }
 
     // Make sure last text printed is in view.
-    if( lines.size() > CONSOLE_LINE_COUNT )
-        start_line = lines.size() - CONSOLE_LINE_COUNT;
+    if( lines.size() > CONSOLE_LINE_COUNT - 1 )
+        start_line = lines.size() - (CONSOLE_LINE_COUNT - 1);
 
     textChanged = true;
 
