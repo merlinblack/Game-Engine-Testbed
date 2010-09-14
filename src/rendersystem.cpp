@@ -34,9 +34,10 @@ void ::RenderSystem::shutdown()
         delete mLuaResourceManager;
         delete mRoot;
         mSceneManager = 0;
-        mWindow = 0;
-        mCamera = 0;
-        mRoot   = 0;
+        mWindow   = 0;
+        mCamera   = 0;
+        mViewport = 0;
+        mRoot     = 0;
     }
 }
 
@@ -65,8 +66,8 @@ bool ::RenderSystem::initialise()
     mCamera = mSceneManager->createCamera("MainCamera");
 
     // Create one viewport, entire window
-    Viewport* vp = mWindow->addViewport(mCamera);
-    vp->setBackgroundColour(ColourValue(0,0,1));
+    mViewport = mWindow->addViewport(mCamera);
+    mViewport->setBackgroundColour(ColourValue(0,0,1));
 
     mLuaResourceManager = new LuaResourceManager();
 

@@ -21,6 +21,7 @@
 #include <string>
 #include "editstring.h"
 #include "luainterpreter.h"
+#include "Gorilla.h"
 
 class LuaConsole: public Ogre::Singleton<LuaConsole>, Ogre::FrameListener, Ogre::LogListener
 {
@@ -28,7 +29,7 @@ public:
     LuaConsole();
     virtual ~LuaConsole();
 
-    void    init(Ogre::Root *root, lua_State *L );
+    void    init(Gorilla::Screen *screen, lua_State *L );
     void    shutdown();
     void    setVisible(bool fVisible);
     bool    isVisible(){ return visible; }
@@ -53,16 +54,18 @@ public:
 protected:
     bool                    visible;
     bool                    textChanged;
-    float                   height;
     int                     start_line;
     bool                    cursor_blink;
     float                   cursor_blinkTime;
     bool                    enableLogging;
 
-    Ogre::Overlay           *overlay;
-    Ogre::OverlayContainer  *panel;
-    Ogre::OverlayElement    *textbox;
-    Ogre::Root              *root;
+    // Gorilla
+    Gorilla::Screen         *mScreen;
+    Gorilla::Layer          *mLayer;
+    Gorilla::GlyphData      *mGlyphData;
+    Gorilla::Caption        *mPromptLine;
+    Gorilla::MarkupText     *mConsoleText;
+    Gorilla::Rectangle      *mDecoration;
 
     EditString              editline;
     LuaInterpreter          *interpreter;
