@@ -5,6 +5,8 @@
  *
  * See the wiki on www.ogre3d.org
  *
+ * Updated to work with Betajaen's Gorilla system.
+ *
  * -------------------------------------------------------------------------------
  */
 
@@ -15,6 +17,7 @@
 #define CONSOLE_MAX_LINES 32000
 #define CONSOLE_MAX_HISTORY 64
 #define CONSOLE_FONT_INDEX 14
+#define CONSOLE_TAB_STOP 8
 
 using namespace Ogre;
 using namespace std;
@@ -63,16 +66,16 @@ void LuaConsole::init(Gorilla::Screen *screen, lua_State *L)
     mGlyphData = mLayer->_getGlyphData( CONSOLE_FONT_INDEX );
     
     mConsoleText = mLayer->createMarkupText( CONSOLE_FONT_INDEX, 10, 10, Ogre::StringUtil::BLANK );
-    mConsoleText->width( mScreen->getViewportWidth() - 20 );
+    mConsoleText->width( mScreen->getWidth() - 20 );
     
-    mDecoration = mLayer->createRectangle( 8, 8, mScreen->getViewportWidth() - 16,
+    mDecoration = mLayer->createRectangle( 8, 8, mScreen->getWidth() - 16,
                                            (mGlyphData->mLineHeight * CONSOLE_LINE_COUNT) + 2 );
     mDecoration->background_gradient( Gorilla::Gradient_NorthSouth,
                                       Gorilla::rgb( 128, 128, 128, 128 ),
                                       Gorilla::rgb(  64,  64,  64, 128 ) );
     mDecoration->border(2, Gorilla::rgb( 128, 128, 128, 128 ) );
     mPromptLine = mLayer->createCaption( CONSOLE_FONT_INDEX, 10, 10, interpreter->getPrompt() );
-    mPromptLine->width( mScreen->getViewportWidth() - 20 );
+    mPromptLine->width( mScreen->getWidth() - 20 );
 
     print( "%5Lua Console %3'Gorilla'%5 Edition. %RPress %3`%R (Grave) to hide." );
 
@@ -205,6 +208,19 @@ void LuaConsole::print( std::string text )
             if( *pos != '\n' )
                 pos--;      //we want the current char for the next line
             column = 0;
+        }
+        else if( *pos == '\t' )
+        {
+            // Push at least one space.
+            line.push_back(' ');
+            column++;
+
+            // fill until next multiple of CONSOLE_TAB_STOP
+            while(( column % CONSOLE_TAB_STOP ) != 0 )
+            {
+                line.push_back(' ');
+                column++;
+            }
         }
         else
         {
