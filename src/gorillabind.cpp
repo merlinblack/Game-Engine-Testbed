@@ -31,6 +31,7 @@ using Ogre::Real;
 using Ogre::Vector2;
 using Ogre::ColourValue;
 using Ogre::String;
+using Ogre::MovableObject;
 
 // Dummy class to hold enums.
 class dummy {};
@@ -90,13 +91,14 @@ void bindGorilla( lua_State *L )
             .def( "destroyScreen", &Silverback::destroyScreen )
             .def( "createScreenRenderable", &Silverback::createScreenRenderable )
             .def( "destroyScreenRenderable", &Silverback::destroyScreenRenderable ),
-            class_<LayerContainer>( "LayerContainer" )
-            .def( "createLayer", &LayerContainer::createLayer )
-            .def( "destroy", &LayerContainer::destroy ),
-            class_<Screen, LayerContainer>( "Screen" )
+            class_<Screen>( "Screen" )
+            .def( "createLayer", &Screen::createLayer )
+            .def( "destroy", &Screen::destroy )
             .def_readonly( "width", &Screen::getWidth )
             .def_readonly( "height", &Screen::getHeight ),
-            class_<ScreenRenderable, LayerContainer>( "ScreenRenderable" )
+            class_<ScreenRenderable, MovableObject>( "ScreenRenderable" )
+            .def( "createLayer", &ScreenRenderable::createLayer )
+            .def( "destroy", &ScreenRenderable::destroy )
             .def( "getBoundingRadius", &ScreenRenderable::getBoundingRadius )
             .def( "getSquaredViewDepth", &ScreenRenderable::getSquaredViewDepth ),
             class_<Layer>( "Layer" )
