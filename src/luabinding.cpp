@@ -131,8 +131,8 @@ void bindGui( lua_State *L )
         .def("hide", &Overlay::hide )
         .def("setZOrder", &Overlay::setZOrder )
         .def("add2D", &OverlayAdd2D )
-        .def("__finalize", DestroyOverlay )
-        .def("__tostring", tostringOverlay )
+        .def("__finalize", &DestroyOverlay )
+        .def("__tostring", &tostringOverlay )
         ,
 
         class_<OverlayElement, OverlayElementWrapper>("OverlayElement")
@@ -520,6 +520,20 @@ RenderWindow::FrameStats getFrameStats()
     return window->getStatistics();
 }
 
+unsigned short getNumViewports()
+{
+    RenderWindow* window = Root::getSingletonPtr()->getAutoCreatedWindow();
+
+    return window->getNumViewports();
+}
+
+Viewport* getViewport( unsigned short index )
+{
+    RenderWindow* window = Root::getSingletonPtr()->getAutoCreatedWindow();
+
+    return window->getViewport( index );
+}
+
 void bindFrameStats( lua_State* L )
 {
     module(L)
@@ -533,6 +547,20 @@ void bindFrameStats( lua_State* L )
         .def_readonly( "worstFrameTime", &RenderWindow::FrameStats::worstFrameTime )
         .def_readonly( "triangleCount", &RenderWindow::FrameStats::triangleCount )
         .def_readonly( "batchCount", &RenderWindow::FrameStats::batchCount )
+    ];
+}
+
+String ViewportToString( Viewport* )
+{
+    return "Viewport";
+}
+
+void bindViewport( lua_State *L )
+{
+    module(L)
+    [
+        class_<Viewport>("Viewport")
+        .def("__tostring", &ViewportToString)
     ];
 }
 
@@ -550,13 +578,16 @@ void bindEngine( lua_State* L )
     bindSceneManager( L );
     bindRadian( L );
     bindFrameStats( L );
+    bindViewport( L );
 
     module(L)
     [
         namespace_("Ogre")
         [
             def("getStats", &getFrameStats ),
-            def("getSceneManager", &getSceneManager)
+            def("getSceneManager", &getSceneManager ),
+            def("getNumViewports", &getNumViewports ),
+            def("getViewport", &getViewport )
         ]
     ];
 }

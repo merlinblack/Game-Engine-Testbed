@@ -175,6 +175,59 @@ void bindGorilla( lua_State *L )
                     (void (Rectangle::*)( Real, const ColourValue&, const ColourValue&,
                                                 const ColourValue&, const ColourValue& ))
                     &Rectangle::border )
+            ,
+            class_<Caption>( "Caption" )
+            .def( "intersects", &Caption::intersects )
+            .property( "left",
+                    (Real (Caption::*)() const)&Caption::left,
+                    (void (Caption::*)( const Real& ))&Caption::left )
+            .property( "top",
+                    (Real (Caption::*)() const)&Caption::top,
+                    (void (Caption::*)( const Real& ))&Caption::top )
+            .property( "width",
+                    (Real (Caption::*)() const)&Caption::width,
+                    (void (Caption::*)( const Real& ))&Caption::width )
+            .property( "height",
+                    (Real (Caption::*)() const)&Caption::height,
+                    (void (Caption::*)( const Real& ))&Caption::height )
+            .def( "size", &Caption::size )
+            .property( "text",
+                    (String (Caption::*)() const)&Caption::text,
+                    (void (Caption::*)( const String& ))&Caption::text )
+            .property( "align",
+                    (TextAlignment (Caption::*)() const )&Caption::align,
+                    (void (Caption::*)( const TextAlignment& ))&Caption::align )
+            .property( "verticalAlign",
+                    (VerticalAlignment (Caption::*)() const )&Caption::vertical_align,
+                    (void (Caption::*)( const VerticalAlignment& ))&Caption::vertical_align )
+            .property( "colour",
+                    (ColourValue (Caption::*)() const )&Caption::colour,
+                    (void (Caption::*)( const ColourValue& ))&Caption::colour )
+            .property( "background",
+                    (ColourValue (Caption::*)() const )&Caption::background,
+                    (void (Caption::*)( const ColourValue& ))&Caption::background )
+            .def( "noBackground", &Caption::no_background )
+            , 
+            class_<MarkupText>( "MarkupText" )
+            .property( "left",
+                    (Real (MarkupText::*)() const)&MarkupText::left,
+                    (void (MarkupText::*)( const Real& ))&MarkupText::left )
+            .property( "top",
+                    (Real (MarkupText::*)() const)&MarkupText::top,
+                    (void (MarkupText::*)( const Real& ))&MarkupText::top )
+            .property( "width",
+                    (Real (MarkupText::*)() const)&MarkupText::width,
+                    (void (MarkupText::*)( const Real& ))&MarkupText::width )
+            .property( "height",
+                    (Real (MarkupText::*)() const)&MarkupText::height,
+                    (void (MarkupText::*)( const Real& ))&MarkupText::height )
+            .def( "size", &MarkupText::size )
+            .property( "text",
+                    (String (MarkupText::*)() const)&MarkupText::text,
+                    (void (MarkupText::*)( const String& ))&MarkupText::text )
+            .property( "background",
+                    (ColourValue (MarkupText::*)() const )&MarkupText::background,
+                    (void (MarkupText::*)( const ColourValue& ))&MarkupText::background )
         ]
     ];
 

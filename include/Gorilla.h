@@ -29,6 +29,12 @@
 
 #include "OGRE/Ogre.h"
 
+#if OGRE_COMP == OGRE_COMPILER_GNUC
+#   define __FUNC__ __PRETTY_FUNCTION__
+#elif OGRE_COMP != OGRE_COMPILER_BORL
+#   define __FUNC__ "No function name info"
+#endif
+
 namespace Gorilla
 {
  
@@ -44,6 +50,15 @@ namespace Gorilla
  class QuadList;
  class Caption;
  class MarkupText;
+ 
+ template<typename T> struct VectorType
+ {
+#if OGRE_VERSION <= 67077 // If the version is less than or equal to 1.6.5
+  typedef std::vector<T> type;
+#else
+  typedef typename Ogre::vector<T>::type type;
+#endif
+ };
  
  namespace Colours
  {
@@ -465,10 +480,10 @@ namespace Gorilla
     */
     inline Glyph* getGlyph(Ogre::uint character) const
     {
-     character = character - mRangeBegin;
-     if (character > mRangeEnd)
-      return 0;
-     return mGlyphs[character];
+     Ogre::uint safe_character = character - mRangeBegin;
+     if (safe_character > 0 && safe_character < mGlyphs.size())
+      return mGlyphs[safe_character];
+     return 0;
     }
     
     std::vector<Glyph*>  mGlyphs;
@@ -798,7 +813,7 @@ namespace Gorilla
     */
     virtual void renderOnce() = 0;
     
-    virtual void transform(buffer<Vertex>& vertices, size_t begin, size_t end) {}
+    virtual void _transform(buffer<Vertex>& vertices, size_t begin, size_t end) {}
     
    protected:
     
@@ -837,32 +852,88 @@ namespace Gorilla
   
   class Screen : public LayerContainer, public Ogre::RenderQueueListener, public Ogre::GeneralAllocatedObject
   {
-    
    public:
     
-    Screen(Ogre::Viewport*, TextureAtlas*);
+    friend class Silverback;
+    friend class Layer;
     
-   ~Screen();
-    
-    void renderQueueEnded(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& repeatThisInvocation);
-    void _prepareRenderSystem();
-    void renderOnce();
-    void transform(buffer<Vertex>& vertices, size_t begin, size_t end);
-
+    /*! desc. getTexelOffsetX
+            Helper function to get horizontal texel offset.
+    */
     inline Ogre::Real getTexelOffsetX() const { return mRenderSystem->getHorizontalTexelOffset(); }
 
+    /*! desc. getTexelOffsetY
+            Helper function to get vertical texel offset.
+    */
     inline Ogre::Real getTexelOffsetY() const { return mRenderSystem->getVerticalTexelOffset(); }
     
+    /*! desc. getWidth
+            Get screen height in pixels.
+    */
     inline Ogre::Real getWidth() const { return mWidth; }
     
+    /*! desc. getHeight
+            Get screen height in pixels.
+    */
     inline Ogre::Real getHeight() const { return mHeight; }
     
+    /*! desc. isVisible
+            Is the screen and it's contents visible or not?
+        note.
+            If the screen is hidden, then it is not rendered which decrease the batch count by one.
+    */
+    inline bool isVisible() const { return mIsVisible; }
+    
+    /*! desc. setVisible
+            Show or hide the screen.
+    */
+    inline void setVisible(bool value) { mIsVisible = value;}
+    
+    /*! desc. hide
+            Hide the screen and the all of layers within it.
+    */
+    inline void hide() { mIsVisible = false;}
+    
+    /*! desc. show
+            Show the screen and the visible layers within it.
+    */
+    inline void show() { mIsVisible = true;}
+    
    protected:
+    
+    /*! constructor. Screen
+        desc.
+            Use Silverback::createScreen
+    */
+    Screen(Ogre::Viewport*, TextureAtlas*);
+    
+    /*! destructor. Screen
+        desc.
+            Use Silverback::destroyScreen
+    */
+   ~Screen();
+    
+    // Internal -- Not used, but required by renderQueueListener
+    void renderQueueStarted(Ogre::uint8, const Ogre::String&, bool&) {}
+    
+    // Internal -- Called by Ogre to render the screen.
+    void renderQueueEnded(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& repeatThisInvocation);
+    
+    // Internal -- Prepares RenderSystem for rendering.
+    void _prepareRenderSystem();
+    
+    // Internal -- Renders mVertexData to screen.
+    void renderOnce();
+    
+    // Internal -- Used to transform vertices using units of pixels into screen coordinates.
+    void _transform(buffer<Vertex>& vertices, size_t begin, size_t end);
+    
     Ogre::RenderOperation mRenderOp;
     Ogre::SceneManager*   mSceneMgr;
     Ogre::RenderSystem*   mRenderSystem;
     Ogre::Viewport*       mViewport;
     Ogre::Real            mWidth, mHeight, mInvWidth, mInvHeight;
+    bool                  mIsVisible;
     
   };
   
@@ -877,7 +948,7 @@ namespace Gorilla
     
     void frameStarted();
     void renderOnce();
-    void transform(buffer<Vertex>& vertices, size_t begin, size_t end);
+    void _transform(buffer<Vertex>& vertices, size_t begin, size_t end);
     void calculateBoundingBox();
 
     Ogre::Real getBoundingRadius(void) const { return mBox.getMaximum().squaredLength(); }
@@ -912,18 +983,18 @@ namespace Gorilla
    
    public:
     
-    typedef Ogre::vector<Rectangle*>::type            Rectangles;
-    typedef Ogre::VectorIterator<Rectangles>          RectangleIterator;
-    typedef Ogre::vector<Polygon*>::type              Polygons;
-    typedef Ogre::VectorIterator<Polygons>            PolygonIterator;
-    typedef Ogre::vector<LineList*>::type             LineLists;
-    typedef Ogre::VectorIterator<LineLists>           LineListIterator;
-    typedef Ogre::vector<QuadList*>::type             QuadLists;
-    typedef Ogre::VectorIterator<QuadLists>           QuadListIterator;
-    typedef Ogre::vector<Caption*>::type              Captions;
-    typedef Ogre::VectorIterator<Captions>            CaptionIterator;
-    typedef Ogre::vector<MarkupText*>::type           MarkupTexts;
-    typedef Ogre::VectorIterator<MarkupTexts>         MarkupTextIterator;
+    typedef Gorilla::VectorType<Rectangle*>::type            Rectangles;
+    typedef Ogre::VectorIterator<Rectangles>                 RectangleIterator;
+    typedef Gorilla::VectorType<Polygon*>::type              Polygons;
+    typedef Ogre::VectorIterator<Polygons>                   PolygonIterator;
+    typedef Gorilla::VectorType<LineList*>::type             LineLists;
+    typedef Ogre::VectorIterator<LineLists>                  LineListIterator;
+    typedef Gorilla::VectorType<QuadList*>::type             QuadLists;
+    typedef Ogre::VectorIterator<QuadLists>                  QuadListIterator;
+    typedef Gorilla::VectorType<Caption*>::type              Captions;
+    typedef Ogre::VectorIterator<Captions>                   CaptionIterator;
+    typedef Gorilla::VectorType<MarkupText*>::type           MarkupTexts;
+    typedef Ogre::VectorIterator<MarkupTexts>                MarkupTextIterator;
     
     /*! function. isVisible
         desc.
@@ -1594,6 +1665,10 @@ namespace Gorilla
       texelOffsetX /= mLayer->_getTextureSize().x;
       texelOffsetY /= mLayer->_getTextureSize().y;
       Sprite* sprite = mLayer->_getSprite(sprite_name_or_none);
+
+      if( !sprite )
+        OGRE_EXCEPT( Ogre::Exception::ERR_ITEM_NOT_FOUND, "Sprite name not found", __FUNC__ );
+
       mUV[0].x = mUV[3].x = sprite->uvLeft - texelOffsetX;
       mUV[0].y = mUV[1].y = sprite->uvTop - texelOffsetY;
       mUV[1].x = mUV[2].x = sprite->uvRight + texelOffsetX;
