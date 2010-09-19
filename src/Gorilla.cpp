@@ -65,12 +65,12 @@ template<> Gorilla::Silverback* Ogre::Singleton<Gorilla::Silverback>::ms_Singlet
 
 namespace Gorilla
 {
- 
+  
  enum
  {
   SCREEN_RENDERQUEUE = Ogre::RENDER_QUEUE_OVERLAY
  };
- 
+
  Ogre::ColourValue rgb(Ogre::uchar r, Ogre::uchar g, Ogre::uchar b, Ogre::uchar a )
  {
   static const Ogre::Real inv255 = Ogre::Real(0.00392156863);
@@ -183,9 +183,11 @@ namespace Gorilla
      Ogre::StringUtil::trim(textureName);
      Ogre::StringUtil::trim(groupName);
     }
-    
+#if OGRE_VERSION <= 67077 // If the version is less than or equal to 1.6.5
+    mTexture = Ogre::TextureManager::getSingletonPtr()->getByName(data);
+#else
     mTexture = Ogre::TextureManager::getSingletonPtr()->getByName(data, groupName);
-    
+#endif
     if (mTexture.isNull())
      mTexture = Ogre::TextureManager::getSingletonPtr()->load(textureName, groupName);
     
@@ -938,7 +940,7 @@ namespace Gorilla
  
  
  Screen::Screen(Ogre::Viewport* viewport, TextureAtlas* atlas)
- : LayerContainer(atlas), mViewport(viewport)
+ : LayerContainer(atlas), mViewport(viewport), mIsVisible(true)
  {
   mRenderOpPtr = &mRenderOp;
   mSceneMgr = mViewport->getCamera()->getSceneManager();
@@ -963,7 +965,8 @@ namespace Gorilla
  {
   if (queueGroupId != SCREEN_RENDERQUEUE)
    return;
-  renderOnce();
+  if (mIsVisible && mLayers.size())
+   renderOnce();
  }
  
  void Screen::_prepareRenderSystem()
@@ -986,7 +989,7 @@ namespace Gorilla
   }
  }
  
- void  Screen::transform(buffer<Vertex>& vertices, size_t begin, size_t end) 
+ void  Screen::_transform(buffer<Vertex>& vertices, size_t begin, size_t end) 
  {
   for (size_t i = begin; i < end; i++)
   {
@@ -1052,7 +1055,7 @@ namespace Gorilla
  
  }
  
- void ScreenRenderable::transform(buffer<Vertex>& vertices, size_t begin, size_t end)
+ void ScreenRenderable::_transform(buffer<Vertex>& vertices, size_t begin, size_t end)
  {
   Ogre::Vector2 halfSize = mMaxSize * 0.5;
   for (size_t i = begin; i < end; i++)
@@ -1061,8 +1064,6 @@ namespace Gorilla
    vertices[i].position.y = (vertices[i].position.y * -0.01f) + halfSize.y;
   }
  }
- 
- 
  
  
  Layer::Layer(Ogre::uint index, LayerContainer* parent)
@@ -1326,7 +1327,7 @@ namespace Gorilla
   }
   
   // Render/redraw caption
-  for (MarkupTextIterator::iterator it = mMarkupTexts.begin(); it != mMarkupTexts.end(); it++)
+  for (MarkupTexts::iterator it = mMarkupTexts.begin(); it != mMarkupTexts.end(); it++)
   {
    
    if ((*it)->mTextDirty || force)
@@ -1346,7 +1347,7 @@ namespace Gorilla
     vertices[i].colour.a *= mAlphaModifier;
   }
   
-  mParent->transform(vertices, begin, vertices.size());
+  mParent->_transform(vertices, begin, vertices.size());
   
  }
  
@@ -1375,9 +1376,9 @@ namespace Gorilla
 
   Ogre::Real texelOffsetX = mLayer->_getTexelX(), texelOffsetY = mLayer->_getTexelY();
   Ogre::Vector2 a, b, c, d;
-  a.x = mLeft - texelOffsetX;  a.y = mTop - texelOffsetY;
-  b.x = mRight + texelOffsetX; b.y = mTop - texelOffsetY;
-  c.x = mLeft - texelOffsetX;  c.y = mBottom + texelOffsetY;
+  a.x = mLeft  + texelOffsetX; a.y = mTop    + texelOffsetY;
+  b.x = mRight + texelOffsetX; b.y = mTop    + texelOffsetY;
+  c.x = mLeft  + texelOffsetX; c.y = mBottom + texelOffsetY;
   d.x = mRight + texelOffsetX; d.y = mBottom + texelOffsetY;
   
   // Border
@@ -1915,6 +1916,8 @@ void  QuadList::border(Ogre::Real x, Ogre::Real y, Ogre::Real w, Ogre::Real h, O
    }
    
    glyph = mGlyphData->getGlyph(thisChar);
+   if (glyph == 0)
+    continue;
    kerning = glyph->getKerning(lastChar);
    if (kerning == 0)
     kerning = mGlyphData->mLetterSpacing;
@@ -2022,6 +2025,8 @@ void  QuadList::border(Ogre::Real x, Ogre::Real y, Ogre::Real w, Ogre::Real h, O
    }
    
    glyph = mGlyphData->getGlyph(thisChar);
+   if (glyph == 0)
+    continue;
    kerning = glyph->getKerning(lastChar);
    if (kerning == 0)
     kerning = mGlyphData->mLetterSpacing;
