@@ -569,17 +569,3 @@ kerning_58 119 -1
 kerning_46 121 -4
 kerning_58 121 -2
 
-
-[Sprites]
-mousepointer 54 464 15 22
-ogrehead 0 464 48 48
-coco 3 367 64 64
-crosshair 49 487 22 22
-shadow_n 110 460 1 5
-shadow_ne 111 460 5 5
-shadow_e 111 465 5 1
-shadow_se 111 466 5 5
-shadow_s 110 466 1 5
-shadow_sw 105 466 5 5
-shadow_w 105 465 5 1
-shadow_nw 105 460 5 5
