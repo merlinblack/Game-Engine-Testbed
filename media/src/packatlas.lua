@@ -54,7 +54,8 @@ function imageArea( image )
 end
 
 function compare( a, b )
-    return imageArea(a) > imageArea(b)
+    return a.h > b.h
+    --return imageArea(a) > imageArea(b)
 end
 
 function placeImage( index, x, y )
@@ -79,7 +80,7 @@ end
 
 function showlists()
     print()
-    print 'Boxes List'
+    print 'Remaining List'
     table.foreach( images, function( i, v ) print( v.x, v.y, v.w, v.h, v.image ) end ) 
     print()
     print 'Placed List'
@@ -100,11 +101,11 @@ function fillcanvas( canvas )
         if fits( canvas, v ) then
             print( 'Placing image', v.image, 'at', canvas.x, canvas.y )
             placeImage( i, canvas.x, canvas.y )
+            -- Horizontal
+            local subcanvas = { x = canvas.x + v.w, y = canvas.y, w = canvas.w - v.w, h = v.h } 
+            fillcanvas( subcanvas )
             -- Vertical
             local subcanvas = { x = canvas.x, y = canvas.y + v.h, w = canvas.w, h = canvas.h - v.h }
-            fillcanvas( subcanvas )
-            -- Horizontal
-            local subcanvas = { x = canvas.x + v.w, y = canvas.y, w = canvas.w - v.w, h = canvas.h } 
             fillcanvas( subcanvas )
 
             return
@@ -162,6 +163,7 @@ showlists()
 
 if #images ~= 0 then
     print( 'Failed to fit all images.' )
+    processPlacedImages()
 else
     print( 'Fited all images within a canvas of ' .. canvas.w ..'x'..canvas.h )
     processPlacedImages()

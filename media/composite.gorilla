@@ -1,6 +1,6 @@
 [Texture]
-file dejavu.png
-whitepixel 510 510
+file composite.png
+whitepixel 502 275
 
 [Font.14]
 lineheight 22
@@ -571,15 +571,15 @@ kerning_58 121 -2
 
 [Sprites]
 coco 0 274 64 64
-button.pressed 0 338 128 32
-button.normal 0 370 128 32
-button.hover 0 402 128 32
-ogrehead 0 434 64 64
-white 0 498 4 4
-yellow.arrow 64 434 64 48
-crosshair 64 482 22 23
-white.arrow 86 482 15 23
-icon.info 101 482 16 16
-icon.chk.green 117 482 16 16
-icon.chk.red 133 482 16 16
-icon.exit 149 482 16 16
+ogrehead 64 274 64 64
+yellow.arrow 128 274 64 48
+button.hover 192 274 128 32
+button.pressed 320 274 128 32
+white.arrow 448 274 15 23
+crosshair 463 274 22 23
+icon.info 485 274 16 16
+white 501 274 4 4
+icon.chk.red 192 306 16 16
+icon.exit 208 306 16 16
+icon.chk.green 224 306 16 16
+button.normal 0 338 128 32
