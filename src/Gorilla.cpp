@@ -282,7 +282,7 @@ namespace Gorilla
   }
   
 
-  for (Ogre::uint index = glyphData->mRangeBegin; index < glyphData->mRangeEnd; index++)
+  for (Ogre::uint index = glyphData->mRangeBegin; index <= glyphData->mRangeEnd; index++)
   {
    
    Glyph* glyph = OGRE_NEW Glyph();
@@ -981,6 +981,15 @@ namespace Gorilla
  {
   bool force = false;
   // force == true if viewport size changed.
+  if (mWidth != mViewport->getActualWidth() || mHeight != mViewport->getActualHeight())
+  {
+   mWidth = mViewport->getActualWidth();
+   mHeight = mViewport->getActualHeight();
+   mInvWidth = 1.0f / mWidth;
+   mInvHeight = 1.0f / mHeight;
+   force = true;
+  }
+  
   _renderVertices(force);
   if (mRenderOp.vertexData->vertexCount)
   {

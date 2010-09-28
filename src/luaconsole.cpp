@@ -17,7 +17,7 @@
 #define CONSOLE_MAX_LINES 32000
 #define CONSOLE_MAX_HISTORY 64
 #define CONSOLE_FONT_INDEX 14
-#define CONSOLE_TAB_STOP 8
+#define CONSOLE_TAB_STOP 16
 
 using namespace Ogre;
 using namespace std;
