@@ -1,4 +1,3 @@
-yellow.arrow.png
 button.hover.png
 button.normal.png
 button.pressed.png
@@ -11,3 +10,4 @@ icon.info.png
 ogrehead.png
 white.arrow.png
 white.png
+yellow.arrow.png
