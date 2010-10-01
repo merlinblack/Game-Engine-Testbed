@@ -2003,7 +2003,7 @@ void  QuadList::border(Ogre::Real x, Ogre::Real y, Ogre::Real w, Ogre::Real h, O
   else if (mAlignment == TextAlign_Centre)
   {
    _calculateDrawSize(knownSize);
-   cursorX = mLeft + (mWidth * 0.5) - (knownSize.x * 0.5f);
+   cursorX = mLeft + (mWidth * 0.5f) - (knownSize.x * 0.5f);
    
    if (mWidth)
    {
@@ -2036,6 +2036,9 @@ void  QuadList::border(Ogre::Real x, Ogre::Real y, Ogre::Real w, Ogre::Real h, O
   Vertex temp;
   mClippedLeftIndex = std::string::npos;
   mClippedRightIndex = std::string::npos;
+
+  cursorX = Ogre::Math::Floor( cursorX );
+  cursorY = Ogre::Math::Floor( cursorY );
   
   for (size_t i=0;i < mText.size();i++)
   {

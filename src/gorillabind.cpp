@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include "Gorilla.h"
 #include <luabind/luabind.hpp>
+#include "ward_ptr.h"
 
 using namespace luabind;
 using namespace Gorilla;
@@ -35,6 +36,48 @@ using Ogre::MovableObject;
 
 // Dummy class to hold enums.
 class dummy {};
+
+// Glue create and destroy functions, to allow the use of ward pointers.
+
+ward_ptr<Rectangle> createRectangle( Layer *layer, Real x, Real y, Real width, Real height )
+{
+    return ward_ptr<Rectangle>( layer->createRectangle( x, y, width, height ) );
+}
+
+ward_ptr<Rectangle> createRectangle( Layer *layer, const Vector2& a, const Vector2& b )
+{
+    return layer->createRectangle( a, b );
+}
+
+void destroyRectangle( Layer *layer, ward_ptr<Rectangle> ptr )
+{
+    layer->destroyRectangle( ptr.get() );
+    ptr.invalidate();
+}
+
+ward_ptr<Caption> createCaption( Layer* layer, Ogre::uint index, Real x, Real y, const Ogre::String& text )
+{
+    return layer->createCaption( index, x, y, text );
+}
+
+void destroyCaption( Layer *layer, ward_ptr<Caption> ptr )
+{
+    layer->destroyCaption( ptr.get() );
+    ptr.invalidate();
+}
+
+ward_ptr<MarkupText> createMarkupText( Layer *layer, Ogre::uint index, Real x, Real y, const Ogre::String& text )
+{
+    return layer->createMarkupText( index, x, y, text );
+}
+
+void destroyMarkupText( Layer *layer, ward_ptr<MarkupText> ptr )
+{
+    layer->destroyMarkupText( ptr.get() );
+    ptr.invalidate();
+}
+
+// The big binding!
 
 void bindGorilla( lua_State *L )
 {
@@ -107,31 +150,16 @@ void bindGorilla( lua_State *L )
             .def( "hide", &Layer::hide )
             .property( "alphaModifier", &Layer::getAlphaModifier, &Layer::setAlphaModifier )
             .def( "createRectangle", 
-                    (Rectangle* (Layer::*)(Real, Real, Real, Real))&Layer::createRectangle )
+                    (ward_ptr<Rectangle>(*)(Layer*, Real, Real, Real, Real))&createRectangle )
             .def( "createRectangle",
-                    (Rectangle* (Layer::*)(const Vector2&, const Vector2&))&Layer::createRectangle )
-            .def( "destroyRectangle", &Layer::destroyRectangle )
-            .def( "destroyAllRectangles", &Layer::destroyAllRectangles )
+                    (ward_ptr<Rectangle>(*)(Layer*, const Vector2&, const Vector2&))&createRectangle )
+            .def( "destroyRectangle", &destroyRectangle )
             // getRectangels - will need some sort of converter
-            .def( "createPolygon", &Layer::createPolygon )
-            .def( "destroyPolygon", &Layer::destroyPolygon )
-            .def( "destroyAllPolygons", &Layer::destroyAllPolygons )
-            // getPolygons
-            .def( "createLineList", &Layer::createLineList )
-            .def( "destroyLineList", &Layer::destroyLineList )
-            .def( "destroyAllLineLists", &Layer::destroyAllLineLists )
-            // getLineLists
-            .def( "createQuadList", &Layer::createQuadList )
-            .def( "destroyQuadList", &Layer::destroyQuadList )
-            .def( "destroyAllQuadLists", &Layer::destroyAllQuadLists )
-            // getQuadLists
-            .def( "createCaption", &Layer::createCaption )
-            .def( "destroyCaption", &Layer::destroyCaption )
-            .def( "destroyAllCaptions", &Layer::destroyAllCaptions )
+            .def( "createCaption", createCaption )
+            .def( "destroyCaption", destroyCaption )
             // getCaptions
-            .def( "createMarkupText", &Layer::createMarkupText )
-            .def( "destroyMarkupText", &Layer::destroyMarkupText )
-            .def( "destroyAllMarkupTexts", &Layer::destroyAllMarkupTexts )
+            .def( "createMarkupText", createMarkupText )
+            .def( "destroyMarkupText", destroyMarkupText )
             // getMarkupTexts
             ,
             class_<Rectangle>( "Rectangle" )
