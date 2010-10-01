@@ -14,6 +14,6 @@ convert icon.chk.green.svg 16 16
 convert icon.chk.red.svg 16 16 
 convert icon.exit.svg 16 16 
 convert icon.info.svg 16 16 
-convert button.hover.svg 128 32
-convert button.normal.svg 128 32
-convert button.pressed.svg 128 32
+convert button.hover.svg 80 24
+convert button.normal.svg 80 24
+convert button.pressed.svg 80 24
