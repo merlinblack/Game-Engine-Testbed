@@ -44,117 +44,6 @@ using namespace Ogre;
 #define LUA_STATIC( class, name ) table[#name] = class::name
 #define LUA_STATIC_END }
 
-void AddChild( OverlayElement* element, OverlayElement* child )
-{
-    OverlayContainer* container = dynamic_cast<OverlayContainer*>(element);
-
-    if( container )
-    {
-        if( child )
-            container->addChild( child );
-        else
-            LogManager::getSingleton().stream() << "Whoops! nil child given.";
-    }
-    else
-    {
-        LogManager::getSingleton().stream() << "Element is not a container type.";
-    }
-}
-
-OverlayManager* GetOverlayManager()
-{
-    return OverlayManager::getSingletonPtr();
-}
-
-void ElementHelp( OverlayElement* element )
-{
-    ParameterList list = element->getParameters();
-
-    ParameterList::iterator iter;
-
-    for( iter = list.begin(); iter != list.end(); iter++ )
-    {
-        LogManager::getSingleton().stream() << iter->name << "\t" << iter->description << "\n";
-    }
-}
-
-void OverlayAdd2D( Overlay* overlay, OverlayElement* element )
-{
-    OverlayContainer* container = dynamic_cast<OverlayContainer*>(element);
-
-    if( container )
-    {
-        overlay->add2D( container );
-    }
-    else
-    {
-        LogManager::getSingleton().stream() << "Element is not a container type.";
-    }
-}
-
-void DestroyOverlay( Overlay* overlay )
-{
-    //LogManager::getSingleton().stream() << "Destroying overlay: " << overlay->getName();
-    OverlayManager::getSingleton().destroy( overlay );
-}
-
-void DestroyOverlayElement( OverlayElement* element )
-{
-    //LogManager::getSingleton().stream() << "Destroying overlay element: " << element->getName();
-    OverlayManager::getSingleton().destroyOverlayElement( element );
-}
-
-String tostringOverlay( Overlay* overlay )
-{
-    return "Overlay: " + overlay->getName();
-}
-
-String tostringOverlayElement( OverlayElement* element )
-{
-    return "Overlay Element: " + element->getName();
-}
-
-class OverlayElementWrapper : public OverlayElement, public wrap_base
-{
-};
-
-class OverlayWrapper : public Overlay, public wrap_base
-{
-};
-
-void bindGui( lua_State *L )
-{
-    module(L)
-    [
-        class_<Overlay, OverlayWrapper>("OgreOverlay")
-        .def("show", &Overlay::show )
-        .def("hide", &Overlay::hide )
-        .def("setZOrder", &Overlay::setZOrder )
-        .def("add2D", &OverlayAdd2D )
-        .def("__finalize", &DestroyOverlay )
-        .def("__tostring", &tostringOverlay )
-        ,
-
-        class_<OverlayElement, OverlayElementWrapper>("OverlayElement")
-        .def("setPosition", &OverlayElement::setPosition )
-        .def("setDimensions", &OverlayElement::setDimensions )
-        .def("setMaterialName", &OverlayElement::setMaterialName )
-        .def("setParameter", &OverlayElement::setParameter )
-        .def("addChild", &AddChild )
-        .def("contains", &OverlayElement::contains )
-        .def("help", &ElementHelp )
-        .def("__finalize", DestroyOverlayElement )
-        .def("__tostring", tostringOverlayElement )
-        ,
-
-        class_<OverlayManager>("OverlayManager")
-        .def("createOverlay", &OverlayManager::create )
-        .def("createElement", &OverlayManager::createOverlayElement )
-        ,
-        def("getOverlayManager", &GetOverlayManager )
-    ];
-}
-
 void bindQuaternion( lua_State* L )
 {
     module(L)
@@ -569,7 +458,6 @@ void bindViewport( lua_State *L )
 // Keep this at the bottom so we don't need prototypes for other bind functions.
 void bindEngine( lua_State* L )
 {
-    bindGui( L );
     bindQuaternion( L );
     bindVector3( L );
     bindVector2( L );
