@@ -33,6 +33,7 @@ THE SOFTWARE.
 void bindEngine( lua_State* L ); // From luabindings.cpp
 void bindAnimation( lua_State* L ); // From animationbinding.cpp
 void bindNavigationMesh( lua_State* L); // From navmeshbinding.cpp
+void bindGorilla( lua_State *L ); // From gorillabinding.cpp
 
 int ScriptingSystem::GUID = 0;
 
@@ -128,6 +129,7 @@ void ScriptingSystem::initialise()
     bindGameEntityClasses( mL );
     bindAnimation( mL );
     bindNavigationMesh( mL );
+    bindGorilla( mL );
 
     LuaResourcePtr mainlua = LuaResourceManager::getSingleton().load( "main.lua" );
 

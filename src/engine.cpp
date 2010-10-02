@@ -60,6 +60,7 @@ Engine::~Engine()
     gameEntityManager   .shutdown();
     scriptingSystem     .shutdown();
     inputSystem         .shutdown();
+    delete mGorilla;
     renderSystem        .shutdown();
 }
 
@@ -81,7 +82,12 @@ bool Engine::initialise()
 
     renderSystem.addFrameListener( &scriptingSystem );
 
-    console.init( renderSystem.getRoot(), scriptingSystem.getInterpreter() );
+    // Init Gorilla
+    mGorilla = new Gorilla::Silverback();
+    mGorilla->loadAtlas("atlas");
+    mGorillaScreen = mGorilla->createScreen( renderSystem.getViewport(), "atlas");
+
+    console.init( mGorillaScreen, scriptingSystem.getInterpreter() );
     bindLuaConsole( scriptingSystem.getInterpreter() );
 
     gameEntityManager.initialise();

@@ -35,6 +35,7 @@ class RenderSystem : public EventListenerSender
     Ogre::SceneManager* mSceneManager;
     Ogre::RenderWindow* mWindow;
     Ogre::Camera* mCamera;
+    Ogre::Viewport* mViewport;
     LuaResourceManager* mLuaResourceManager;
 
 public:
@@ -50,6 +51,7 @@ public:
     bool initialise();
 
     Ogre::RenderWindow* getWindow() { return mWindow; }
+    Ogre::Viewport* getViewport() { return mViewport; } 
     Ogre::Root* getRoot() { return mRoot; }
     void addFrameListener( Ogre::FrameListener *listener ) { mRoot->addFrameListener( listener ); }
 

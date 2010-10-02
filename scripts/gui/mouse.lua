@@ -1,22 +1,16 @@
+mouse={}
+
 function setupMouse()
-    local mgr=getOverlayManager()
-    mouseGui=mgr:createOverlay('MouseOverlay')
-    mousePointer=mgr:createElement('Panel','MouseCursor',false)
-    mousePointer:setParameter('material','mouse/arrow')
-    mousePointer:setParameter('metrics_mode','pixels')
-    mousePointer:setParameter('width','64')
-    mousePointer:setParameter('height','48')
-    mouseGui:add2D(mousePointer)
-    mouseGui:setZOrder(650)
-    --mouseGui:show()
+    mouse.layer = gui.screen:createLayer(15)
+    mouse.pointer = mouse.layer:createRectangle( 0, 0, 64, 48 )
+    mouse.pointer : backgroundImage( 'yellow.arrow' )
 end
 
-mouse={}
 function mouse.show()
     mouse.i = (mouse.i or 0 ) + 1
 
     if mouse.i > 0 then
-        mouseGui:show()
+        mouse.layer:show()
     end
 end
 
@@ -26,13 +20,12 @@ function mouse.hide()
         mouse.i = 0
     end
     if mouse.i == 0 then 
-        mouseGui:hide()
+        mouse.layer:hide()
     end
 end
     
 
 function setMouseCursorPosition( x, y )
-    mousePointer:setPosition( x-32, y-24 )
+    mouse.pointer.left = x - 32
+    mouse.pointer.top = y - 24
 end
-
-createTask( setupMouse )
