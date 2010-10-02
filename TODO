@@ -16,3 +16,6 @@ Mouse picking of scene objects.
 
 Change GUI mouse code to return true, if the mouse fell in side a "dialog".  Otherwise false.
 
+Switch to using Betajaen's Gorilla, instead of Ogre overlays.
+-------------------------------------------------------------
+DONE!
