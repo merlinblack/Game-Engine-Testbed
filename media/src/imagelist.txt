@@ -1,0 +1,13 @@
+button.hover.png
+button.normal.png
+button.pressed.png
+coco.png
+crosshair.png
+checkbox.true.png
+checkbox.false.png
+icon.exit.png
+icon.info.png
+ogrehead.png
+white.arrow.png
+white.png
+yellow.arrow.png

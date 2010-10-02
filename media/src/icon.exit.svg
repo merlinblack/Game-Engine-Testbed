@@ -14,7 +14,7 @@
    height="323.23865"
    id="svg2"
    version="1.1"
-   inkscape:version="0.47pre4 r22446"
+   inkscape:version="0.47 r22583"
    sodipodi:docname="icon.exit.svg"
    inkscape:export-filename="/home/nigel/prog/engine/media/icon.exit.png"
    inkscape:export-xdpi="17.82"
@@ -60,15 +60,6 @@
        y2="218.58003"
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(-2.0203051,-24.243661)" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3604"
-       id="linearGradient3621"
-       x1="161.875"
-       y1="301.125"
-       x2="161.875"
-       y2="210.40625"
-       gradientUnits="userSpaceOnUse" />
     <inkscape:perspective
        id="perspective2843"
        inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
@@ -169,6 +160,13 @@
        id="linearGradient2879"
        xlink:href="#linearGradient2866"
        inkscape:collect="always" />
+    <inkscape:perspective
+       id="perspective3630"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -178,15 +176,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="297.98134"
-     inkscape:cy="-13.287019"
+     inkscape:cx="120.19449"
+     inkscape:cy="148.33739"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1600"
-     inkscape:window-height="1125"
+     inkscape:window-width="1024"
+     inkscape:window-height="693"
      inkscape:window-x="0"
-     inkscape:window-y="26"
+     inkscape:window-y="24"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
@@ -196,7 +194,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -260,9 +258,8 @@
        d="m 200.23097,235.43154 -17.1875,29.75 32.375,18.6875 6.5625,-11.34375 136.46875,78.78125 -6.5625,11.34375 29.75,17.1875 18.1875,-31.5 -29.75,-17.15625 -7.0625,12.21875 -136.46875,-78.78125 6.0625,-10.5 -32.375,-18.6875 z"
        id="rect2839" />
     <path
-       style="fill:url(#linearGradient3621);stroke:none;stroke-opacity:1;fill-opacity:1"
-       d="M 315.0625 210.90625 C 268.7996 229.12956 215.96087 239.46875 159.875 239.46875 C 105.37231 239.46875 53.986638 229.71367 8.6875 212.4375 C 15.563554 233.13635 26.504036 251.98493 40.59375 268 C 75.252797 288.7463 115.47952 300.625 158.40625 300.625 C 207.0523 300.625 252.24804 285.37322 289.78125 259.25 C 300.76681 244.84927 309.40297 228.5369 315.0625 210.90625 z "
-       transform="translate(132.84015,98.278198)"
-       id="path2816" />
+       style="fill:#000000;fill-opacity:0.40000000000000002;stroke:#afafaf;stroke-opacity:1;stroke-width:0;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m 449.31465,307.93603 c -45.87496,21.84396 -98.12997,34.21875 -153.5625,34.21875 -54.50269,0 -105.88836,-11.95855 -151.1875,-33.125 2.75931,10.17674 6.17829,20.00622 10.1875,29.375 14.6131,26.13507 36.3051,47.77574 62.46875,62.34375 24.1433,10.59051 50.07143,16.34375 77.0625,16.34375 31.36514,0 61.28887,-7.77709 88.65625,-21.875 31.25415,-20.24177 55.05814,-50.99981 66.375,-87.28125 z"
+       id="path3612-4" />
   </g>
 </svg>

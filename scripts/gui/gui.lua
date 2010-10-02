@@ -1,9 +1,9 @@
 -- Basic GUI parts.
 require 'gui/panel'
 require 'gui/text'
+require 'gui/markup'
 require 'gui/button'
 require 'gui/checkbox'
-require 'gui/overlay'
 require 'gui/control'
 require 'gui/mouse'
 require 'gui/keybinding'
