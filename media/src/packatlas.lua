@@ -69,12 +69,12 @@ function placeImage( index, x, y )
 end
 
 function fits( canvas, image )
-    print( 'Check fit:', image.w, image.h, canvas.w, canvas.h )
+    --print( 'Check fit:', image.w, image.h, canvas.w, canvas.h )
     if image.w <= canvas.w and image.h <= canvas.h then
-        print 'Yes'
+        --print 'Yes'
         return true
     end
-    print 'No'
+    --print 'No'
     return false
 end
 
@@ -96,10 +96,10 @@ function fillcanvas( canvas )
     if canvas.w <= 0 then return end
     if canvas.h <= 0 then return end
 
-    print( 'Canvas ', canvas.x, canvas.y, canvas.w, canvas.h )
+    --print( 'Canvas ', canvas.x, canvas.y, canvas.w, canvas.h )
     for i, v in ipairs( images ) do
         if fits( canvas, v ) then
-            print( 'Placing image', v.image, 'at', canvas.x, canvas.y )
+            --print( 'Placing image', v.image, 'at', canvas.x, canvas.y )
             placeImage( i, canvas.x, canvas.y )
             -- Horizontal
             local subcanvas = { x = canvas.x + v.w, y = canvas.y, w = canvas.w - v.w, h = v.h } 
@@ -113,24 +113,35 @@ function fillcanvas( canvas )
     end
 end
 
+function getWhitePixelPosition()
+    -- Find the whitepixel image, and offset into it.
+    local whiteImage
+
+    table.foreach( placed, function(k,v) if v.image == 'white.png' then whiteImage = v end end )
+
+    if whiteImage == nil then error 'Could not find white pixel image!' end
+
+    return (whiteImage.x + 2) .. ' ' .. ( whiteImage.y + 2 )
+end
+
 function compositePlacedImage( image, gorillaFile )
 
     print( 'Compositing image from ' .. image.image )
 
     local cmd, desc
     cmd = 'composite -geometry +' .. image.x .. '+' .. image.y ..' ' .. image.image
-    cmd = cmd .. ' composite.png composite.png'
+    cmd = cmd .. ' ' .. compositeFile .. '.png ' .. compositeFile .. '.png'
     os.execute( cmd )
     
     desc = string.sub( image.image, 1, string.find( image.image, '.png' )-1 )
     desc = desc .. ' ' .. image.x .. ' ' .. image.y
-    desc = desc ..' ' .. image.w .. ' ' .. image.h
+    desc = desc .. ' ' .. image.w .. ' ' .. image.h
     gorillaFile:write( desc .. '\n' )
 end
 
 function processPlacedImages()
-    os.execute( 'cp '..canvas.image..' composite.png' )
-    local gorillaFile = io.open( 'composite.gorilla', 'w+' )
+    os.execute( 'cp ' .. canvas.image .. ' ' .. compositeFile .. '.png' )
+    local gorillaFile = io.open( compositeFile .. '.gorilla', 'w+' )
 
     -- Write info from canvas's gorilla file (font stuff)
     local canvasGorilla = io.open( canvas.gorilla )
@@ -141,11 +152,17 @@ function processPlacedImages()
 
     table.foreach( placed, function(k, v) compositePlacedImage( v, gorillaFile ) end )
     
+    gorillaFile:write( '[Texture]\n' )
+    gorillaFile:write( 'file ' .. compositeFile .. '.png\n' )
+    gorillaFile:write( 'whitepixel ' .. getWhitePixelPosition() .. '\n' )
+    gorillaFile:write( '\n' )
+    
     gorillaFile:close()
 end
 
 canvas = { x=0, y=0, image = 'dejavu.png', gorilla='dejavu.gorilla' }
 canvas.w, canvas.h = getSize( canvas.image )
+compositeFile = 'atlas'
 
 getFiles( 'imagelist.txt' )
 

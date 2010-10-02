@@ -1,7 +1,3 @@
-[Texture]
-file composite.png
-whitepixel 510 510
-
 [Font.14]
 lineheight 22
 spacelength 6
@@ -583,3 +579,7 @@ icon.chk.red 485 274 16 16
 white 501 274 4 4
 icon.exit 192 298 16 16
 icon.chk.green 208 298 16 16
+[Texture]
+file atlas.png
+whitepixel 503 276
+

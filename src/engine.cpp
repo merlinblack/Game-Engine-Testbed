@@ -84,8 +84,8 @@ bool Engine::initialise()
 
     // Init Gorilla
     mGorilla = new Gorilla::Silverback();
-    mGorilla->loadAtlas("dejavu");
-    mGorillaScreen = mGorilla->createScreen( renderSystem.getViewport(), "dejavu");
+    mGorilla->loadAtlas("atlas");
+    mGorillaScreen = mGorilla->createScreen( renderSystem.getViewport(), "atlas");
 
     console.init( mGorillaScreen, scriptingSystem.getInterpreter() );
     bindLuaConsole( scriptingSystem.getInterpreter() );
