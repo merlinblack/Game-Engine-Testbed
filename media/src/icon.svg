@@ -14,7 +14,7 @@
    height="323.23865"
    id="svg2"
    version="1.1"
-   inkscape:version="0.47pre4 r22446"
+   inkscape:version="0.47 r22583"
    sodipodi:docname="icon.svg"
    inkscape:export-filename="/home/nigel/prog/engine/media/icon.info.png"
    inkscape:export-xdpi="8.9099998"
@@ -26,11 +26,11 @@
       <stop
          id="stop3606"
          offset="0"
-         style="stop-color:#ffffff;stop-opacity:0;" />
+         style="stop-color:#000000;stop-opacity:0;" />
       <stop
          id="stop3608"
          offset="1"
-         style="stop-color:#ffffff;stop-opacity:0.36842105;" />
+         style="stop-color:#000000;stop-opacity:0.29411766;" />
     </linearGradient>
     <linearGradient
        id="linearGradient2841">
@@ -68,7 +68,15 @@
        y1="301.125"
        x2="161.875"
        y2="210.40625"
-       gradientUnits="userSpaceOnUse" />
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1,0,0,1.4165868,0,-87.860753)" />
+    <inkscape:perspective
+       id="perspective3603"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -79,14 +87,14 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
      inkscape:cx="297.98134"
-     inkscape:cy="-13.287019"
+     inkscape:cy="148.33739"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1600"
-     inkscape:window-height="1125"
+     inkscape:window-width="1024"
+     inkscape:window-height="693"
      inkscape:window-x="0"
-     inkscape:window-y="26"
+     inkscape:window-y="24"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
@@ -96,7 +104,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -121,8 +129,8 @@
        d="m 293.44923,120.99261 c -55.67973,0 -104.74634,28.2452 -133.6875,71.1875 37.24563,-19.33772 83.10335,-30.78125 132.6875,-30.78125 50.98251,0 97.98826,12.09735 135.78125,32.4375 -28.78831,-43.86408 -78.39397,-72.84375 -134.78125,-72.84375 z"
        id="path2818" />
     <path
-       style="fill:url(#linearGradient3621);stroke:none;stroke-opacity:1;fill-opacity:1"
-       d="M 315.0625 210.90625 C 268.7996 229.12956 215.96087 239.46875 159.875 239.46875 C 105.37231 239.46875 53.986638 229.71367 8.6875 212.4375 C 15.563554 233.13635 26.504036 251.98493 40.59375 268 C 75.252797 288.7463 115.47952 300.625 158.40625 300.625 C 207.0523 300.625 252.24804 285.37322 289.78125 259.25 C 300.76681 244.84927 309.40297 228.5369 315.0625 210.90625 z "
+       style="fill:url(#linearGradient3621);fill-opacity:1;stroke:none"
+       d="M 314.65625 211.125 C 268.48992 236.79982 215.79752 251.375 159.875 251.375 C 105.64883 251.375 54.505687 237.67889 9.375 213.4375 C 31.245909 276.46959 91.148162 321.71875 161.625 321.71875 C 232.96253 321.71875 293.46279 275.36235 314.65625 211.125 z "
        transform="translate(132.84015,98.278198)"
        id="path2816" />
   </g>

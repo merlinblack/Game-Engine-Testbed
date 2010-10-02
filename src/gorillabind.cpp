@@ -239,25 +239,26 @@ void bindGorilla( lua_State *L )
             .def( "noBackground", &Caption::no_background )
             , 
             class_<MarkupText>( "MarkupText" )
+            .property( "maxTextWidth", &MarkupText::maxTextWidth )
             .property( "left",
                     (Real (MarkupText::*)() const)&MarkupText::left,
                     (void (MarkupText::*)( const Real& ))&MarkupText::left )
             .property( "top",
                     (Real (MarkupText::*)() const)&MarkupText::top,
                     (void (MarkupText::*)( const Real& ))&MarkupText::top )
-            .property( "width",
-                    (Real (MarkupText::*)() const)&MarkupText::width,
-                    (void (MarkupText::*)( const Real& ))&MarkupText::width )
-            .property( "height",
-                    (Real (MarkupText::*)() const)&MarkupText::height,
-                    (void (MarkupText::*)( const Real& ))&MarkupText::height )
-            .def( "size", &MarkupText::size )
+            //.property( "width",
+            //        (Real (MarkupText::*)() const)&MarkupText::width,
+            //        (void (MarkupText::*)( const Real& ))&MarkupText::width )
+            //.property( "height",
+            //       (Real (MarkupText::*)() const)&MarkupText::height,
+            //        (void (MarkupText::*)( const Real& ))&MarkupText::height )
+            //.def( "size", &MarkupText::size )
             .property( "text",
                     (String (MarkupText::*)() const)&MarkupText::text,
                     (void (MarkupText::*)( const String& ))&MarkupText::text )
-            .property( "background",
-                    (ColourValue (MarkupText::*)() const )&MarkupText::background,
-                    (void (MarkupText::*)( const ColourValue& ))&MarkupText::background )
+            //.property( "background",
+            //        (ColourValue (MarkupText::*)() const )&MarkupText::background,
+            //        (void (MarkupText::*)( const ColourValue& ))&MarkupText::background )
         ]
     ];
 
