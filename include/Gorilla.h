@@ -2726,6 +2726,7 @@ namespace Gorilla
     {
      mLeft = left;
      mDirty = true;
+     mTextDirty = true;
      mLayer->_markDirty();
     }
 
@@ -2746,6 +2747,7 @@ namespace Gorilla
     {
      mTop = top;
      mDirty = true;
+     mTextDirty = true;
      mLayer->_markDirty();
     }
     
@@ -2802,6 +2804,16 @@ namespace Gorilla
      mLayer->_markDirty();
     }
     
+    /*! function. width
+        desc.
+            Get the maximum width of the text can draw into.
+    */
+    Ogre::Real maxTextWidth()
+    {
+     _calculateCharacters();
+     return mMaxTextWidth;
+    }
+
     /*! function. caption
         desc.
             Get the text indented to show.
@@ -2886,6 +2898,7 @@ namespace Gorilla
     Layer*                mLayer;
     GlyphData*            mDefaultGlyphData;
     Ogre::Real            mLeft, mTop, mWidth, mHeight;
+    Ogre::Real            mMaxTextWidth;
     Ogre::String          mText;
     Ogre::ColourValue     mBackground;
     bool                  mDirty, mTextDirty;

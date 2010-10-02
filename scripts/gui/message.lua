@@ -1,38 +1,43 @@
 function messageDialog(task)
     console.setVisible(false)
     mouse.show()
-    local messageOverlay = OverlayManager:createOverlay()
-    local window = Panel( -(task.data.width/2), -(task.data.height/2), task.data.width, task.data.height)
-    window.element:setParameter("horz_align","center")
-    window.element:setParameter("vert_align","center")
-    window.element:setMaterialName "gui/dialog.background"
+    
+    local l = gui.mainLayer
 
-    local text = Text( task.data.width/2, 0.0381, task.data.message )
+    local h = (task.data.lines * 20) + 100
+    local y = gui.screen.height/2 - h/2
 
-    local icon = Panel( 0, 0, 32/1024, 32/768 )
-    icon.element:setMaterialName "gui/icon.info"
+    local text = MarkupText( l, 0, y + 32, task.data.message )
+    text.markup.left = gui.screen.width/2 - round(text.markup.maxTextWidth/2, 0)
 
-    local btnOK = Button( (task.data.width/2)-0.0556, task.data.height-0.0636, 0.1103, "OK" )
-    btnOK:setClickAction( function () messageOverlay.OK=true end )
+    local w = text.markup.maxTextWidth + 100
+    if w < 300 then w = 300 end
+    local x = gui.screen.width/2 - w/2
+
+    local window = Panel( l, x, y, w, h )
+    window:background( gui.dialogBackground ) 
+
+    local icon = Panel( l, x + 8, y + 8, 32, 32 )
+    icon:background( "icon.info" )
+
+    local btnOK = Button( l, x + w/2 - 40, y + h * 0.70, "OK" )
+    btnOK:setClickAction( function () window.OK=true end )
     btnOK:setKeyCode( KeyCodes.KC_RETURN )
     window:addChild( text )
     window:addChild( icon )
     window:addChild( btnOK )
-    messageOverlay:add2D( window.element )
-    messageOverlay:show()
 
     gui.pushModal( window )
 
-    messageOverlay.OK = false
-    while messageOverlay.OK == false do
+    window.OK = false
+    while window.OK == false do
         yield()
     end
 
     gui.popModal()
 
-    messageOverlay:hide()
+    window:destroy()
     mouse.hide()
-    messageOverlay=nil
 
 end
 
@@ -41,29 +46,13 @@ function message( mess )
     -- Split mess by newline.
     local m = split(mess)
 
-    height = (#m * 0.025 ) + 0.1272
+    local lines = #m 
 
-    guiLog( 'Lines:',#m, height )
-
-    local maxline=0
-    for i,str in ipairs(m) do
-        if #str > maxline then
-            maxline = #str
-        end
-    end
-
-    maxline = (maxline * 0.0127 ) + 0.0636
-
-    if maxline > 0.1953 then
-        width = maxline
-    else
-        width = 0.1953
-    end
+    print( 'Lines:',#m )
 
     data = {}
     data.message = mess
-    data.width = width
-    data.height = height
+    data.lines = lines
     return createTask( messageDialog, data )
 end
 

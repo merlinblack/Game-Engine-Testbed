@@ -108,6 +108,13 @@ function setup()
     log = console.log
     clear = console.clear
 
+    local sb = Gorilla.Silverback.getSingleton()
+    gui.screen = sb:createScreen( Ogre.getViewport( 0 ), 'atlas' )
+    gui.mainLayer = gui.screen:createLayer(0)
+    gui.dialogBackground = ColourValue( 0, 0, 0, .5 )
+
+    setupMouse()
+
     --Something to look at...
     require 'fps'
     require 'clock'
@@ -120,4 +127,4 @@ end
 
 createTask( setup )
 
-print "main.lua processed."
+print " *** main.lua processed. *** "

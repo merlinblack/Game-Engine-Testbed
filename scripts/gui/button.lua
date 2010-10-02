@@ -1,40 +1,32 @@
 class 'Button' (Panel)
-Button.count = 0
 
-function Button:__init( x, y, width, caption )
+function Button:__init( layer, x, y, caption )
     guiLog 'creating Button'
 
-    Panel.__init( self, x, y, width, 0.03689, "Button"..Button.count )
+    Panel.__init( self, layer, x, y, 80, 24 )
 
-    self.element:setMaterialName"gui/button.normal"
+    self:background( 'button.normal' )
 
-    self.txt = OverlayManager:createElement( "TextArea", "ButtonText"..Button.count, false )
-    self.txt:setParameter("left", ""..width/2)
-    self.txt:setParameter("top", "0.0063")
-    self.txt:setParameter("width", "0")
-    self.txt:setParameter("height","0")
-    self.txt:setParameter('font_name','Console')
-    self.txt:setParameter('char_height','.025')
-    self.txt:setParameter('colour','1 1 1')
-    self.txt:setParameter('alignment','center')
-    self.txt:setParameter('caption',caption)
-
-    self.element:addChild(self.txt)
+    self.text = layer:createCaption( 9, x, y, caption )
+    self.text . align = Gorilla.TextAlignment.Centre
+    self.text . verticalAlign = Gorilla.VerticalAlignment.Middle
+    self.text : size( 80, 24 )
 
     self.state = "normal"
     self.oldstate = "normal"
     self.key = KeyCodes.KC_UNKNOWN
 
-    Button.count = Button.count+1
     guiLog 'Button created'
 end
 
-function Button:__finalize()
+function Button:destroy()
     guiLog 'Destroying Button.'
+    Panel.destroy(self)
+    self.layer:destroyCaption(self.text)
 end
 
 function Button:changeCaption( caption )
-    self.txt:setParameter('caption', caption )
+    self.text.text = caption
 end
 
 function Button:setClickAction( action )
@@ -61,7 +53,7 @@ function Button:onClick()
 end
 
 function Button:mouseMoved( x, y, button )
-    if self.element:contains( x/_WIDTH, y/_HEIGHT ) then
+    if self.rect:intersects( Vector2(x, y) ) then
         if button == 0 and self.state == "click" then -- click release
             self:onClick()
         end
@@ -74,11 +66,11 @@ function Button:mouseMoved( x, y, button )
     end
     if self.state ~= self.oldstate then
         if self.state == "normal" then
-            self.element:setMaterialName("gui/button.normal")
+            self.rect:backgroundImage("button.normal")
         elseif self.state == "hover" then
-            self.element:setMaterialName("gui/button.hover")
+            self.rect:backgroundImage("button.hover")
         else
-            self.element:setMaterialName("gui/button.pressed")
+            self.rect:backgroundImage("button.pressed")
         end
         self.oldstate = self.state
     end

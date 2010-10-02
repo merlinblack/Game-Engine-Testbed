@@ -3,8 +3,8 @@ button.normal.png
 button.pressed.png
 coco.png
 crosshair.png
-icon.chk.green.png
-icon.chk.red.png
+checkbox.true.png
+checkbox.false.png
 icon.exit.png
 icon.info.png
 ogrehead.png

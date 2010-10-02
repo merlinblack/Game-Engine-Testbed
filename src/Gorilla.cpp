@@ -2150,6 +2150,8 @@ void  QuadList::border(Ogre::Real x, Ogre::Real y, Ogre::Real w, Ogre::Real h, O
   Ogre::Real cursorX = mLeft, cursorY = mTop, kerning = 0, texelOffsetX = mLayer->_getTexelX(), texelOffsetY = mLayer->_getTexelY(), right = 0, bottom = 0, left = 0, top = 0;
   unsigned int thisChar = 0, lastChar = 0;
   Glyph* glyph = 0;
+
+  mMaxTextWidth = 0;
   
   mCharacters.remove_all();
   
@@ -2162,7 +2164,6 @@ void  QuadList::border(Ogre::Real x, Ogre::Real y, Ogre::Real w, Ogre::Real h, O
   
   for(size_t i=0;i < mText.length();i++)
   {
-   
    thisChar = mText[i];
    
    if (thisChar == ' ')
@@ -2336,8 +2337,13 @@ void  QuadList::border(Ogre::Real x, Ogre::Real y, Ogre::Real w, Ogre::Real h, O
    else
      cursorX  += glyph->glyphAdvance + kerning;
    
+   if( cursorX > mMaxTextWidth )
+       mMaxTextWidth = cursorX;
+
    lastChar = thisChar;
   }
+
+  mMaxTextWidth -= mLeft;
   
   mTextDirty = false;
  }
