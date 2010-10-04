@@ -2,6 +2,10 @@ require 'scheduler'
 require 'keys'
 require 'gui/gui'
 
+function version()
+    message( 'Game Engine Testbed %3v0.2%r\nOgre 3d %3v1.7.2%r\nLua %3v5.1.4%r\nLuabind %3v0.9git%r' )
+end
+
 local old_dofile = dofile
 function dofile( f )
     if f == nil then
