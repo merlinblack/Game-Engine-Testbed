@@ -7,7 +7,7 @@ function messageDialog(task)
     local h = (task.data.lines * 20) + 100
     local y = gui.screen.height/2 - h/2
 
-    local text = MarkupText( l, 0, y + 32, task.data.message )
+    local text = MarkupText( l, 0, y + 48, task.data.message )
     text.markup.left = gui.screen.width/2 - round(text.markup.maxTextWidth/2, 0)
 
     local w = text.markup.maxTextWidth + 100
@@ -42,24 +42,19 @@ function messageDialog(task)
 end
 
 function message( mess )
-    -- Figure out width and height needed.
-    -- Split mess by newline.
-    local m = split(mess)
-
-    local lines = #m 
-
-    print( 'Lines:',#m )
-
-    data = {}
+    local data = {}
     data.message = mess
-    data.lines = lines
+    data.lines = countCR( mess )
     return createTask( messageDialog, data )
 end
 
-function split( str )
-    local t = {}
-    for line in string.gmatch( str, '[ %w]+' ) do
-        table.insert( t, line )
+function countCR( str )
+    local pos
+    local count = 1
+    pos = string.find( str, '\n' )
+    while pos do
+        pos = string.find( str, '\n', pos+1 )
+        count = count + 1
     end
-    return t
+    return count
 end

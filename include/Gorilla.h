@@ -2804,7 +2804,7 @@ namespace Gorilla
      mLayer->_markDirty();
     }
     
-    /*! function. width
+    /*! function. maxTextWidth
         desc.
             Get the maximum width of the text can draw into.
     */
