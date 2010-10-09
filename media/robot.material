@@ -1,4 +1,5 @@
-material Examples/Robot
+# HW skinning not workng with highlighting at present
+material Examples/RobotHW
 {
 	// Hardware skinning techniique
 	technique
@@ -45,3 +46,8 @@ material Examples/Robot
 		}
 	}
 }
+
+material Examples/Robot
+{
+	// Software blending technique
+	technique
