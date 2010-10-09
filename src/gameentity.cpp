@@ -179,11 +179,16 @@ void GameEntity::createHighlightMaterial()
 
         Ogre::Technique* technique = highlightMaterial->getBestTechnique();
 
+        Ogre::ColourValue colour( 1.0f, 1.0f, 0.0f, 0.7f );
+
         Ogre::Pass* pass = technique->createPass();
-        pass->setDepthCheckEnabled( true );
         pass->setDepthWriteEnabled( false );
         pass->setSceneBlending( Ogre::SBT_TRANSPARENT_ALPHA );
-        pass->createTextureUnitState( "glow.png" );
+        pass->setAmbient( colour );
+        pass->setDiffuse( colour );
+        pass->setSelfIllumination( colour );
+        pass->setShininess( 64.0f );
+        pass->setSpecular( Ogre::ColourValue::White );
     }
 }
 
