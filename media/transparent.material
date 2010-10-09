@@ -1,0 +1,49 @@
+material Yellow50 
+{
+  technique
+  {
+    pass
+    {
+      scene_blend alpha_blend
+      depth_write off
+            
+      texture_unit
+      {
+        colour_op_ex source1 src_manual src_current 1 1 0
+        alpha_op_ex source1 src_manual src_current 0.5
+      }
+    }
+  }
+}
+material Red50
+{
+   technique
+   {
+     pass
+     {
+       scene_blend alpha_blend
+       depth_write off
+ 
+       texture_unit
+       {
+         colour_op_ex source1 src_manual src_current 1 0 0
+         alpha_op_ex source1 src_manual src_current 0.5
+       }
+     }
+   }
+}
+material tester
+{
+  technique
+  {
+    pass
+    {
+      ambient 1.0 1.0 0.0 0.7
+      diffuse 1.0 1.0 0.0 0.7
+      specular 1.0 1.0 1.0 1.0 64.0
+      emissive 0.1 0.1 0.0 0.7
+      scene_blend alpha_blend
+      depth_write off
+    }
+  }
+}
