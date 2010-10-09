@@ -42,9 +42,12 @@ function followList( list )
     player.walkspeed = 15
     for i, vector in pairs(list) do
         if i ~= 1 then
-            print( 'Turning to face ', vector )
+            local r
+            if r ~= nil and r:isFinished() == false then
+                r:stop();
+                print 'Stopping previous turn'
+            end
             local r = rotateTo( getDirectionTo( vector ) )
-            print( 'Heading off to ', vector )
             local m = moveTo( vector )
             while not m:isFinished() and not player.stopwalking do
                 yield()
@@ -77,10 +80,13 @@ function walkTask()
     while player.walking == true do
         yield()
     end
+    startwalk = false
     followList(path)
 end
 
 function walk()
+    if startwalk then return end
+    startwalk = true
     path = getpath()
     createTask( walkTask )
 end
