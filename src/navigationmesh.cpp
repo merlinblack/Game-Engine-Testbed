@@ -78,6 +78,55 @@ void NavigationCell::debugDrawClassification( Ogre::Vector3 start, Ogre::Vector3
     debug->end();
 }
 
+void NavigationCell::debugDrawCellAndNeigbours()
+{
+    Ogre::Root *root = Ogre::Root::getSingletonPtr();
+    Ogre::SceneManager* mgr = root->getSceneManager( "SceneManagerInstance" );
+    Ogre::ManualObject* debug;
+    Ogre::SceneNode* debugNode;
+
+    if( mgr->hasSceneNode( "debugDrawNode" ) )
+    {
+        debugNode = mgr->getSceneNode( "debugDrawNode" );
+    }
+    else
+    {
+        debugNode = mgr->getRootSceneNode()->createChildSceneNode( "debugDrawNode" );
+        debugNode->translate( 0, 1, 0 );    // Move up slightly to see lines better.
+    }
+
+    if( mgr->hasManualObject( "debugDraw" ) )
+        debug = mgr->getManualObject( "debugDraw" );
+    else
+    {
+        debug = mgr->createManualObject( "debugDraw" );
+        debugNode->attachObject( debug );
+        debug->setQueryFlags( 0 );
+        debug->setRenderQueueGroup( Ogre::RENDER_QUEUE_OVERLAY );
+    }
+
+    for( int i = 0; i < 3; i++ )
+    {
+        if( mLinks[i] )
+        {
+            debug->begin( "debug/blue", Ogre::RenderOperation::OT_LINE_STRIP );
+            debug->position( mLinks[i]->mVertices[0] );
+            debug->position( mLinks[i]->mVertices[1] );
+            debug->position( mLinks[i]->mVertices[2] );
+            debug->position( mLinks[i]->mVertices[0] );
+            debug->end();
+        }
+    }
+
+    debug->begin( "debug/yellow", Ogre::RenderOperation::OT_LINE_STRIP );
+    debug->position( mVertices[0].x, mVertices[0].y+1, mVertices[0].z );
+    debug->position( mVertices[1].x, mVertices[1].y+1, mVertices[1].z );
+    debug->position( mVertices[2].x, mVertices[2].y+1, mVertices[2].z );
+    debug->position( mVertices[0].x, mVertices[0].y+1, mVertices[0].z );
+    debug->end();
+
+}
+
 NavigationCell::LINE_CLASSIFICATION NavigationCell::classifyLine2D( Ogre::Vector3& start, Ogre::Vector3& end, NavigationCell* from, NavigationCell*& next )
 {
     //debugDrawClassification( start, end);
@@ -278,6 +327,9 @@ NavigationPath* NavigationMesh::findNavigationPath( Ogre::Vector3 position, Ogre
         return 0;   // Current position is not within the navigation mesh.
 
     NavigationCellList* cellPath = findNavigationCellPath( currentCell, destinationCell );
+
+    //destinationCell->debugDrawCellAndNeigbours();
+    //currentCell->debugDrawCellAndNeigbours();
 
     if( cellPath == 0 )
         return 0;   // No possible path to destination.
@@ -563,6 +615,7 @@ void NavigationMesh::resetPathfinding()
     Ogre::Root *root = Ogre::Root::getSingletonPtr();
     Ogre::SceneManager* mgr = root->getSceneManager( "SceneManagerInstance" );
     mgr->destroyManualObject( "debugDrawClassification" );
+    mgr->destroyManualObject( "debugDraw" );
 }
 
 void NavigationMesh::pushIntoOpenList( NavigationCell* cell )
