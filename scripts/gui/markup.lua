@@ -13,3 +13,7 @@ function MarkupText:destroy()
     self.layer:destroyMarkupText( self.markup )
 end
 
+function MarkupText:move( x, y )
+    self.markup.left = self.markup.left + x
+    self.markup.top = self.markup.top + y
+end

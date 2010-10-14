@@ -41,3 +41,11 @@ function Panel:background( back )
         self.rect:backgroundColour( back )
     end
 end
+
+function Panel:move( x, y )
+    self.rect.left = self.rect.left + x
+    self.rect.top = self.rect.top + y
+    for _,child in pairs( self.children ) do
+        if child.move then child:move( x, y ) end
+    end
+end

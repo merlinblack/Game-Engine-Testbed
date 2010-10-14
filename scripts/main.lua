@@ -27,6 +27,13 @@ function EventNotification( event )
 
     if event.type == Event.hash "EVT_WINDOW_RESIZE" then
         setViewportSize( event.data.width, event.data.height )
+        if type(resizeEventListen) == 'table' then
+            table.foreach( resizeEventListen,
+            function(k,v)
+                v( event.data.width, event.data.height )
+            end
+            )
+        end
     end
 
     if event.type == Event.hash "EVT_MOUSEMOVE" then
@@ -46,6 +53,19 @@ function EventNotification( event )
     end
 
     return false
+end
+
+function addResizeListener( func )
+    if type(func) ~= 'function' then
+        error( 'You must supply a function to addResizeListener' )
+    end
+    if resizeEventListen == nil then
+        resizeEventListen = {}
+    end
+    if type(resizeEventListen) ~= 'table' then
+        error( 'resizeEventListen is not a table! Has it been redefined?' )
+    end
+    table.insert( resizeEventListen, func )
 end
 
 timeSinceStart = 0
