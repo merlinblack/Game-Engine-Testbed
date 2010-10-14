@@ -16,3 +16,7 @@ function Text:destroy()
     self.layer:destroyCaption( self.caption )
 end
 
+function Text:move( x, y )
+    self.caption.left = self.caption.left + x
+    self.caption.top = self.caption.top + y
+end

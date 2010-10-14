@@ -120,3 +120,11 @@ function Checkbox:mouseMoved( x, y, button )
         self.oldstate = self.state
     end
 end
+
+function Checkbox:move( x, y )
+    self.rect.left = self.rect.left + x
+    self.rect.top = self.rect.top + y
+    for _,child in pairs( self.children ) do
+        if child.move then child:move( x, y ) end
+    end
+end

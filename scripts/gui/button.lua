@@ -75,3 +75,13 @@ function Button:mouseMoved( x, y, button )
         self.oldstate = self.state
     end
 end
+
+function Button:move( x, y )
+    self.rect.left = self.rect.left + x
+    self.rect.top = self.rect.top + y
+    self.text.left = self.text.left + x
+    self.text.top = self.text.top + y
+    for _,child in pairs( self.children ) do
+        if child.move then child:move( x, y ) end
+    end
+end
