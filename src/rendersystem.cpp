@@ -78,7 +78,7 @@ bool ::RenderSystem::initialise()
     // Notify other systems of the window size.
     unsigned int width, height, depth;
     int top, left;
-    EventPtr event( new Event( "EVT_WINDOW_RESIZE" ) );
+    EventPtr event = newEvent( "EVT_WINDOW_RESIZE" );
     boost::shared_ptr<WindowEventData> data( new WindowEventData );
     mWindow->getMetrics(width, height, depth, left, top);
     event->data = data;

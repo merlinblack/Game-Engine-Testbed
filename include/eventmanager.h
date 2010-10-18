@@ -80,6 +80,16 @@ public:
             eventManager->queueEvent( event );
     }
 
+    EventPtr newEvent( size_t type_hash )
+    {
+        return EventPtr( new Event( type_hash ) );
+    }
+
+    EventPtr newEvent( const char *type_str )
+    {
+        return EventPtr( new Event( type_str ) );
+    }
+
     void setEventManager( EventManager* em )
     {
         eventManager = em;
