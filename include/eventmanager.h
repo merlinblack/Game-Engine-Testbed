@@ -54,6 +54,7 @@ typedef boost::shared_ptr<Event> EventPtr;
 
 class EventManager
 {
+    std::queue<Event*> pool;
     std::queue<EventPtr> active;
     std::queue<EventPtr> current;
     std::list<EventListenerSender*> listeners;
@@ -66,6 +67,9 @@ public:
     void removeListener( EventListenerSender* listener );
     void queueEvent( EventPtr event );
     void processEvents();
+
+    EventPtr newEventFromPool( size_t type_hash );
+    void returnEventToPool( Event* ptr );
 };
 
 class EventListenerSender
@@ -82,18 +86,28 @@ public:
 
     EventPtr newEvent( size_t type_hash )
     {
-        return EventPtr( new Event( type_hash ) );
+        return eventManager->newEventFromPool( type_hash );
     }
 
     EventPtr newEvent( const char *type_str )
     {
-        return EventPtr( new Event( type_str ) );
+        return newEvent( Event::hash(type_str) );
     }
 
     void setEventManager( EventManager* em )
     {
         eventManager = em;
     }
+};
+
+class PooledEventDeleter
+{
+    EventManager* mManager;
+
+    public:
+    PooledEventDeleter( EventManager* manager ) : mManager(manager) { }
+
+    void operator() ( Event* event );
 };
 
 #endif // __EVENT_MANAGER_H
