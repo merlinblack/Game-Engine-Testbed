@@ -242,5 +242,8 @@ bool ScriptingSystem::frameEnded(const Ogre::FrameEvent& evt)
         lua_pop( e.state(), 1 );
     }
 
+    // Do a Lua garbage collection.
+    lua_gc( mL, LUA_GCSTEP, 1 );
+
     return true;
 }
