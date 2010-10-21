@@ -26,8 +26,8 @@ THE SOFTWARE.
 #include <boost/functional/hash.hpp>
 #include <iostream>
 
-#define EVENT_POOL_INCREMENT 100
-#define EVENT_POOL_INITIAL_SIZE 500
+#define EVENT_POOL_INCREMENT 10
+#define EVENT_POOL_INITIAL_SIZE 50
 
 std::size_t Event::hash( std::string hashstr )
 {
@@ -46,10 +46,10 @@ EventManager::~EventManager()
 {
     std::cout
         << "Shuting down Event Manager" << std::endl
-        << "Event pool reached " << pool.size() << " events." << std::endl
+        << "Event pool reached a size of " << pool.size() << " events." << std::endl
         << "Initial size of " << EVENT_POOL_INITIAL_SIZE << std::endl
         << "Pool memory:" << std::endl
-        << "\tEvents   - " << (sizeof(Event) * pool.size())/1024 << " KiB" << std::endl
+        << "\tEvents   - " << (sizeof(Event) * pool.size()) << " bytes" << std::endl
         << "\tOverhead - " << sizeof(pool) << " bytes" << std::endl;
 
     while( ! pool.empty() )
