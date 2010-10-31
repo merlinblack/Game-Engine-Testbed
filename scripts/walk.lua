@@ -69,7 +69,7 @@ end
 
 function getpath()
     local p = player.node:getPosition()
-    local d = base:hitPosition(_X,_Y)
+    local d = base:hitPosition(mouse.x/mouse.width, mouse.y/mouse.height)
     local maxAngle = Radian( Degree(90) )
 
     return nv:findPath( p, d, maxAngle, 5 )

@@ -24,8 +24,14 @@ function mouse.hide()
     end
 end
     
+function setMouseViewportSize( w, h )
+    mouse.width = w
+    mouse.height = h
+end
 
 function setMouseCursorPosition( x, y )
+    mouse.x = x
+    mouse.y = y
     mouse.pointer.left = x - 32
     mouse.pointer.top = y - 24
 end

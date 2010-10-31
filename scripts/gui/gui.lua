@@ -18,15 +18,12 @@ require 'gui/guitest'
 
 -- High level switching and misc.
 function setViewportSize( w, h )
-    _WIDTH = w
-    _HEIGHT = h
+    setMouseViewportSize( w, h )
 end
 
 function mouseMoved(x, y, buttons)
     setMouseCursorPosition(x,y)
     gui.mouseMoved(x, y, buttons)
-    _X=x/_WIDTH
-    _Y=y/_HEIGHT
 end
 
 function keypressed( key )
