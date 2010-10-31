@@ -26,7 +26,7 @@ base = createGameEntity( root, 'Floor', 'Floor.mesh' )
 mouse:show()
 
 function test()
-    t,d = gm:mousePick(_X,_Y)
+    t,d = gm:mousePick(mouse.x/mouse.width, mouse.y / mouse.height)
     print(#t)
     for i=1,#t do
         print( t[i].name, d[i] )

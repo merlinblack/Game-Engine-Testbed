@@ -1,6 +1,7 @@
 -- Init
 --
 require 'gui/control'
+require 'gui/mouse'
 
 geSelect = geSelect or {}
 geSelect.selected = geSelect.selected or {}
@@ -8,13 +9,15 @@ geSelect.lx = 0
 geSelect.ly = 0
 
 -- x and y are in pixels
--- _X and _Y are global mouse co-ordinates in [0-1]
 
 function geSelect:mouseMoved( x, y, buttons )
     -- If the mouse has moved more than 5px in either direction...
     if math.abs(x-self.lx) > 5 or math.abs( y-self.ly ) > 5 then
         self.lx = x
         self.ly = y
+
+        local _X = mouse.x / mouse.width
+        local _Y = mouse.y / mouse.height
 
         local hit = gm:mousePick( _X, _Y )
 
