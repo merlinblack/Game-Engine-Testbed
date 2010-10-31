@@ -93,7 +93,7 @@ public:
     void createHighlightMaterial();
 };
 
-// This allows GameEntities past from Lua to C++ and back
+// This allows GameEntities passed from Lua to C++ and back
 // to retain thier Lua parts.  In other words, not get sliced.
 // Also Lua can derive from GameEntity and override the update
 // method.
