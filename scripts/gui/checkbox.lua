@@ -122,8 +122,7 @@ function Checkbox:mouseMoved( x, y, button )
 end
 
 function Checkbox:move( x, y )
-    self.rect.left = self.rect.left + x
-    self.rect.top = self.rect.top + y
+    if Panel.move( self, x, y ) then return end
     for _,child in pairs( self.children ) do
         if child.move then child:move( x, y ) end
     end

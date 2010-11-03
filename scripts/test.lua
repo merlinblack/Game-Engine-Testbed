@@ -32,3 +32,21 @@ function test()
         print( t[i].name, d[i] )
     end
 end
+
+require 'gui/dragbutton'
+
+function drag()
+    p = Panel( gui.mainLayer, 64, 64, 100, 100 )
+    p:background(ColourValue(0,0,0,.5))
+    db = DragButton( gui.mainLayer, 64, 64, p )
+    p:addChild(db)
+    gui.pushModal(p)
+end
+
+function undrag()
+    gui.popModal()
+    p:destroy()
+    p=nil
+    db=nil
+end
+
