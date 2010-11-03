@@ -10,6 +10,8 @@ fps.text.markup.text = "%6Average FPS\nBest FPS\nWorst\nTriangles\nBatch Count"
 fps.logo = Panel( gui.mainLayer, 210, gui.screen.height-125, 64, 64 )
 fps.logo:background( 'ogrehead' )
 fps.panel:addChild( fps.logo )
+fps.drag = DragButton( gui.mainLayer, 0, gui.screen.height-145, fps.panel )
+fps.panel:addChild( fps.drag )
 
 function fps.update()
     local stats
@@ -25,11 +27,13 @@ function fps.update()
         fps.text2.markup.text = str
         wait(1)
     end
+    gui.removeModeless(fps.panel)
     fps.panel:destroy()
 end
 
 fps.stop = false
 createTask( fps.update )
+gui.addModeless( fps.panel )
 
 function fps.resize( w, h )
     fps.x = fps.panel.rect.top
@@ -55,4 +59,4 @@ function fps.animatePosition()
     fps.moving = false
 end
 
-addResizeListener( fps.resize )
+--addResizeListener( fps.resize )

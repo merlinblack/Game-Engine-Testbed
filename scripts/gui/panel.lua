@@ -21,6 +21,8 @@ function Panel:mouseMoved( x, y, button )
         for _,child in pairs(self.children) do
             if child.mouseMoved then child:mouseMoved( x, y, button ) end
         end
+    else
+        self:lostMouse()
     end
 end
 
@@ -56,7 +58,14 @@ function Panel:move( x, y )
 
     self.rect.left = self.rect.left + x
     self.rect.top = self.rect.top + y
+
     for _,child in pairs( self.children ) do
         if child.move then child:move( x, y ) end
+    end
+end
+
+function Panel:lostMouse()
+    for _,child in pairs( self.children ) do
+        if child.lostMouse then child:lostMouse() end
     end
 end
