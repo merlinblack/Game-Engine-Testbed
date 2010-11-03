@@ -15,17 +15,24 @@ function dofile( f )
     old_dofile( f )
 end
 
+-- Cache hash values.
+Event.keydown = Event.hash "EVT_KEYDOWN"
+Event.mousemove = Event.hash "EVT_MOUSEMOVE"
+Event.mousedown = Event.hash "EVT_MOUSEDOWN"
+Event.mouseup = Event.hash "EVT_MOUSEUP"
+Event.windowresize = Event.hash "EVT_WINDOW_RESIZE"
+
 function EventNotification( event )
     --print "Scripting System Received an Event"
 
-    if event.type == Event.hash "EVT_KEYDOWN"  then
+    if event.type == Event.keydown  then
         if event.data.key == KeyCodes.KC_ESCAPE and #gui.modal == 0 then
             quit()
             return true
         end
     end
 
-    if event.type == Event.hash "EVT_WINDOW_RESIZE" then
+    if event.type == Event.windowresize then
         setViewportSize( event.data.width, event.data.height )
         if type(resizeEventListen) == 'table' then
             table.foreach( resizeEventListen,
@@ -36,19 +43,19 @@ function EventNotification( event )
         end
     end
 
-    if event.type == Event.hash "EVT_MOUSEMOVE" then
+    if event.type == Event.mousemove then
         mouseMoved( event.data.x, event.data.y, event.data.buttons )
     end
 
-    if event.type == Event.hash "EVT_MOUSEDOWN" then
+    if event.type == Event.mousedown then
         mouseMoved( event.data.x, event.data.y, event.data.buttons )
     end
 
-    if event.type == Event.hash "EVT_MOUSEUP" then
+    if event.type == Event.mouseup then
         mouseMoved( event.data.x, event.data.y, event.data.buttons )
     end
 
-    if event.type == Event.hash "EVT_KEYDOWN" then
+    if event.type == Event.keydown then
         keypressed( event.data.key )
     end
 

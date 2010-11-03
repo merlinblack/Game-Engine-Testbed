@@ -348,7 +348,7 @@ void Engine::windowResized( Ogre::RenderWindow* rw)
     unsigned int width, height, depth;
     int top, left;
 
-    EventPtr event( new Event( "EVT_WINDOW_RESIZE" ) );
+    EventPtr event = newEvent( "EVT_WINDOW_RESIZE" );
     boost::shared_ptr<WindowEventData> data( new WindowEventData );
 
     rw->getMetrics(width, height, depth, left, top);
@@ -363,5 +363,5 @@ void Engine::windowResized( Ogre::RenderWindow* rw)
 //Unattach OIS before window shutdown (very important under Linux)
 void Engine::windowClosed( Ogre::RenderWindow* rw)
 {
-    queueEvent( EventPtr( new Event( "MSG_QUIT" ) ) );
+    queueEvent( EventPtr( newEvent( "MSG_QUIT" ) ) );
 }
