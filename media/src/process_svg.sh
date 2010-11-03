@@ -10,6 +10,9 @@ convert()
     inkscape $svg --export-png=$png -w$width -h$height
 }
 
+convert drag.normal.svg 16 16 
+convert drag.hover.svg 16 16 
+convert drag.pressed.svg 16 16 
 convert checkbox.true.svg 16 16 
 convert checkbox.false.svg 16 16 
 convert icon.exit.svg 32 32 

@@ -5,6 +5,9 @@ coco.png
 crosshair.png
 checkbox.true.png
 checkbox.false.png
+drag.normal.png
+drag.hover.png
+drag.pressed.png
 icon.exit.png
 icon.info.png
 ogrehead.png
