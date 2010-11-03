@@ -34,4 +34,21 @@ function setMouseCursorPosition( x, y )
     mouse.y = y
     mouse.pointer.left = x - 32
     mouse.pointer.top = y - 24
+    if mouse.isDragging then
+        mouse.draggedWindow:move( mouse.x - mouse.prev_x, mouse.y - mouse.prev_y )
+        mouse.prev_x = mouse.x
+        mouse.prev_y = mouse.y
+    end
 end
+
+function startMouseDrag( window )
+    mouse.isDragging = true
+    mouse.draggedWindow = window
+    mouse.prev_x = mouse.x
+    mouse.prev_y = mouse.y
+end
+
+function stopMouseDrag()
+    mouse.isDragging = false
+end
+
