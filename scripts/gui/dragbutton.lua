@@ -7,11 +7,11 @@ function DragButton:__init( layer, x, y, parentToDrag )
         error( 'You must give a gui object to drag.' )
     end
 
-    Panel.__init( self, layer, x, y, 24, 24 )
+    Panel.__init( self, layer, x, y, 16, 16 )
 
     self.parent = parentToDrag
 
-    self:background( 'button.normal' )
+    self:background( 'drag.normal' )
 
     self.state = "normal"
     self.oldstate = "normal"
@@ -41,13 +41,18 @@ function DragButton:mouseMoved( x, y, button )
         self.state = "click"
         startMouseDrag(self.parent)
     end
+
+    self:updateVisualState()
+end
+
+function DragButton:updateVisualState()
     if self.state ~= self.oldstate then
         if self.state == "normal" then
-            self.rect:backgroundImage("button.normal")
+            self.rect:backgroundImage("drag.normal")
         elseif self.state == "hover" then
-            self.rect:backgroundImage("button.hover")
+            self.rect:backgroundImage("drag.hover")
         else
-            self.rect:backgroundImage("button.pressed")
+            self.rect:backgroundImage("drag.pressed")
         end
         self.oldstate = self.state
     end
@@ -57,5 +62,14 @@ function DragButton:move( x, y )
     if Panel.move( self, x, y ) then return end
     for _,child in pairs( self.children ) do
         if child.move then child:move( x, y ) end
+    end
+end
+
+function DragButton:lostMouse()
+    self.state = "normal"
+    self:updateVisualState()
+
+    for _,child in pairs( self.children ) do
+        if child.lostMouse then child:lostMouse() end
     end
 end

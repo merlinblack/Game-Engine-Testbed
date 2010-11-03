@@ -104,6 +104,11 @@ function Checkbox:mouseMoved( x, y, button )
     if self.state == "hover" and button == 1 then
         self.state = "click"
     end
+
+    self:updateVisualState()
+end
+
+function Checkbox:updateVisualState()
     if self.state ~= self.oldstate then
         if self.state == "normal" then
             self:background("checkbox."..tostring(self.value))
@@ -125,5 +130,14 @@ function Checkbox:move( x, y )
     if Panel.move( self, x, y ) then return end
     for _,child in pairs( self.children ) do
         if child.move then child:move( x, y ) end
+    end
+end
+
+function Checkbox:lostMouse()
+    self.state = "normal"
+    self:updateVisualState()
+
+    for _,child in pairs( self.children ) do
+        if child.lostMouse then child:lostMouse() end
     end
 end

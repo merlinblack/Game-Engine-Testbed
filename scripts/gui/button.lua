@@ -64,6 +64,11 @@ function Button:mouseMoved( x, y, button )
     if self.state == "hover" and button == 1 then
         self.state = "click"
     end
+
+    self:updateVisualState()
+end
+
+function Button:updateVisualState()
     if self.state ~= self.oldstate then
         if self.state == "normal" then
             self.rect:backgroundImage("button.normal")
@@ -82,5 +87,14 @@ function Button:move( x, y )
     self.text.top = self.text.top + y
     for _,child in pairs( self.children ) do
         if child.move then child:move( x, y ) end
+    end
+end
+
+function Button:lostMouse()
+    self.state = "normal"
+    self:updateVisualState()
+
+    for _,child in pairs( self.children ) do
+        if child.lostMouse then child:lostMouse() end
     end
 end
