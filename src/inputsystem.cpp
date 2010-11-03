@@ -121,7 +121,7 @@ bool InputSystem::EventNotification( EventPtr event )
 
 bool InputSystem::keyPressed( const OIS::KeyEvent &arg )
 {
-    EventPtr event( new Event( event_keydown ) );
+    EventPtr event = newEvent( event_keydown );
 
     boost::shared_ptr<InputEventData> data( new InputEventData );
 
@@ -137,7 +137,7 @@ bool InputSystem::keyPressed( const OIS::KeyEvent &arg )
 
 bool InputSystem::keyReleased( const OIS::KeyEvent &arg )
 {
-    EventPtr event( new Event( event_keyup ) );
+    EventPtr event = newEvent( event_keyup );
 
     boost::shared_ptr<InputEventData> data( new InputEventData );
 
@@ -152,7 +152,7 @@ bool InputSystem::keyReleased( const OIS::KeyEvent &arg )
 
 bool InputSystem::mouseMoved( const OIS::MouseEvent &arg )
 {
-    EventPtr event( new Event( event_mousemove ) );
+    EventPtr event = newEvent( event_mousemove );
 
     boost::shared_ptr<InputEventData> data( new InputEventData );
 
@@ -169,7 +169,7 @@ bool InputSystem::mouseMoved( const OIS::MouseEvent &arg )
 
 bool InputSystem::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
-    EventPtr event( new Event( event_mousedown ) );
+    EventPtr event = newEvent( event_mousedown );
 
     boost::shared_ptr<InputEventData> data( new InputEventData );
 
@@ -186,7 +186,7 @@ bool InputSystem::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID i
 
 bool InputSystem::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
-    EventPtr event( new Event( event_mouseup ) );
+    EventPtr event = newEvent( event_mouseup );
 
     boost::shared_ptr<InputEventData> data( new InputEventData );
 

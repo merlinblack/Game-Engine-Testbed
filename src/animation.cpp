@@ -292,7 +292,7 @@ void AnimationManager::update()
         if( (*i)->isFinished() )
         {
             boost::shared_ptr<AnimationEventData> data( new AnimationEventData );
-            EventPtr event( new Event( finishEvent ) );
+            EventPtr event = newEvent( finishEvent );
 
             data->animation = *i;
             event->data = data;
