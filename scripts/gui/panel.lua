@@ -42,7 +42,18 @@ function Panel:background( back )
     end
 end
 
+-- Return true to cancel move, when it would move off view
 function Panel:move( x, y )
+    local left = self.rect.left
+    local top = self.rect.top
+    local width = self.rect.width
+    local height = self.rect.height
+
+    if left + x < 0 or top + y < 0 then return true end
+    if left + width + x > mouse.width or top + height + y > mouse.height then
+        return true
+    end
+
     self.rect.left = self.rect.left + x
     self.rect.top = self.rect.top + y
     for _,child in pairs( self.children ) do

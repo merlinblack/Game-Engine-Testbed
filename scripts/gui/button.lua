@@ -77,8 +77,7 @@ function Button:mouseMoved( x, y, button )
 end
 
 function Button:move( x, y )
-    self.rect.left = self.rect.left + x
-    self.rect.top = self.rect.top + y
+    if Panel.move( self, x, y ) then return end
     self.text.left = self.text.left + x
     self.text.top = self.text.top + y
     for _,child in pairs( self.children ) do
