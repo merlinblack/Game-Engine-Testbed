@@ -48,6 +48,9 @@ class LuaInterpreter
         // Retrieve the current state of affairs.
         State getState() { return mState; }
 
+        // Retrieve the Lua instance
+        lua_State* getLuaInstance() { return mL; }
+
     protected:
         lua_State *mL;
         std::string mCurrentStatement;

@@ -300,6 +300,23 @@ bool LuaConsole::injectKeyPress( const OIS::KeyEvent &evt )
             }
             break;
 
+        case OIS::KC_TAB:   // Tab completion implemented in Lua
+            {
+            lua_State *L = interpreter->getLuaInstance();
+            lua_getglobal( L, "autoComplete" );
+            if( !lua_isnil( L, -1 ) )
+            {
+                lua_pushstring( L, editline.getText().c_str() );
+                if( !lua_pcall( L, 1, 1, 0 ) )
+                {
+                    std::string ret(lua_tostring( L, -1 ));
+                    editline.setText( ret );
+                }
+                lua_pop(L, 1);
+            }
+            }
+            break;            
+
         default:
             textChanged = editline.injectKeyPress( evt );
             break;
