@@ -66,6 +66,9 @@ function DragButton:move( x, y )
 end
 
 function DragButton:lostMouse()
+    if self.state == "click" then
+        stopMouseDrag()
+    end
     self.state = "normal"
     self:updateVisualState()
 
