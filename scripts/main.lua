@@ -133,6 +133,22 @@ function info( classInstance )
     print( 'Attributes:'..str )
 end
 
+function infotable( classInstance )
+    local t={}
+    local ci = class_info( classInstance )
+
+    for k,v in pairs( ci.methods ) do
+        t[k]=v
+    end
+
+    for k,v in pairs( ci.attributes ) do
+        t[v]=k
+    end
+
+    return t
+end
+
+
 function setup()
     oldprint = print
     print = console.print
