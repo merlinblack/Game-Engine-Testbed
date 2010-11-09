@@ -1,7 +1,17 @@
 function autoComplete( str )
+    local prefixend = string.find( str:reverse(), '[() %[%]=+/%%]' )
+    local prefix = ''
+
+    if prefixend then
+        prefix = string.sub( str, 1, #str - prefixend + 1 )
+        str = string.sub( str, #str - prefixend + 2 )
+    end
+
     str, p = complete(str)
-    if #p then print( unpack( p ) ) end
-    return str
+
+    if #p > 1 then print( unpack( p ) ) end
+
+    return prefix..str
 end
 
 function complete( str )
