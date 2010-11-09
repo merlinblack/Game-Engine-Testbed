@@ -311,9 +311,12 @@ bool LuaConsole::injectKeyPress( const OIS::KeyEvent &evt )
                     {
                         std::string ret(lua_tostring( L, -1 ));
                         editline.setText( ret );
+                        lua_pop(L, 1);
                     }
-                    lua_pop(L, 1);
+                    // else leave the error message on the stack.
                 }
+                else
+                    lua_pop(L, 1);
             }
             break;            
 
