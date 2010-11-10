@@ -1,6 +1,7 @@
 require 'scheduler'
 require 'keys'
 require 'gui/gui'
+require 'autocomplete'
 
 function version()
     message( 'Game Engine Testbed %3v0.2%r\nOgre 3d %3v1.7.2%r\nLua %3v5.1.4%r\nLuabind %3v0.9git%r' )
@@ -142,7 +143,7 @@ function infotable( classInstance )
     end
 
     for k,v in pairs( ci.attributes ) do
-        t[v]=k
+        t[v]=classInstance[v]
     end
 
     return t
