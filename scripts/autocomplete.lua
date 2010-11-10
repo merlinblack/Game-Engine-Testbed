@@ -1,5 +1,5 @@
 function autoComplete( str )
-    local prefixend = string.find( str:reverse(), '[() %[%]=+/%%]' )
+    local prefixend = string.find( str:reverse(), '[() %[%]=+/,%%]' )
     local prefix = ''
 
     if prefixend then
