@@ -7,7 +7,7 @@ function Button:__init( layer, x, y, caption )
 
     self:background( 'button.normal' )
 
-    self.text = layer:createCaption( 9, x, y, caption )
+    self.text = layer:createCaption( 10, x, y, caption )
     self.text . align = Gorilla.TextAlignment.Centre
     self.text . verticalAlign = Gorilla.VerticalAlignment.Middle
     self.text : size( 80, 24 )
