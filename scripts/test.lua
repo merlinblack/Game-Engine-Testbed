@@ -23,6 +23,38 @@ player.node:setPosition(0,25,0)
 
 base = createGameEntity( root, 'Floor', 'Floor.mesh' )
 
+door = createGameEntity( root, 'Door of Death', 'Door.mesh' )
+
+function door:close()
+    local path = { Vector3( 25, 0, 0 ), Vector3( 0, 0, 0 ) }
+    createTask( door.followPathTask, path )
+end
+
+function door:open()
+    local path = { Vector3( 25, 0, 0 ), Vector3( 25, 50, 0 ) }
+    createTask( door.followPathTask, path )
+end
+
+bind( KeyCodes.KC_O, function() door:open() end )
+bind( KeyCodes.KC_C, function() door:close() end )
+
+function door.followPathTask(task)
+    while door.isMoving == true do wait(1) end
+
+    if door.speed == nil then door.speed = 5 end
+
+    door.isMoving = true
+
+    for _,v in pairs(task.data) do
+        local m = MovementAnimation( door.node, v, door.speed )
+        am:add(m)
+        m:start()
+        while not m:isFinished() do wait(2) end
+    end
+
+    door.isMoving = false
+end
+
 mouse:show()
 
 function test()
@@ -32,21 +64,3 @@ function test()
         print( t[i].name, d[i] )
     end
 end
-
-require 'gui/dragbutton'
-
-function drag()
-    p = Panel( gui.mainLayer, 64, 64, 100, 100 )
-    p:background(ColourValue(0,0,0,.5))
-    db = DragButton( gui.mainLayer, 64, 64, p )
-    p:addChild(db)
-    gui.pushModal(p)
-end
-
-function undrag()
-    gui.popModal()
-    p:destroy()
-    p=nil
-    db=nil
-end
-

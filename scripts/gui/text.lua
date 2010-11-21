@@ -2,7 +2,7 @@ class 'Text'
 
 function Text:__init( layer, x, y, text, font, size, alignment )
     if alignment == nil then alignment = Gorilla.TextAlignment.Centre end
-    if font == nil then font = 9 end
+    if font == nil then font = 10 end
     self.layer = layer
     self.caption = layer:createCaption( font, x, y, text )
     self.caption . align = alignment

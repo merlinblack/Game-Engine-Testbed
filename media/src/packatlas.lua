@@ -113,15 +113,15 @@ function fillcanvas( canvas )
     end
 end
 
-function getWhitePixelPosition()
+function getImagePosition( imageName )
     -- Find the whitepixel image, and offset into it.
-    local whiteImage
+    local image
 
-    table.foreach( placed, function(k,v) if v.image == 'white.png' then whiteImage = v end end )
+    table.foreach( placed, function(k,v) if v.image == imageName .. '.png' then image = v end end )
 
-    if whiteImage == nil then error 'Could not find white pixel image!' end
+    if image == nil then error( 'Could not find ' .. imageName .. ' image!') end
 
-    return (whiteImage.x + 2) .. ' ' .. ( whiteImage.y + 2 )
+    return image.x, image.y 
 end
 
 function compositePlacedImage( image, gorillaFile )
@@ -154,28 +154,54 @@ function processPlacedImages()
     
     gorillaFile:write( '[Texture]\n' )
     gorillaFile:write( 'file ' .. compositeFile .. '.png\n' )
-    gorillaFile:write( 'whitepixel ' .. getWhitePixelPosition() .. '\n' )
+    local x, y = getImagePosition( 'white' )
+    gorillaFile:write( 'whitepixel ' .. x+2 .. ' ' .. y+2 .. '\n' )
     gorillaFile:write( '\n' )
     
+    -- Read in font data and shift co-ordinates to where the image was placed.
+    table.foreach( fonts, function( k, v ) processFont( v, gorillaFile ) end )
+
     gorillaFile:close()
 end
 
-canvas = { x=0, y=0, image = 'dejavu.png', gorilla='dejavu.gorilla' }
+function processFont( fontName, gorillaFile )
+    print( 'Loading font: ' .. fontName .. '.lua' )
+    dofile( fontName .. '.lua' )    -- load font data.
+    local offsetx, offsety = getImagePosition( fontName )
+    gorillaFile:write( '[Font.' .. font.size .. ']\n' )
+    gorillaFile:write( 'lineheight ' .. font.lineheight .. '\n' )
+    gorillaFile:write( 'spacelength ' .. font.spacelength .. '\n' )
+    gorillaFile:write( 'baseline ' .. font.baseline .. '\n' )
+    gorillaFile:write( 'letterspacing ' .. font.letterspacing .. '\n' )
+    gorillaFile:write( 'monowidth ' .. font.monowidth .. '\n' )
+    gorillaFile:write( 'range ' .. font.range.start .. ' ' .. font.range.finish .. '\n' )
+    gorillaFile:write( 'offset ' .. offsetx .. ' ' .. offsety .. '\n' )
+    for k,v in pairs( font.glyphs ) do
+        gorillaFile:write( 'glyph_' )
+        gorillaFile:write( k .. ' ' )
+        gorillaFile:write( v[1] .. ' ' )
+        gorillaFile:write( v[2] .. ' ' )
+        gorillaFile:write( v[3] .. ' ' )
+        gorillaFile:write( v[4] .. ' ' )
+        gorillaFile:write( v[5] .. '\n' )
+    end
+    for k,v in pairs( font.kerning ) do
+        gorillaFile:write( 'kerning_' .. k .. ' ' )
+        gorillaFile:write( v.left .. ' ' )
+        gorillaFile:write( v.k .. '\n' )
+    end
+end
+
+canvas = { x=0, y=0, image = 'canvas.png', gorilla='canvas.gorilla' }
 canvas.w, canvas.h = getSize( canvas.image )
 compositeFile = 'atlas'
+fonts = { 'font10', 'font14', 'font24' }
 
 getFiles( 'imagelist.txt' )
 
 table.sort( images, compare )
 
--- Reserve the space taken by the fonts...
-subCanvas = {}
-subCanvas.w = canvas.w
-subCanvas.h = canvas.h - 274
-subCanvas.x = 0
-subCanvas.y = 274
-
-fillcanvas( subCanvas )
+fillcanvas( canvas )
 showlists()
 
 if #images ~= 0 then

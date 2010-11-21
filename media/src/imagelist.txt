@@ -14,3 +14,6 @@ ogrehead.png
 white.arrow.png
 white.png
 yellow.arrow.png
+font10.png
+font14.png
+font24.png
