@@ -190,12 +190,20 @@ function processFont( fontName, gorillaFile )
         gorillaFile:write( v.left .. ' ' )
         gorillaFile:write( v.k .. '\n' )
     end
+    for k,v in pairs( font.verticalOffset ) do
+        gorillaFile:write( 'verticalOffset_' .. k .. ' ' .. v .. '\n' )
+    end
+
 end
 
 canvas = { x=0, y=0, image = 'canvas.png', gorilla='canvas.gorilla' }
 canvas.w, canvas.h = getSize( canvas.image )
 compositeFile = 'atlas'
-fonts = { 'font10', 'font14', 'font24' }
+fonts = { 
+    'acoustic_bass_regular_10',
+    'dejavu_sans_book_14',
+    'acoustic_bass_regular_20'
+}
 
 getFiles( 'imagelist.txt' )
 
