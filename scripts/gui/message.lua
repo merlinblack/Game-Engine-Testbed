@@ -20,7 +20,7 @@ function messageDialog(task)
     local icon = Panel( l, x + 8, y + 8, 32, 32 )
     icon:background( "icon.info" )
 
-    local btnOK = Button( l, x + w/2 - 40, y + h * 0.70, "OK" )
+    local btnOK = Button( l, x + w/2 - 40, y + h * 0.70, "ok" )
     btnOK:setClickAction( function () window.OK=true end )
     btnOK:setKeyCode( KeyCodes.KC_RETURN )
     window:addChild( text )

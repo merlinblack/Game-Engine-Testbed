@@ -159,7 +159,7 @@ function setup()
     local sb = Gorilla.Silverback.getSingleton()
     gui.screen = sb:createScreen( Ogre.getViewport( 0 ), 'atlas' )
     gui.mainLayer = gui.screen:createLayer(0)
-    gui.dialogBackground = ColourValue( 0, 0, 0, .5 )
+    gui.dialogBackground = ColourValue( .999, .999, .878, .6 )
 
     setupMouse()
 
