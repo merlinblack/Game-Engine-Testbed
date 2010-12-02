@@ -2,7 +2,7 @@ local scene = Ogre.getSceneManager()
 am = AnimationManager.getSingleton()
 nv = NavigationMesh( Vector3.ZERO, Quaternion.IDENTITY, Vector3.UNIT_SCALE )
 scene:destroyEntity'Nav'
-ne = scene:createEntity( 'FloorNav.mesh' )
+ne = scene:createEntity( 'Level1_walk.mesh' )
 nv:buildFromEntity( ne )
 
 function moveTo( v )
@@ -69,7 +69,7 @@ end
 
 function getpath()
     local p = player.node:getPosition()
-    local d = base:hitPosition(mouse.x/mouse.width, mouse.y/mouse.height)
+    local d = island:hitPosition(mouse.x/mouse.width, mouse.y/mouse.height)
     local maxAngle = Radian( Degree(90) )
 
     return nv:findPath( p, d, maxAngle, 5 )
