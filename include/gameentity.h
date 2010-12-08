@@ -68,13 +68,16 @@ public:
     GameEntity();
     virtual ~GameEntity();
 
-    //Accessors
+    // Accessors
     std::string getName() const { return name; }
     void setName( std::string newName );
 
     size_t getHashId() { return hashId; }
 
     virtual void update();
+
+    // If this instance is being managed, it is removed.
+    void removeFromManager();
 
     // Checks if a ray from camera at (x,y) intersects with *any* mesh triangles.
     // Returns as soon as an intersection is found.
@@ -103,7 +106,11 @@ class GameEntityWrapper : public GameEntity, public luabind::wrap_base
 
     virtual void update()
     {
-        call<void>( "update" );
+        lua_State* L = m_self.state();
+        m_self.get(L);
+        if( ! lua_isnil( L, -1 ) ) // If the Lua side is not there anymore just ignore.
+            call<void>( "update" );
+        lua_pop( L, 1 );
     }
 
     static void default_update( GameEntity* ptr )
