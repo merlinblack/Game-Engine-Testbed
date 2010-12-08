@@ -269,6 +269,7 @@ void NavigationMesh::BuildFromOgreMesh( Ogre::MeshPtr mesh )
 
     return;
 }
+
 void NavigationMesh::BuildFromOgreEntity( Ogre::Entity *entity )
 {
     BuildFromOgreMesh( entity->getMesh() );

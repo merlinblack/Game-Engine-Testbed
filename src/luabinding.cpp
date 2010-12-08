@@ -114,6 +114,7 @@ void bindVector3( lua_State* L )
         .def( self - other<Vector3>() )
         .def( self * other<Vector3>() )
         .def( self * Real() )
+        .def( self == other<Vector3>() )
     ];
 
     LUA_STATIC_START( Vector3 )
@@ -159,6 +160,7 @@ void bindVector2( lua_State* L )
         .def( self - other<Vector2>() )
         .def( self * other<Vector2>() )
         .def( self * Real() )
+        .def( self == other<Vector2>() )
     ];
 
     LUA_STATIC_START( Vector2 )

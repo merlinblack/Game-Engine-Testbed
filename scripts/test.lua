@@ -21,10 +21,10 @@ player.node:yaw(180)
 player.node:scale(.25,.25,.25)
 player.node:setPosition(0,25,0)
 
-base = createGameEntity( root, 'A Strange base.', 'Floor.mesh' )
-door = createGameEntity( root, 'Door of Death', 'Door.mesh' )
+--base = createGameEntity( root, 'A Strange base.', 'Floor.mesh' )
+--door = createGameEntity( root, 'Door of Death', 'Door.mesh' )
 island = createGameEntity( root, 'Island of Dark Green Colour', 'Level1.mesh' )
-
+--[[
 function door:close()
     local path = { Vector3( 25, 0, 0 ), Vector3( 0, 0, 0 ) }
     createTask( door.followPathTask, path )
@@ -54,7 +54,7 @@ function door.followPathTask(task)
 
     door.isMoving = false
 end
-
+--]]
 mouse:show()
 
 function test()
@@ -62,5 +62,14 @@ function test()
     print(#t)
     for i=1,#t do
         print( t[i].name, d[i] )
+    end
+end
+
+infVector = Vector3( math.huge, math.huge, math.huge )
+
+function teleport()
+    local p = island:hitPosition( mouse.x / mouse.width, mouse.y / mouse.height )
+    if p ~= infVector then
+        player.node:setPosition( p )
     end
 end

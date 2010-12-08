@@ -43,6 +43,10 @@ GameEntity::GameEntity() : hashId(0), sceneNode(0), mesh(0), originalMaterial(0)
 
 GameEntity::~GameEntity()
 {
+    if( sceneNode )
+    {
+        sceneNode->getCreator()->destroySceneNode( sceneNode );
+    }
 }
 
 void GameEntity::setName( std::string newName )
@@ -74,6 +78,11 @@ void GameEntity::setName( std::string newName )
 void GameEntity::update()
 {
     // Nothing, might get overridden in Lua
+}
+
+void GameEntity::removeFromManager()
+{
+    GameEntityManager::getSingleton().removeGameEntity( hashId );
 }
 
 // Checks if a ray from camera at (x,y) intersects with *any* mesh triangles.
@@ -395,6 +404,7 @@ void bindGameEntityClasses( lua_State* L )
             .def( "highlight", &GameEntity::highlight )
             .def( "createHighlightMaterial", &GameEntity::createHighlightMaterial )
             .def(tostring(self))
+            .def( "__finalize", &GameEntity::removeFromManager )
             ,
             class_<GameEntityManager>("GameEntityManager")
             .scope
