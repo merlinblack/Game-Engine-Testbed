@@ -1,6 +1,9 @@
 function autoComplete( str )
     local prefixend = string.find( str:reverse(), '[() %[%]=+/,%%]' )
     local prefix = ''
+    local p
+    
+    doubleTab = doubleTab or {}
 
     if prefixend then
         prefix = string.sub( str, 1, #str - prefixend + 1 )
@@ -9,7 +12,13 @@ function autoComplete( str )
 
     str, p = complete(str)
 
-    if #p > 1 then print( unpack( p ) ) end
+    if #p > 1 then 
+        if doubleTab.str == str then
+            print( unpack( p ) )
+        else
+            doubleTab.str = str
+        end
+    end
 
     return prefix..str
 end
