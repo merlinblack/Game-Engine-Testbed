@@ -266,6 +266,18 @@ bool LuaConsole::injectKeyPress( const OIS::KeyEvent &evt )
             print( interpreter->getOutput() );
             interpreter->clearOutput();
             editline.clear();
+            // Call Lua function to clear autoComplete state.
+            {
+                lua_State *L = interpreter->getLuaInstance();
+                lua_getglobal( L, "autoCompleteClear" );
+                if( !lua_isnil( L, -1 ) )
+                {
+                    lua_pcall( L, 0, 0, 0 );
+                    // leave any error message on the stack.
+                }
+                else
+                    lua_pop(L, 1);
+            }
             break;
 
         case OIS::KC_PGUP:

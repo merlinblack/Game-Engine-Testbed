@@ -70,7 +70,12 @@ void NavigationCell::debugDrawClassification( Ogre::Vector3 start, Ogre::Vector3
     debug->position( end );
     debug->end();
 
-    debug->begin( "debug/yellow", Ogre::RenderOperation::OT_LINE_STRIP );
+    debugDrawCell( debug, "debug/yellow" );
+}
+
+void NavigationCell::debugDrawCell( Ogre::ManualObject *debug, Ogre::String material )
+{
+    debug->begin( material, Ogre::RenderOperation::OT_LINE_STRIP );
     debug->position( mVertices[0] );
     debug->position( mVertices[1] );
     debug->position( mVertices[2] );
@@ -129,7 +134,7 @@ void NavigationCell::debugDrawCellAndNeigbours()
 
 NavigationCell::LINE_CLASSIFICATION NavigationCell::classifyLine2D( Ogre::Vector3& start, Ogre::Vector3& end, NavigationCell* from, NavigationCell*& next )
 {
-    //debugDrawClassification( start, end);
+    debugDrawClassification( start, end);
 
     // Flatten line to 2D
     Ogre::Vector2 s( start.x, start.z );
@@ -202,7 +207,8 @@ NavigationMesh::NavigationMesh( Ogre::Vector3 position /* = Ogre::Vector3::ZERO 
                                 Ogre::Vector3 scale /* = Ogre::Vector3::UNIT_SCALE */ ) :
     mPosition( position ),
     mRotation( rotation ),
-    mScale( scale )
+    mScale( scale ),
+    mShow( false )
 {
 }
 
@@ -210,7 +216,12 @@ NavigationMesh::~NavigationMesh()
 {
 }
 
-void NavigationMesh::BuildFromOgreMesh( Ogre::MeshPtr mesh )
+void NavigationMesh::addFromOgreMesh( 
+        Ogre::MeshPtr mesh,
+        Ogre::Vector3 position,
+        Ogre::Quaternion rotation,
+        Ogre::Vector3 scale
+        )
 {
     using namespace Ogre;
 
@@ -220,7 +231,9 @@ void NavigationMesh::BuildFromOgreMesh( Ogre::MeshPtr mesh )
     unsigned long* indices;
 
     OgreTools::GetMeshInformation( mesh, vertex_count, vertices, index_count, indices,
-                                   mPosition, mRotation, mScale );
+                                   mPosition + position, 
+                                   mRotation * rotation, 
+                                   mScale * scale );
 
     // Add each triangle as a navigation cell.
     for( size_t i = 0; i < index_count; i += 3 )
@@ -233,7 +246,11 @@ void NavigationMesh::BuildFromOgreMesh( Ogre::MeshPtr mesh )
     delete [] vertices;
     delete [] indices;
 
-    // Compute neighbours.
+    return;
+}
+
+void NavigationMesh::computeNeighbours()
+{
     // There will be a better way, but this works for now
     // and this does not run very often.
 
@@ -270,9 +287,13 @@ void NavigationMesh::BuildFromOgreMesh( Ogre::MeshPtr mesh )
     return;
 }
 
-void NavigationMesh::BuildFromOgreEntity( Ogre::Entity *entity )
+void NavigationMesh::addFromOgreEntity( Ogre::Entity *entity,
+        Ogre::Vector3 position,
+        Ogre::Quaternion rotation,
+        Ogre::Vector3 scale
+        )
 {
-    BuildFromOgreMesh( entity->getMesh() );
+    addFromOgreMesh( entity->getMesh(), position, rotation, scale );
 }
 
 // Finds cell that contains the specified point, but not necessarily on its surface.
@@ -671,4 +692,47 @@ void NavigationMesh::DebugTextDump( std::ostream &out )
         out << "Link 3: " << i->mLinks[2] << std::endl;
         out << "Path: " << (i->path + 1) << std::endl;
     }
+}
+
+void NavigationMesh::setShow( bool show )
+{
+    Ogre::Root *root = Ogre::Root::getSingletonPtr();
+    Ogre::SceneManager* mgr = root->getSceneManager( "SceneManagerInstance" );
+    Ogre::ManualObject* debug;
+    Ogre::SceneNode* debugNode;
+
+    mShow = show;
+
+    if( mgr->hasSceneNode( "debugDrawNode2" ) )
+    {
+        debugNode = mgr->getSceneNode( "debugDrawNode2" );
+    }
+    else
+    {
+        debugNode = mgr->getRootSceneNode()->createChildSceneNode( "debugDrawNode2" );
+        debugNode->translate( 0, 1, 0 );    // Move up slightly to see lines better.
+    }
+
+    if( mgr->hasManualObject( "debugDraw2" ) )
+        debug = mgr->getManualObject( "debugDraw2" );
+    else
+    {
+        debug = mgr->createManualObject( "debugDraw2" );
+        debugNode->attachObject( debug );
+        debug->setQueryFlags( 0 );
+        debug->setRenderQueueGroup( Ogre::RENDER_QUEUE_OVERLAY );
+    }
+
+    if( !mShow )
+    {
+        mgr->destroyManualObject( debug );
+        return;
+    }
+
+    for( CellVector::iterator i = mCells.begin(); i != mCells.end(); i++ )
+    {
+        i->debugDrawCell( debug, "debug/yellow" );
+    }
+
+    return;
 }

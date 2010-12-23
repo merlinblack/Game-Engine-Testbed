@@ -75,6 +75,7 @@ class NavigationCell
     bool hasVertex( Ogre::Vector3& vec );
     void debugDrawClassification( Ogre::Vector3 start, Ogre::Vector3 end );
     void debugDrawCellAndNeigbours();
+    void debugDrawCell( Ogre::ManualObject *debug, Ogre::String material );
 
 public:
     NavigationCell( Ogre::Vector3 a, Ogre::Vector3 b, Ogre::Vector3 c );
@@ -119,14 +120,29 @@ class NavigationMesh
     // This is used as a binary heap.
     NavigationCellList mOpenList;
 
+    bool mShow; // Show each cell for debugging.
+
 public:
-    NavigationMesh( Ogre::Vector3 position = Ogre::Vector3::ZERO,
-                    Ogre::Quaternion rotation = Ogre::Quaternion::IDENTITY,
-                    Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE );
+    NavigationMesh( 
+            Ogre::Vector3 position = Ogre::Vector3::ZERO,
+            Ogre::Quaternion rotation = Ogre::Quaternion::IDENTITY,
+            Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE );
+
     ~NavigationMesh();
 
-    void BuildFromOgreMesh( Ogre::MeshPtr mesh );
-    void BuildFromOgreEntity( Ogre::Entity *entity );
+    void addFromOgreMesh( 
+            Ogre::MeshPtr mesh,
+            Ogre::Vector3 position = Ogre::Vector3::ZERO,
+            Ogre::Quaternion rotation = Ogre::Quaternion::IDENTITY,
+            Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE );
+
+    void addFromOgreEntity( 
+            Ogre::Entity *entity,
+            Ogre::Vector3 position = Ogre::Vector3::ZERO,
+            Ogre::Quaternion rotation = Ogre::Quaternion::IDENTITY,
+            Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE );
+
+    void computeNeighbours();
 
     // Finds cell that contains the specified point, but not necessarily on its surface.
     NavigationCell* getCellContainingPoint( Ogre::Vector3& p );
@@ -141,6 +157,10 @@ public:
     NavigationPath* straightenPath( NavigationPath* path, Ogre::Radian maxTurnAngle, Ogre::Real width );
 
     void DebugTextDump( std::ostream &out );
+
+    bool getShow() { return mShow; }
+
+    void setShow( bool show );
 
 private:
     inline Ogre::Real aStarHeuristic( NavigationCell* cell, NavigationCell* destination );

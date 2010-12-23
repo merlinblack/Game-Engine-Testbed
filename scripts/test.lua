@@ -21,8 +21,8 @@ player.node:yaw(180)
 player.node:scale(.25,.25,.25)
 player.node:setPosition(0,25,0)
 
---base = createGameEntity( root, 'A Strange base.', 'Floor.mesh' )
---door = createGameEntity( root, 'Door of Death', 'Door.mesh' )
+--base = createGameEntity( root, 'A Strange base.', 'floor.mesh' )
+--door = createGameEntity( root, 'Door of Death', 'door.mesh' )
 island = createGameEntity( root, 'Island of Dark Green Colour', 'Level1.mesh' )
 --[[
 function door:close()
