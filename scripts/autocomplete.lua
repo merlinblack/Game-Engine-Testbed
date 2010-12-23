@@ -1,26 +1,30 @@
+doubleTab = doubleTab or {}
+
 function autoComplete( str )
     local prefixend = string.find( str:reverse(), '[() %[%]=+/,%%]' )
     local prefix = ''
-    local p
-    
-    doubleTab = doubleTab or {}
+    local posibles
 
     if prefixend then
         prefix = string.sub( str, 1, #str - prefixend + 1 )
         str = string.sub( str, #str - prefixend + 2 )
     end
 
-    str, p = complete(str)
+    str, posibles = complete(str)
 
-    if #p > 1 then 
+    if #posibles > 1 then 
         if doubleTab.str == str then
-            print( unpack( p ) )
+            print( unpack( posibles ) )
         else
             doubleTab.str = str
         end
     end
 
     return prefix..str
+end
+
+function autoCompleteClear()
+    doubleTab.str = nil
 end
 
 function complete( str )
