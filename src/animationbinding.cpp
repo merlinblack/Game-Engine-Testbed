@@ -47,15 +47,15 @@ void bindAnimation( lua_State* L )
 
     module(L)
     [
-            class_< Animation, AnimationPtr >( "Animation" )
-            .def( "stop", &Animation::stop )
-            .def( "start", &Animation::start )
-            .def( "isFinished", &Animation::isFinished )
+            class_< ::Animation, AnimationPtr >( "Animation" )
+            .def( "stop", &::Animation::stop )
+            .def( "start", &::Animation::start )
+            .def( "isFinished", &::Animation::isFinished )
     ];
 
     module(L)
     [
-            class_< MeshAnimation, Animation, AnimationPtr >( "MeshAnimation" )
+            class_< MeshAnimation, ::Animation, AnimationPtr >( "MeshAnimation" )
             .def( constructor< Ogre::Entity*, Ogre::String >())
             //.def( "start", &MeshAnimation::start )
             //.def( "stop", &MeshAnimation::stop )
@@ -70,7 +70,7 @@ void bindAnimation( lua_State* L )
 
     module(L)
     [
-            class_< MovementAnimation, Animation, AnimationPtr >( "MovementAnimation" )
+            class_< MovementAnimation, ::Animation, AnimationPtr >( "MovementAnimation" )
             .def( constructor< Ogre::SceneNode*, Ogre::Vector3, Ogre::Real >())
             //.def( "start", &MeshAnimation::start )
             //.def( "stop", &MeshAnimation::stop )
@@ -78,7 +78,7 @@ void bindAnimation( lua_State* L )
 
     module(L)
     [
-            class_< RotationAnimation, Animation, AnimationPtr >( "RotationAnimation" )
+            class_< RotationAnimation, ::Animation, AnimationPtr >( "RotationAnimation" )
             .def( constructor< Ogre::SceneNode*, Ogre::Quaternion, Ogre::Real >())
             //.def( "start", &MeshAnimation::start )
             //.def( "stop", &MeshAnimation::stop )

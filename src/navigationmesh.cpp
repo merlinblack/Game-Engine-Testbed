@@ -43,9 +43,9 @@ NavigationCell::NavigationCell( Ogre::Vector3 a, Ogre::Vector3 b, Ogre::Vector3 
 
 bool NavigationCell::hasVertex( Ogre::Vector3& vec )
 {
-    if( mVertices[0] == vec )   return true;
-    if( mVertices[1] == vec )   return true;
-    if( mVertices[2] == vec )   return true;
+    if( mVertices[0].positionEquals( vec ) )   return true;
+    if( mVertices[1].positionEquals( vec ) )   return true;
+    if( mVertices[2].positionEquals( vec ) )   return true;
     return false;
 }
 
@@ -54,13 +54,16 @@ void NavigationCell::debugDrawClassification( Ogre::Vector3 start, Ogre::Vector3
     Ogre::Root *root = Ogre::Root::getSingletonPtr();
     Ogre::SceneManager* mgr = root->getSceneManager( "SceneManagerInstance" );
     Ogre::ManualObject* debug;
+    Ogre::SceneNode* node;
 
     if( mgr->hasManualObject( "debugDrawClassification" ) )
         debug = mgr->getManualObject( "debugDrawClassification" );
     else
     {
         debug = mgr->createManualObject( "debugDrawClassification" );
-        mgr->getRootSceneNode()->attachObject( debug );
+        node = mgr->getRootSceneNode()->createChildSceneNode();
+        node->attachObject( debug );
+        node->translate( 0, 1, 0 );
         debug->setQueryFlags( 0 );
         debug->setRenderQueueGroup( Ogre::RENDER_QUEUE_OVERLAY );
     }
@@ -70,17 +73,37 @@ void NavigationCell::debugDrawClassification( Ogre::Vector3 start, Ogre::Vector3
     debug->position( end );
     debug->end();
 
-    debugDrawCell( debug, "debug/yellow" );
+    debugDrawCell( debug, "debug/yellow", "debug/blue" );
 }
 
-void NavigationCell::debugDrawCell( Ogre::ManualObject *debug, Ogre::String material )
+void NavigationCell::debugDrawCell( Ogre::ManualObject *debug, Ogre::String matNormal, Ogre::String matSide )
 {
-    debug->begin( material, Ogre::RenderOperation::OT_LINE_STRIP );
+    debug->begin( matNormal, Ogre::RenderOperation::OT_LINE_STRIP );
     debug->position( mVertices[0] );
     debug->position( mVertices[1] );
     debug->position( mVertices[2] );
     debug->position( mVertices[0] );
     debug->end();
+    if( mLinks[0] == 0 || mLinks[1] == 0 || mLinks[2] == 0 )
+    {
+        debug->begin( matSide, Ogre::RenderOperation::OT_LINE_LIST );
+        if( !mLinks[0] )
+        {
+            debug->position( mVertices[0] );
+            debug->position( mVertices[1] );
+        }
+        if( !mLinks[1] )
+        {
+            debug->position( mVertices[1] );
+            debug->position( mVertices[2] );
+        }
+        if( !mLinks[2] )
+        {
+            debug->position( mVertices[2] );
+            debug->position( mVertices[0] );
+        }
+        debug->end();
+    }
 }
 
 void NavigationCell::debugDrawCellAndNeigbours()
@@ -197,7 +220,7 @@ Ogre::Vector3 NavigationCell::getExitPoint()
     }
 
     // What? the path should be set if the cell is in the list....
-    assert(0);
+    //assert(0);
 
     return Ogre::Vector3::ZERO;
 }
@@ -731,7 +754,7 @@ void NavigationMesh::setShow( bool show )
 
     for( CellVector::iterator i = mCells.begin(); i != mCells.end(); i++ )
     {
-        i->debugDrawCell( debug, "debug/yellow" );
+        i->debugDrawCell( debug, "debug/yellow", "debug/blue" );
     }
 
     return;
