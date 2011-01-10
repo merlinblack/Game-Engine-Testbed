@@ -22,6 +22,9 @@ FILE(GLOB SRCS src/*.cpp)
 FILE(GLOB HDRS include/*.h)
 FILE(GLOB SCRIPTS scripts/*.lua scripts/gui/*.lua)
 
+INCLUDE( UnityBuild.cmake )
+#enable_unity_build( engine SRCS )
+
 ADD_EXECUTABLE(engine 
 	${SRCS}
 	${HDRS}

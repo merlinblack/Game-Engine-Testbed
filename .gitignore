@@ -2,4 +2,4 @@ build
 CMakeLists.txt.user
 notes.txt
 *~
-media/OgreXMLConverter.log
+*.log
