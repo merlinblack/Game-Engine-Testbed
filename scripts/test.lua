@@ -23,7 +23,7 @@ player.node:setPosition(0,25,0)
 
 --base = createGameEntity( root, 'A Strange base.', 'floor.mesh' )
 --door = createGameEntity( root, 'Door of Death', 'door.mesh' )
-island = createGameEntity( root, 'Island of Dark Green Colour', 'Level1.mesh' )
+island = createGameEntity( root, 'Island of Dark Green Colour', 'level2.mesh' )
 --[[
 function door:close()
     local path = { Vector3( 25, 0, 0 ), Vector3( 0, 0, 0 ) }

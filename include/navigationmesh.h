@@ -75,7 +75,7 @@ class NavigationCell
     bool hasVertex( Ogre::Vector3& vec );
     void debugDrawClassification( Ogre::Vector3 start, Ogre::Vector3 end );
     void debugDrawCellAndNeigbours();
-    void debugDrawCell( Ogre::ManualObject *debug, Ogre::String material );
+    void debugDrawCell( Ogre::ManualObject *debug, Ogre::String matNormal, Ogre::String matSide );
 
 public:
     NavigationCell( Ogre::Vector3 a, Ogre::Vector3 b, Ogre::Vector3 c );
