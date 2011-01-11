@@ -70,7 +70,7 @@ end
 
 function getpath()
     local p = player.node:getPosition()
-    local d = island:hitPosition(mouse.x/mouse.width, mouse.y/mouse.height)
+    local d = getWalkableEntityHitPosition(mouse.x/mouse.width, mouse.y/mouse.height)
     local maxAngle = Radian( Degree(90) )
 
     return nv:findPath( p, d, maxAngle, 5 )
