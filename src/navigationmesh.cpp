@@ -32,6 +32,9 @@ THE SOFTWARE.
 #include <luabind/luabind.hpp>
 #include <luabind/object.hpp>
 
+// The speration tolerance that vertices in a navmesh are considered in the same place.
+#define VERTEX_SNAP_TOLERANCE 2.0f
+
 NavigationCell::NavigationCell( Ogre::Vector3 a, Ogre::Vector3 b, Ogre::Vector3 c )
 {
     mVertices[0] = a;
@@ -43,9 +46,9 @@ NavigationCell::NavigationCell( Ogre::Vector3 a, Ogre::Vector3 b, Ogre::Vector3 
 
 bool NavigationCell::hasVertex( Ogre::Vector3& vec )
 {
-    if( mVertices[0].positionEquals( vec ) )   return true;
-    if( mVertices[1].positionEquals( vec ) )   return true;
-    if( mVertices[2].positionEquals( vec ) )   return true;
+    if( mVertices[0].positionEquals( vec, VERTEX_SNAP_TOLERANCE ) )   return true;
+    if( mVertices[1].positionEquals( vec, VERTEX_SNAP_TOLERANCE ) )   return true;
+    if( mVertices[2].positionEquals( vec, VERTEX_SNAP_TOLERANCE ) )   return true;
     return false;
 }
 

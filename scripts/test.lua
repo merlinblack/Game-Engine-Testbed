@@ -24,6 +24,7 @@ player.node:setPosition(0,25,0)
 --base = createGameEntity( root, 'A Strange base.', 'floor.mesh' )
 --door = createGameEntity( root, 'Door of Death', 'door.mesh' )
 island = createGameEntity( root, 'Island of Dark Green Colour', 'level2.mesh' )
+island.walkable = true
 --[[
 function door:close()
     local path = { Vector3( 25, 0, 0 ), Vector3( 0, 0, 0 ) }
@@ -67,23 +68,57 @@ end
 
 infVector = Vector3( math.huge, math.huge, math.huge )
 
-function teleport()
-    local geTable = gm:mousePick( mouse.x / mouse.width, mouse.y / mouse.height )
+function getWalkableEntityHitPosition( x, y )
+    local geTable = gm:mousePick( x, y )
 
     if #geTable == 0 then
-        print 'Nothing under the mouse cursor.'
-        return
+        return infVector
     end
 
+    -- Get the game entiy where the mouse ray intersects the nearest game object,
+    -- that has 'walkable' set to true.
+    local ge
+    for index = 1, #geTable do
+        if geTable[index].walkable == true then
+            ge = geTable[index]
+            break
+        end
+    end
+
+    if ge then
+        return ge:hitPosition( x, y )
+    else
+        return infVector
+    end
+end
+
+
+function teleport()
+
     -- Teleport to where the mouse ray intersects the nearest game object,
-    -- that is not the player.
-    local index = 0
-    repeat
-        index = index + 1
-    until geTable[index] ~= player
+    -- that is walkable.
     
-    local p = geTable[index]:hitPosition( mouse.x / mouse.width, mouse.y / mouse.height )
+    local p = getWalkableEntityHitPosition( mouse.x / mouse.width, mouse.y / mouse.height )
     if p ~= infVector then
         player.node:setPosition( p )
+    else
+        print 'Nothing under the mouse cursor.'
     end
+end
+
+function loadBridge()
+    bridge = createGameEntity( root, 'A bridge too far', 'bridge.mesh' )
+    bridge2 = createGameEntity( root, 'Another bridge too far', 'bridge.mesh' )
+    bridge.walkable = true
+    bridge2.walkable = true
+    bridge_walkable = scene:createEntity( 'bridge_walk.mesh' )
+    local n = bridge.node
+    n:setPosition( -32, 0, -96 )
+    nv:addFromEntity( bridge_walkable, n:getPosition(), n:getOrientation(), Vector3.UNIT_SCALE )
+    n = bridge2.node
+    n:setPosition( -256, 0, 96 )
+    n:yaw( 90 )
+    nv:addFromEntity( bridge_walkable, n:getPosition(), n:getOrientation(), Vector3.UNIT_SCALE )
+    nv:computeNeighbours()
+    nv.show = true
 end
