@@ -68,7 +68,21 @@ end
 infVector = Vector3( math.huge, math.huge, math.huge )
 
 function teleport()
-    local p = island:hitPosition( mouse.x / mouse.width, mouse.y / mouse.height )
+    local geTable = gm:mousePick( mouse.x / mouse.width, mouse.y / mouse.height )
+
+    if #geTable == 0 then
+        print 'Nothing under the mouse cursor.'
+        return
+    end
+
+    -- Teleport to where the mouse ray intersects the nearest game object,
+    -- that is not the player.
+    local index = 0
+    repeat
+        index = index + 1
+    until geTable[index] ~= player
+    
+    local p = geTable[index]:hitPosition( mouse.x / mouse.width, mouse.y / mouse.height )
     if p ~= infVector then
         player.node:setPosition( p )
     end

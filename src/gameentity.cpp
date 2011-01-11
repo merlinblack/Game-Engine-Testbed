@@ -404,6 +404,7 @@ void bindGameEntityClasses( lua_State* L )
             .def( "highlight", &GameEntity::highlight )
             .def( "createHighlightMaterial", &GameEntity::createHighlightMaterial )
             .def(tostring(self))
+            .def( self == other<GameEntityPtr>() )
             .def( "__finalize", &GameEntity::removeFromManager )
             ,
             class_<GameEntityManager>("GameEntityManager")

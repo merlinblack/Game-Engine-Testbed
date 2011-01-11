@@ -91,6 +91,10 @@ public:
     {
         return hasher(str);
     }
+    bool operator==( const GameEntityPtr rhs )
+    {
+        return hashId == rhs->hashId;
+    }
 
     void highlight( bool on = true );
     void createHighlightMaterial();
