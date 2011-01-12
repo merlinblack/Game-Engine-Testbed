@@ -1,0 +1,15 @@
+Quest Manager Design
+
+An overall manager, with a current quest, open and completed quests.
+
+Each quest has a main lua script, which is held in a Quest class.
+
+A seperate journal system which can be updated by quests, basically holds quest events, recording quest, and time.  Time may be actual time, game time, or just an increasing number for ordering.
+
+Inside each quest can be implemented in any way, but allways has a few public functions that are called by the Manager.  These initialise, update, send events, and interogate the quest.  A finite state machine seems the best way to implement quests.
+
+Text strings should be loaded from a seperate lua file.
+
+A template quest could be developed, either to derive from OO style, or just to simply copy.
+
+Quests will need to interogate the game state.  Callbacks, Polling, Triggers?
