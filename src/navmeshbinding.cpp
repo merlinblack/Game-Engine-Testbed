@@ -35,6 +35,9 @@ void bindNavigationMesh( lua_State* L )
 {
     module(L)
     [
+        class_< NavigationCell >( "NavigationCell" )
+        .def( "info", &NavigationCell::getDebugInfoLua )
+        .def( "draw", &NavigationCell::debugDrawCellAndNeigbours ),
         class_< NavigationMesh, NavigationMeshPtr >( "NavigationMesh" )
         .def( constructor< Ogre::Vector3, Ogre::Quaternion, Ogre::Vector3 >() )
         .def( constructor< Ogre::Vector3, Ogre::Quaternion >() )
@@ -50,5 +53,6 @@ void bindNavigationMesh( lua_State* L )
         .def( "computeNeighbours", &NavigationMesh::computeNeighbours )
         .def( "findPath", &NavigationMesh::findNavigationPathLua )
         .property( "show", &NavigationMesh::getShow, &NavigationMesh::setShow )
+        .def( "getCellAtPoint", &NavigationMesh::getExactCellContainingPoint )
     ];
 }
