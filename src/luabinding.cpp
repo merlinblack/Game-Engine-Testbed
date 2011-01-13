@@ -213,6 +213,11 @@ std::ostream& operator<<( std::ostream& stream, const Entity& ent )
     return stream << ent.getName();
 }
 
+void ManualObject_finish( ManualObject* self )
+{
+    self->end();
+}
+
 void bindEntity( lua_State* L ) // And Movable Object for now.
 {
     module(L)
@@ -221,7 +226,23 @@ void bindEntity( lua_State* L ) // And Movable Object for now.
         class_<Entity, MovableObject>("Entity")
         .def(tostring(self))
         .def("setMaterialName", &Entity::setMaterialName )
-        .def("setDisplaySkeleton", &Entity::setDisplaySkeleton )
+        .def("setDisplaySkeleton", &Entity::setDisplaySkeleton ),
+        class_<ManualObject, MovableObject>("ManualObject")
+        .def(constructor<const String&>())
+        .def("clear", &ManualObject::clear )
+        .def("begin", &ManualObject::begin )
+        .def("position", (void (ManualObject::*)(const Vector3&))&ManualObject::position )
+        .def("position", (void (ManualObject::*)(Real, Real, Real))&ManualObject::position )
+        .def("normal", (void (ManualObject::*)(const Vector3&))&ManualObject::normal )
+        .def("normal", (void (ManualObject::*)(Real, Real, Real))&ManualObject::normal )
+        .def("tangent", (void (ManualObject::*)(const Vector3&))&ManualObject::tangent )
+        .def("tangent", (void (ManualObject::*)(Real, Real, Real))&ManualObject::tangent )
+        .def("texureUV", (void (ManualObject::*)(Real, Real))&ManualObject::textureCoord )
+        .def("texureUV", (void (ManualObject::*)(const Vector2&))&ManualObject::textureCoord )
+        .def("colour", (void (ManualObject::*)(Real, Real, Real, Real))&ManualObject::colour )
+        .def("colour", (void (ManualObject::*)(const ColourValue&))&ManualObject::colour )
+        .def("index",  &ManualObject::index )
+        .def("finish", &ManualObject_finish )
     ];
 }
 
