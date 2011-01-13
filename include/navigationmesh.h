@@ -48,6 +48,8 @@ this avoids calling sqrt, and the costs are only ever compared against each othe
 #include <vector>
 #include <ostream>
 
+#include <lua.hpp>
+
 class NavigationMesh;
 struct NavigationCellComparison;
 
@@ -74,7 +76,6 @@ class NavigationCell
 
     bool hasVertex( Ogre::Vector3& vec );
     void debugDrawClassification( Ogre::Vector3 start, Ogre::Vector3 end );
-    void debugDrawCellAndNeigbours();
     void debugDrawCell( Ogre::ManualObject *debug, Ogre::String matNormal, Ogre::String matSide );
 
 public:
@@ -92,6 +93,8 @@ public:
                                         NavigationCell* from, NavigationCell* &next );
 
     Ogre::Vector3 getExitPoint();
+    void getDebugInfoLua( lua_State *L );
+    void debugDrawCellAndNeigbours();
 };
 
 struct NavigationCellComparison
@@ -159,7 +162,6 @@ public:
     void DebugTextDump( std::ostream &out );
 
     bool getShow() { return mShow; }
-
     void setShow( bool show );
 
 private:
