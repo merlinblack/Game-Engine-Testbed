@@ -114,9 +114,8 @@ function getCellUnderMouse()
     local p = getWalkableEntityHitPosition( mouse.x / mouse.width, mouse.y / mouse.height )
     if p ~= infVector then
         return nv:getCellAtPoint( p )
-    else
-        print 'Nothing under the mouse cursor.'
     end
+    return nil
 end
 
 function loadBridge()
