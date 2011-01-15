@@ -3,3 +3,4 @@ CMakeLists.txt.user
 notes.txt
 *~
 *.log
+*.mesh
