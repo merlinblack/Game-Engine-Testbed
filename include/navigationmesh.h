@@ -95,6 +95,11 @@ public:
     Ogre::Vector3 getExitPoint();
     void getDebugInfoLua( lua_State *L );
     void debugDrawCellAndNeigbours();
+
+    bool operator==( const NavigationCell* rhs ) const
+    {
+        return this == rhs;
+    }
 };
 
 struct NavigationCellComparison

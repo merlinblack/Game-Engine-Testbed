@@ -1,3 +1,16 @@
+material debug/red
+{
+    receive_shadows off
+    technique
+    {
+        pass
+        {
+            ambient 1 0 0
+            diffuse 1 0 0 0
+            emissive 1 0 0 0
+        }
+    }
+}
 material debug/yellow
 {
     receive_shadows off

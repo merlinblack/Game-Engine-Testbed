@@ -114,6 +114,7 @@ void bindVector3( lua_State* L )
         .def( self - other<Vector3>() )
         .def( self * other<Vector3>() )
         .def( self * Real() )
+        .def( self / Real() )
         .def( self == other<Vector3>() )
     ];
 
@@ -160,6 +161,7 @@ void bindVector2( lua_State* L )
         .def( self - other<Vector2>() )
         .def( self * other<Vector2>() )
         .def( self * Real() )
+        .def( self / Real() )
         .def( self == other<Vector2>() )
     ];
 
@@ -222,7 +224,10 @@ void bindEntity( lua_State* L ) // And Movable Object for now.
 {
     module(L)
     [
-        class_<MovableObject>("MovableObject"),
+        class_<MovableObject>("MovableObject")
+        .def("getVisible", &MovableObject::getVisible )
+        .def("setVisible", &MovableObject::setVisible )
+        .def("detachFromParent", &MovableObject::detachFromParent ),
         class_<Entity, MovableObject>("Entity")
         .def(tostring(self))
         .def("setMaterialName", &Entity::setMaterialName )

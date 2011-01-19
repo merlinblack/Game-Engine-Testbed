@@ -76,7 +76,7 @@ void NavigationCell::debugDrawClassification( Ogre::Vector3 start, Ogre::Vector3
     debug->position( end );
     debug->end();
 
-    debugDrawCell( debug, "debug/yellow", "debug/blue" );
+//    debugDrawCell( debug, "debug/yellow", "debug/blue" );
 }
 
 void NavigationCell::debugDrawCell( Ogre::ManualObject *debug, Ogre::String matNormal, Ogre::String matSide )
@@ -677,7 +677,7 @@ NavigationCellList* NavigationMesh::findNavigationCellPath( NavigationCell* posi
 Ogre::Real NavigationMesh::aStarHeuristic( NavigationCell* cell, NavigationCell* destination )
 {
     // Tweak here!
-    return cell->mCentre.squaredDistance( destination->mCentre );
+    return cell->mCentre.squaredDistance( destination->mCentre ) / 256;
 }
 
 void NavigationMesh::resetPathfinding()
