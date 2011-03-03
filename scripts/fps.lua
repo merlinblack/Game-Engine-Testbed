@@ -35,9 +35,9 @@ fps.stop = false
 createTask( fps.update )
 gui.addModeless( fps.panel )
 
-function fps.resize( w, h )
+function fps.resize( event )
     fps.x = fps.panel.rect.top
-    fps.destx = h - 145
+    fps.destx = event.data.height - 145
     createTask( fps.animatePosition )
 end
 
@@ -58,5 +58,3 @@ function fps.animatePosition()
     fps.panel:move( 0, fps.x - fps.panel.rect.top )
     fps.moving = false
 end
-
---addResizeListener( fps.resize )
