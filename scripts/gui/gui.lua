@@ -22,14 +22,20 @@ function setViewportSize( w, h )
     setMouseViewportSize( w, h )
 end
 
-function mouseMoved(x, y, buttons)
+function mouseMovedEventListener( event )
+    x = event.data.x
+    y = event.data.y
+    buttons = event.data.buttons
     setMouseCursorPosition(x,y)
     gui.mouseMoved(x, y, buttons)
+    return false
 end
 
-function keypressed( key )
+function keypressedEventListener( event )
+    key = event.data.key
     keybinder.keypressed( key )
     gui.keypressed( key )
+    return false
 end
 
 function guiLog( str )

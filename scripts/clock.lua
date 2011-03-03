@@ -15,9 +15,9 @@ end
 clock.stop = false
 createTask( clock.update )
 
-function clock.resize( w, h )
+function clock.resize( event )
     clock.x = clock.panel.rect.top
-    clock.destx = h - 30
+    clock.destx = event.data.height - 30
     createTask( clock.animatePosition )
 end
 
@@ -39,4 +39,4 @@ function clock.animatePosition()
     clock.moving = false
 end
 
-addResizeListener( clock.resize )
+events.subscribe( 'EVT_WINDOW_RESIZE', clock.resize )
