@@ -106,6 +106,18 @@ function teleport()
     end
 end
 
+function getCellUnderMouse()
+
+    -- Grab the Navigation cell where the mouse ray intersects the nearest game object,
+    -- that is walkable.
+    
+    local p = getWalkableEntityHitPosition( mouse.x / mouse.width, mouse.y / mouse.height )
+    if p ~= infVector then
+        return nv:getCellAtPoint( p )
+    end
+    return nil
+end
+
 function loadBridge()
     bridge = createGameEntity( root, 'A bridge too far', 'bridge.mesh' )
     bridge2 = createGameEntity( root, 'Another bridge too far', 'bridge.mesh' )

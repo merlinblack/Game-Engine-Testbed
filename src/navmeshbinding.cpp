@@ -24,17 +24,32 @@ THE SOFTWARE.
 
 #include <navigationmesh.h>
 #include <luabind/luabind.hpp>
+#include <luabind/operator.hpp>
 
 #include <OgreEntity.h>
 #include <OgreVector3.h>
 #include <OgreQuaternion.h>
+#include <OgreStringConverter.h>
 
 using namespace luabind;
+
+Ogre::String cellToString( NavigationCell* cell )
+{
+    Ogre::String name( "NCell: " );
+    name += Ogre::StringConverter::toString( (unsigned long)cell );
+
+    return name;
+}
 
 void bindNavigationMesh( lua_State* L )
 {
     module(L)
     [
+        class_< NavigationCell >( "NavigationCell" )
+        .def( "info", &NavigationCell::getDebugInfoLua )
+        .def( "draw", &NavigationCell::debugDrawCellAndNeigbours )
+        .def( "__tostring", &cellToString )
+        .def( self == other<NavigationCell*>() ),
         class_< NavigationMesh, NavigationMeshPtr >( "NavigationMesh" )
         .def( constructor< Ogre::Vector3, Ogre::Quaternion, Ogre::Vector3 >() )
         .def( constructor< Ogre::Vector3, Ogre::Quaternion >() )
@@ -50,5 +65,6 @@ void bindNavigationMesh( lua_State* L )
         .def( "computeNeighbours", &NavigationMesh::computeNeighbours )
         .def( "findPath", &NavigationMesh::findNavigationPathLua )
         .property( "show", &NavigationMesh::getShow, &NavigationMesh::setShow )
+        .def( "getCellAtPoint", &NavigationMesh::getExactCellContainingPoint )
     ];
 }

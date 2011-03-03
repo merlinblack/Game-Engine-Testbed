@@ -76,7 +76,7 @@ void NavigationCell::debugDrawClassification( Ogre::Vector3 start, Ogre::Vector3
     debug->position( end );
     debug->end();
 
-    debugDrawCell( debug, "debug/yellow", "debug/blue" );
+//    debugDrawCell( debug, "debug/yellow", "debug/blue" );
 }
 
 void NavigationCell::debugDrawCell( Ogre::ManualObject *debug, Ogre::String matNormal, Ogre::String matSide )
@@ -156,6 +156,37 @@ void NavigationCell::debugDrawCellAndNeigbours()
     debug->position( mVertices[0].x, mVertices[0].y+1, mVertices[0].z );
     debug->end();
 
+}
+
+void NavigationCell::getDebugInfoLua( lua_State *L )
+{
+    luabind::object info = luabind::newtable(L);
+    luabind::object verts = luabind::newtable(L);
+    luabind::object links = luabind::newtable(L);
+
+    verts[1] = mVertices[0];
+    verts[2] = mVertices[1];
+    verts[3] = mVertices[2];
+
+    info["vertices"] = verts;
+
+    links[1] = mLinks[0];
+    links[2] = mLinks[1];
+    links[3] = mLinks[2];
+
+    info["links"] = links;
+
+    info["g"] = g_cost;
+    info["h"] = h_cost;
+
+    info["path"] = path+1;
+
+    info["open"] = isOpen;
+    info["closed"] = isClosed;
+
+    info.push( L );
+
+    return;
 }
 
 NavigationCell::LINE_CLASSIFICATION NavigationCell::classifyLine2D( Ogre::Vector3& start, Ogre::Vector3& end, NavigationCell* from, NavigationCell*& next )
@@ -418,8 +449,7 @@ void NavigationMesh::findNavigationPathLua( lua_State* L, Ogre::Vector3 position
     }
 
     // Create a table and populate with the path points.
-    lua_newtable( L );
-    luabind::object table( luabind::from_stack( L, -1 ) );
+    luabind::object table = luabind::newtable( L );
 
     NavigationPath::iterator i;
     int index = 1;
@@ -431,6 +461,8 @@ void NavigationMesh::findNavigationPathLua( lua_State* L, Ogre::Vector3 position
 
     delete path;
     delete straightendPath;
+
+    table.push( L );
 
     return;
 }
@@ -645,7 +677,7 @@ NavigationCellList* NavigationMesh::findNavigationCellPath( NavigationCell* posi
 Ogre::Real NavigationMesh::aStarHeuristic( NavigationCell* cell, NavigationCell* destination )
 {
     // Tweak here!
-    return cell->mCentre.squaredDistance( destination->mCentre );
+    return cell->mCentre.squaredDistance( destination->mCentre ) / 256;
 }
 
 void NavigationMesh::resetPathfinding()
