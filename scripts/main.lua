@@ -2,6 +2,7 @@ require 'scheduler'
 require 'keys'
 require 'gui/gui'
 require 'autocomplete'
+require 'events'
 
 function version()
     message( 'Game Engine Testbed %3v0.2%r\nOgre 3d %3v1.7.2%r\nLua %3v5.1.4%r\nLuabind %3v0.9git%r' )
@@ -14,66 +15,6 @@ function dofile( f )
         return
     end
     old_dofile( f )
-end
-
--- Cache hash values.
-Event.keydown = Event.hash "EVT_KEYDOWN"
-Event.mousemove = Event.hash "EVT_MOUSEMOVE"
-Event.mousedown = Event.hash "EVT_MOUSEDOWN"
-Event.mouseup = Event.hash "EVT_MOUSEUP"
-Event.windowresize = Event.hash "EVT_WINDOW_RESIZE"
-
-function EventNotification( event )
-    --print "Scripting System Received an Event"
-
-    if event.type == Event.keydown  then
-        if event.data.key == KeyCodes.KC_ESCAPE and #gui.modal == 0 then
-            quit()
-            return true
-        end
-    end
-
-    if event.type == Event.windowresize then
-        setViewportSize( event.data.width, event.data.height )
-        if type(resizeEventListen) == 'table' then
-            table.foreach( resizeEventListen,
-            function(k,v)
-                v( event.data.width, event.data.height )
-            end
-            )
-        end
-    end
-
-    if event.type == Event.mousemove then
-        mouseMoved( event.data.x, event.data.y, event.data.buttons )
-    end
-
-    if event.type == Event.mousedown then
-        mouseMoved( event.data.x, event.data.y, event.data.buttons )
-    end
-
-    if event.type == Event.mouseup then
-        mouseMoved( event.data.x, event.data.y, event.data.buttons )
-    end
-
-    if event.type == Event.keydown then
-        keypressed( event.data.key )
-    end
-
-    return false
-end
-
-function addResizeListener( func )
-    if type(func) ~= 'function' then
-        error( 'You must supply a function to addResizeListener' )
-    end
-    if resizeEventListen == nil then
-        resizeEventListen = {}
-    end
-    if type(resizeEventListen) ~= 'table' then
-        error( 'resizeEventListen is not a table! Has it been redefined?' )
-    end
-    table.insert( resizeEventListen, func )
 end
 
 timeSinceStart = 0
@@ -149,7 +90,17 @@ function infotable( classInstance )
     return t
 end
 
+function quitKeyListener( event )
+    if event.data.key == KeyCodes.KC_ESCAPE and #gui.modal == 0 then
+        quit()
+        return true
+    end
+end
 
+function resizeListener( event )
+    setViewportSize( event.data.width, event.data.height )
+end
+   
 function setup()
     oldprint = print
     print = console.print
@@ -163,12 +114,20 @@ function setup()
 
     setupMouse()
 
+    events.subscribe( 'EVT_MOUSEMOVE', mouseMovedEventListener )
+    events.subscribe( 'EVT_MOUSEDOWN', mouseMovedEventListener )
+    events.subscribe( 'EVT_MOUSEUP', mouseMovedEventListener )
+    events.subscribe( 'EVT_KEYDOWN', quitKeyListener )
+    events.subscribe( 'EVT_KEYDOWN', keypressedEventListener )
+    events.subscribe( 'EVT_WINDOW_RESIZE', resizeListener )
+
     --Something to look at...
     require 'fps'
     require 'clock'
     require 'cameracontrol'
     require 'walk'
     require 'test'
+    require 'mydebug'
 
     print "Setup task completed"
 end
