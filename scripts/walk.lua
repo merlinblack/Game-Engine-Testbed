@@ -40,7 +40,7 @@ function followList( list )
     wa:fadeIn()
     player.walking = true
     player.stopwalking = false
-    player.walkspeed = 15
+    player.walkspeed = player.walkspeed or 15
     for i, vector in pairs(list) do
         if i ~= 1 then
             local r
