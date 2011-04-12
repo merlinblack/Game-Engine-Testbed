@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 2.6)
 PROJECT(engine)
 
+if (WIN32)
+    set(CMAKE_MODULE_PATH ${ENV_PROGRAMFILES}/OGRE/CMake )
+elseif (UNIX)
+    set(CMAKE_MODULE_PATH /usr/local/lib/OGRE/cmake )
+endif ()
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake )
 
 FIND_PACKAGE(OpenGL)
