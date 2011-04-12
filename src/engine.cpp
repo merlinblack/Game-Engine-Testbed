@@ -47,7 +47,12 @@ void Sleep(int ms)
     nanosleep(&time, &time);
 }
 #else
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#define WIN32_LEAN_AND_MEAN
+#include "windows.h"	// For Sleep
+#else
 #error "Figure out what header for some sleep func, on your platform"
+#endif
 #endif
 
 void bindLuaConsole( lua_State *L );    // From luaconsolebinding.cpp
