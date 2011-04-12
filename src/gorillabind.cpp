@@ -39,17 +39,17 @@ class dummy {};
 
 // Glue create and destroy functions, to allow the use of ward pointers.
 
-ward_ptr<Rectangle> createRectangle( Layer *layer, Real x, Real y, Real width, Real height )
+ward_ptr<Gorilla::Rectangle> createRectangle( Layer *layer, Real x, Real y, Real width, Real height )
 {
-    return ward_ptr<Rectangle>( layer->createRectangle( x, y, width, height ) );
+    return ward_ptr<Gorilla::Rectangle>( layer->createRectangle( x, y, width, height ) );
 }
 
-ward_ptr<Rectangle> createRectangle( Layer *layer, const Vector2& a, const Vector2& b )
+ward_ptr<Gorilla::Rectangle> createRectangle( Layer *layer, const Vector2& a, const Vector2& b )
 {
     return layer->createRectangle( a, b );
 }
 
-void destroyRectangle( Layer *layer, ward_ptr<Rectangle> ptr )
+void destroyRectangle( Layer *layer, ward_ptr<Gorilla::Rectangle> ptr )
 {
     layer->destroyRectangle( ptr.get() );
     ptr.invalidate();
@@ -137,8 +137,8 @@ void bindGorilla( lua_State *L )
             class_<Screen>( "Screen" )
             .def( "createLayer", &Screen::createLayer )
             .def( "destroy", &Screen::destroy )
-            .def_readonly( "width", &Screen::getWidth )
-            .def_readonly( "height", &Screen::getHeight ),
+            .def_readonly( "width",  (float (Screen::*)())&Screen::getWidth )
+            .def_readonly( "height", (float (Screen::*)())&Screen::getHeight ),
             class_<ScreenRenderable, MovableObject>( "ScreenRenderable" )
             .def( "createLayer", &ScreenRenderable::createLayer )
             .def( "destroy", &ScreenRenderable::destroy )
@@ -150,9 +150,9 @@ void bindGorilla( lua_State *L )
             .def( "hide", &Layer::hide )
             .property( "alphaModifier", &Layer::getAlphaModifier, &Layer::setAlphaModifier )
             .def( "createRectangle", 
-                    (ward_ptr<Rectangle>(*)(Layer*, Real, Real, Real, Real))&createRectangle )
+                    (ward_ptr<Gorilla::Rectangle>(*)(Layer*, Real, Real, Real, Real))&createRectangle )
             .def( "createRectangle",
-                    (ward_ptr<Rectangle>(*)(Layer*, const Vector2&, const Vector2&))&createRectangle )
+                    (ward_ptr<Gorilla::Rectangle>(*)(Layer*, const Vector2&, const Vector2&))&createRectangle )
             .def( "destroyRectangle", &destroyRectangle )
             // getRectangels - will need some sort of converter
             .def( "createCaption", createCaption )
@@ -162,7 +162,7 @@ void bindGorilla( lua_State *L )
             .def( "destroyMarkupText", destroyMarkupText )
             // getMarkupTexts
             ,
-            class_<Rectangle>( "Rectangle" )
+            class_<Gorilla::Rectangle>( "Rectangle" )
             .def( "intersects", &Rectangle::intersects )
             .def( "position", (Vector2 (Rectangle::*)() const )&Rectangle::position )
             .def( "position", (void (Rectangle::*)( const Real&, const Real& ))&Rectangle::position )
@@ -182,7 +182,7 @@ void bindGorilla( lua_State *L )
             .def( "noBackground", &Rectangle::no_background )
             .def( "noBorder", &Rectangle::no_border )
             .def( "backgroundColour", 
-                    (ColourValue (Rectangle::*)( QuadCorner ) const )&Rectangle::background_colour )
+                    (ColourValue (Rectangle::*)( QuadCorner ) const )&Gorilla::Rectangle::background_colour )
             .def( "backgroundColour",
                     (void (Rectangle::*)( const ColourValue& ))&Rectangle::background_colour )
             .def( "backgroundColour",

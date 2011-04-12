@@ -376,12 +376,12 @@ void GameEntityManager::mousePickLua( lua_State* L, float x, float y )
 
 std::ostream& operator<<( std::ostream& stream, const GameEntity& ge )
 {
-    stream << "Game Entity: " << ge.getName();
+    return stream << "Game Entity: " << ge.getName();
 }
 
 std::ostream& operator<<( std::ostream& stream, const GameEntityManager& gm )
 {
-    stream << "Game Entity Manager (Singleton)";
+    return stream << "Game Entity Manager (Singleton)";
 }
 
 void bindGameEntityClasses( lua_State* L )

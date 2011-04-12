@@ -402,7 +402,7 @@ void bindSceneManager( lua_State* L )
 
 std::ostream& operator<<( std::ostream& stream, const Ogre::SceneManager& mgr )
 {
-    stream << "Scene Manager: " << mgr.getName();
+    return stream << "Scene Manager: " << mgr.getName();
 }
 
 SceneManager* getSceneManager()
@@ -419,15 +419,15 @@ void bindRadian( lua_State* L )
         .def(constructor< Real >() )
         .def(constructor< Degree& >() )
         .def(tostring(self))
-        .def_readonly( "rad", &Radian::valueRadians )
-        .def_readonly( "deg", &Radian::valueDegrees ),
+        .def_readonly( "rad", (float (Radian::*)())&Radian::valueRadians )
+        .def_readonly( "deg", (float (Radian::*)())&Radian::valueDegrees ),
 
         class_<Degree>("Degree")
         .def(constructor< Real >() )
         .def(constructor< Radian& >() )
         .def(tostring(self))
-        .def_readonly( "rad", &Degree::valueRadians )
-        .def_readonly( "deg", &Degree::valueDegrees )
+        .def_readonly( "rad", (float (Degree::*)())&Degree::valueRadians )
+        .def_readonly( "deg", (float (Degree::*)())&Degree::valueDegrees )
     ];
 }
 

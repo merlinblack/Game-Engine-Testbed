@@ -56,7 +56,7 @@ struct NavigationCellComparison;
 class NavigationCell
 {
     friend class NavigationMesh;
-    friend class NavigationCellComparison;
+    friend struct NavigationCellComparison;
 
     Ogre::Vector3 mVertices[3];
     Ogre::Vector3 mCentre;
