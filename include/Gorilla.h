@@ -3,6 +3,11 @@
     -------
     
     Copyright (c) 2010 Robin Southern
+
+    Additional contributions by:
+
+    - Murat Sari
+    - Nigel Atkinson
                                                                                   
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +34,9 @@
 
 #include "OGRE/Ogre.h"
 
-#define GORILLA_USES_EXCEPTIONS 1
+#ifndef GORILLA_USES_EXCEPTIONS
+#  define GORILLA_USES_EXCEPTIONS 0
+#endif
 
 #if OGRE_COMP == OGRE_COMPILER_GNUC
 #   define __FUNC__ __PRETTY_FUNCTION__
@@ -2891,7 +2898,7 @@ namespace Gorilla
     
     /*! function. maxTextWidth
         desc.
-            Get the maximum width of the text can draw into.
+            Get the width of the text once drawn.
     */
     Ogre::Real maxTextWidth()
     {
