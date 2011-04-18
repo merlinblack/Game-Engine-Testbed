@@ -33,6 +33,8 @@ FILE(GLOB SCRIPTS scripts/*.lua scripts/gui/*.lua)
 INCLUDE( UnityBuild.cmake )
 #enable_unity_build( engine SRCS )
 
+ADD_DEFINITIONS(-DGORILLA_USES_EXCEPTIONS=1)
+
 ADD_EXECUTABLE(engine 
 	${SRCS}
 	${HDRS}
