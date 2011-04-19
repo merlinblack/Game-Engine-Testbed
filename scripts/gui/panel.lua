@@ -5,6 +5,10 @@ function Panel:__init( layer, x, y, w, h )
     self.layer = layer
     self.rect = layer:createRectangle( x, y, w, h )
     self.children={}
+    self.left = property( function( self ) return self.rect.left end )
+    self.top = property( function( self ) return self.rect.top end )
+    self.width = property( function( self ) return self.rect.width end )
+    self.height = property( function( self ) return self.rect.height end )
     guiLog "Panel Created"
 end
 
