@@ -11,6 +11,8 @@ function Text:__init( layer, x, y, text, font, size, alignment )
     if size ~= nil then
         self.caption : size( size.x, size.y )
     end
+    self.left = property( function(self) return self.caption.left end )
+    self.top = property( function(self) return self.caption.top end )
 end
 
 function Text:destroy()
