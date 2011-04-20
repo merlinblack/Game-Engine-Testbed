@@ -51,6 +51,7 @@ struct Event
 class EventListenerSender;
 
 typedef boost::shared_ptr<Event> EventPtr;
+typedef boost::shared_ptr<EventData> EventDataPtr;
 
 class EventManager
 {

@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include <luabind/class_info.hpp>
 #include <inputeventdata.h>
 #include <windoweventdata.h>
+#include <animationeventdata.h>
 #include <luaresource.h>
 #include <gameentity.h>
 
@@ -168,16 +169,18 @@ void ScriptingSystem::bind()
         def( "queueEvent", &queueEventThunk )
         ,
         class_<EventData, boost::shared_ptr<EventData> >( "EventData" ),
-        class_<InputEventData, EventData, boost::shared_ptr<EventData> >( "InputEventData" )
+        class_<InputEventData, EventData, EventDataPtr >( "InputEventData" )
             .def( constructor<>() )
             .def_readwrite( "x", &InputEventData::x )
             .def_readwrite( "y", &InputEventData::y )
             .def_readwrite( "buttons", &InputEventData::parm )
             .def_readwrite( "text", &InputEventData::parm ) // 2nd name
             .def_readwrite( "key", &InputEventData::key ),
-        class_<WindowEventData, EventData, boost::shared_ptr<EventData> >( "WindowEventData" )
+        class_<WindowEventData, EventData, EventDataPtr >( "WindowEventData" )
             .def_readwrite( "width", &WindowEventData::width )
-            .def_readwrite( "height", &WindowEventData::height )
+            .def_readwrite( "height", &WindowEventData::height ),
+        class_<AnimationEventData, EventData, EventPtr >( "AnimationEventData" )
+            .def_readwrite( "animation", &AnimationEventData::animation )
     ];
 }
 
