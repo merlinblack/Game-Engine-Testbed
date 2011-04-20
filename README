@@ -1,14 +1,28 @@
-Nigel's wizzy test game engine thingy.
--------------------------------------
+  _____                        ______             _
+ / ____|                      |  ____|           (_)
+| |  __  __ _ _ __ ___   ___  | |__   _ __   __ _ _ _ __   ___
+| | |_ |/ _` | '_ ` _ \ / _ \ |  __| | '_ \ / _` | | '_ \ / _ \
+| |__| | (_| | | | | | |  __/ | |____| | | | (_| | | | | |  __/
+ \_____|\__,_|_| |_| |_|\___| |______|_| |_|\__, |_|_| |_|\___|
+                                             __/ |
+                                            |___/
+                           _______        _   _              _
+                          |__   __|      | | | |            | |
+                             | | ___  ___| |_| |__   ___  __| |
+                             | |/ _ \/ __| __| '_ \ / _ \/ _` |
+                             | |  __/\__ \ |_| |_) |  __/ (_| |
+                             |_|\___||___/\__|_.__/ \___|\__,_|
+
+                          Nigel's wizzy test game engine thingy.
+----------------------------------------------------------------
 
 ** What is it?
-This is a one man hobby project, to test out 
-game and programming ideas, methods, etc.
-Its heading towards a simple click'n'go adventure game but
-could be used for other game styles.
+This is a one man hobby project, to test out game and programming
+ideas, methods, etc.  Its heading towards a simple click'n'go
+adventure game but could be used for other game styles.
 
 ** License
-MIT.  Same as Ogre3d 1.7
+MIT.  Same as Ogre3d 1.7, see LICENSE file.
 
 ** Warranty
 None whatsoever.  Use at your own risk.
@@ -36,8 +50,9 @@ The console while active eats all key presses except "~".
 
 ** Quick Start Compiling:
 
-First make sure you have Ogre3d 1.7, OIS 1.2, Lua 5.1, and Luabind 0.9,
-along with their development files.  Also needed is CMake 2.6 or above.
+First make sure you have Ogre3d 1.7 or 1.8, OIS 1.2, Lua 5.1,
+and Luabind 0.9, along with their development files.
+Also needed is CMake 2.6 or above.
 
 LINUX:
 from the base directory where you have either extracted, or git clone'd,
@@ -55,16 +70,21 @@ Copy a couple of configuration files to your build directory.
 
 cp ../src/*.cfg .
 
-Edit plugins.cfg if required
+Edit plugins.cfg if required.
 
 Run!
 
 ./engine
 
+MAC OS X:
+Havn't tried yet.  Should work in theory.
+
 WINDOWS:
 
-This has not been tested at all on windows, but should work in theory.
-You will need to know what you're doing!
+Tested on Windows 7 & XP with MSVC10 Express.
+
+I'm working on making the CMake script more friendly to Windows without
+breaking Linux.
 
 1. Adjust CMakeLists.txt so it works, and finds everything.
 2. Run CMake and generate makefiles or a Visual Studio project or whatever.
