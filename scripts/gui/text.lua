@@ -7,7 +7,7 @@ function Text:__init( layer, x, y, text, font, size, alignment )
     self.caption = layer:createCaption( font, x, y, text )
     self.caption . align = alignment
     self.caption . verticalAlign = Gorilla.VerticalAlignment.Middle
-    self.caption . colour = ColourValue.Black
+    self.caption . colour = ColourValue.White
     if size ~= nil then
         self.caption : size( size.x, size.y )
     end

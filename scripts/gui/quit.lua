@@ -1,7 +1,7 @@
 function quitDialogTask()
     console.setVisible(false)
     mouse.show()
-    
+
     local w = 400
     local h = 170
     local x = gui.screen.width/2 - w/2
@@ -30,7 +30,7 @@ function quitDialogTask()
     window:addChild( icon )
     window:addChild( btnOK )
     window:addChild( btnCancel )
-    
+
     gui.pushModal( window )
 
     window.OK, window.Cancel = false, false
@@ -52,8 +52,8 @@ function quitDialogTask()
 end
 
 function quit()
-    if quitting == true then 
-        return 
+    if quitting == true then
+        return
     end
     quitting = true
     createTask(quitDialogTask)
