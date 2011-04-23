@@ -17,6 +17,7 @@ function gui.popModal()
 end
 
 function gui.addModeless( obj )
+    -- Key release handlers are optional.
     if obj.mouseMoved and obj.keypressed then
         table.insert( gui.modeless, obj )
     else
@@ -48,5 +49,17 @@ function gui.keypressed( key  )
     else
         -- Send event to all modless overlays/dialogs.
         table.foreach( gui.modeless, function( i,v ) v:keypressed( key ) end )
+    end
+end
+
+function gui.keyreleased( key  )
+    if #gui.modal > 0 then
+        -- Send event to first (on top) modal overlay/dialog.
+        if gui.modal[1].keyreleased then
+            gui.modal[1]:keyreleased( key )
+        end
+    else
+        -- Send event to all modless overlays/dialogs.
+        table.foreach( gui.modeless, function( i,v ) if v.keyreleased then v:keyreleased( key ) end  end )
     end
 end

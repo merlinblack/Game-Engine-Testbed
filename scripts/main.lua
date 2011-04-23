@@ -52,7 +52,11 @@ function testWait()
 end
 
 function dump(t)
-    table.foreach(t,print)
+    if type(t) == 'table' then
+        table.foreach(t,print)
+    else
+        table.foreach( class_info( t ), print )
+    end
 end
 
 function info( classInstance )
@@ -100,7 +104,7 @@ end
 function resizeListener( event )
     setViewportSize( event.data.width, event.data.height )
 end
-   
+
 function setup()
     oldprint = print
     print = console.print
@@ -110,15 +114,17 @@ function setup()
     local sb = Gorilla.Silverback.getSingleton()
     gui.screen = sb:createScreen( Ogre.getViewport( 0 ), 'atlas' )
     gui.mainLayer = gui.screen:createLayer(0)
-    gui.dialogBackground = ColourValue( .999, .999, .878, .6 )
+    --gui.dialogBackground = ColourValue( .999, .999, .878, .6 )
+    gui.dialogBackground = ColourValue( 11/255, 34/255, 35/255, .9 )
 
     setupMouse()
 
-    events.subscribe( 'EVT_MOUSEMOVE', mouseMovedEventListener )
-    events.subscribe( 'EVT_MOUSEDOWN', mouseMovedEventListener )
-    events.subscribe( 'EVT_MOUSEUP', mouseMovedEventListener )
-    events.subscribe( 'EVT_KEYDOWN', quitKeyListener )
-    events.subscribe( 'EVT_KEYDOWN', keypressedEventListener )
+    events.subscribe( 'EVT_MOUSEMOVE',     mouseMovedEventListener )
+    events.subscribe( 'EVT_MOUSEDOWN',     mouseMovedEventListener )
+    events.subscribe( 'EVT_MOUSEUP',       mouseMovedEventListener )
+    events.subscribe( 'EVT_KEYDOWN',       quitKeyListener )
+    events.subscribe( 'EVT_KEYDOWN',       keyPressedEventListener )
+    events.subscribe( 'EVT_KEYUP',         keyReleasedEventListener )
     events.subscribe( 'EVT_WINDOW_RESIZE', resizeListener )
 
     --Something to look at...

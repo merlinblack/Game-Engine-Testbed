@@ -31,10 +31,17 @@ function mouseMovedEventListener( event )
     return false
 end
 
-function keypressedEventListener( event )
+function keyPressedEventListener( event )
     key = event.data.key
     keybinder.keypressed( key )
     gui.keypressed( key )
+    return false
+end
+
+function keyReleasedEventListener( event )
+    key = event.data.key
+    keybinder.keyreleased( key )
+    gui.keyreleased( key )
     return false
 end
 

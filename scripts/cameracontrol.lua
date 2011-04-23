@@ -29,34 +29,58 @@ cameraControl.mainNode:translate( Vector3( -80, 75, 0 ) )
 cameraControl.mainNode:yaw( -90 )
 cameraControl.autoRotateSpeed = .05
 cameraControl.autoRotate = false
+cameraControl.forward = false
+cameraControl.backward = false
+cameraControl.left = false
+cameraControl.right = false
 cameraControl.stop = false;
 
 function cameraControl.update()
     while cameraControl.stop == false do
         if cameraControl.autoRotate == true then
             cameraControl.pivotNode:yaw(cameraControl.autoRotateSpeed)
+        else
+            if cameraControl.forward == true then
+                cameraControl.mainNode:translate( Vector3( 0, 0, -2 ), SceneNode.TS_LOCAL )
+            end
+            if cameraControl.backward == true then
+                cameraControl.mainNode:translate( Vector3( 0, 0, 2 ), SceneNode.TS_LOCAL )
+            end
+            if cameraControl.left == true then
+                cameraControl.mainNode:yaw( 2 );
+            end
+            if cameraControl.right == true then
+                cameraControl.mainNode:yaw( -2 );
+            end
         end
+
         wait(.01)
     end
 end
+
+function cameraControl.forwardKey() cameraControl.forward = not cameraControl.forward end
+function cameraControl.backwardKey() cameraControl.backward = not cameraControl.backward end
+function cameraControl.leftKey() cameraControl.left = not cameraControl.left end
+function cameraControl.rightKey() cameraControl.right = not cameraControl.right end
+function cameraControl.autoRotateKey() cameraControl.autoRotate = not cameraControl.autoRotate end
+
+bind( KeyCodes.KC_UP,    cameraControl.forwardKey,    cameraControl.forwardKey )
+bind( KeyCodes.KC_DOWN,  cameraControl.backwardKey,   cameraControl.backwardKey )
+bind( KeyCodes.KC_LEFT,  cameraControl.leftKey,       cameraControl.leftKey )
+bind( KeyCodes.KC_RIGHT, cameraControl.rightKey,      cameraControl.rightKey )
+
+bind( KeyCodes.KC_W,     cameraControl.forwardKey,    cameraControl.forwardKey )
+bind( KeyCodes.KC_S,     cameraControl.backwardKey,   cameraControl.backwardKey )
+bind( KeyCodes.KC_A,     cameraControl.leftKey,       cameraControl.leftKey )
+bind( KeyCodes.KC_D,     cameraControl.rightKey,      cameraControl.rightKey )
+
+bind( KeyCodes.KC_R,     cameraControl.autoRotateKey, cameraControl.autoRotateKey )
 
 function cameraControl:keypressed( key )
     if key == KeyCodes.KC_R then
         cameraControl.autoRotate = not cameraControl.autoRotate
     end
     if cameraControl.autoRotate == false then
-        if key == KeyCodes.KC_LEFT or key == KeyCodes.KC_A then
-            cameraControl.mainNode:yaw( 2 );
-        end
-        if key == KeyCodes.KC_RIGHT or key == KeyCodes.KC_D then
-            cameraControl.mainNode:yaw( -2 );
-        end
-        if key == KeyCodes.KC_UP or key == KeyCodes.KC_W then
-            cameraControl.mainNode:translate( Vector3( 0, 0, -2 ), SceneNode.TS_LOCAL )
-        end
-        if key == KeyCodes.KC_DOWN or key == KeyCodes.KC_S then
-            cameraControl.mainNode:translate( Vector3( 0, 0, 2 ), SceneNode.TS_LOCAL )
-        end
         if key == KeyCodes.KC_HOME then
             cameraControl.pitchNode:pitch( -1 );
         end

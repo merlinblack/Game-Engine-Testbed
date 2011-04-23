@@ -6,7 +6,7 @@ fps.text = MarkupText( gui.mainLayer, 25, gui.screen.height-130, "" )
 fps.text2 = MarkupText( gui.mainLayer, 135, gui.screen.height-130, "" )
 fps.panel:addChild( fps.text )
 fps.panel:addChild( fps.text2 )
-fps.text.markup.text = "%9Average FPS\nBest FPS\nWorst\nTriangles\nBatch Count"
+fps.text.markup.text = "%3Average FPS\nBest FPS\nWorst\nTriangles\nBatch Count"
 fps.logo = Panel( gui.mainLayer, 210, gui.screen.height-125, 64, 64 )
 fps.logo:background( 'ogrehead' )
 fps.panel:addChild( fps.logo )
