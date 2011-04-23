@@ -37,6 +37,9 @@ THE SOFTWARE.
 
 #define DEFAULT_FADE_SPEED 0.5
 
+class Animation;
+typedef boost::shared_ptr<Animation> AnimationPtr;
+
 class Animation
 {
     public:
@@ -54,6 +57,10 @@ class Animation
         virtual ~Animation()
         {
             stop();
+        }
+        bool operator==( const AnimationPtr ptr )
+        {
+            return ptr.get() == this;
         }
 };
 
@@ -127,7 +134,6 @@ class RotationAnimation : public Animation
     inline bool isFinished();
 };
 
-typedef boost::shared_ptr<Animation> AnimationPtr;
 typedef boost::shared_ptr<MeshAnimation> MeshAnimationPtr;
 typedef boost::shared_ptr<MovementAnimation> MovementAnimationPtr;
 typedef boost::shared_ptr<RotationAnimation> RotationAnimationPtr;

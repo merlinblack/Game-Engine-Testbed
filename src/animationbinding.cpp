@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 #include <animation.h>
 #include <luabind/luabind.hpp>
+#include <luabind/operator.hpp>
 
 #include <OgreEntity.h>
 #include <OgreVector3.h>
@@ -51,14 +52,13 @@ void bindAnimation( lua_State* L )
             .def( "stop", &::Animation::stop )
             .def( "start", &::Animation::start )
             .def( "isFinished", &::Animation::isFinished )
+            .def( self == other< AnimationPtr >() )
     ];
 
     module(L)
     [
             class_< MeshAnimation, ::Animation, AnimationPtr >( "MeshAnimation" )
             .def( constructor< Ogre::Entity*, Ogre::String >())
-            //.def( "start", &MeshAnimation::start )
-            //.def( "stop", &MeshAnimation::stop )
             .def( "fadeIn", &MeshAnimation::fadeIn )
             .def( "fadeOut", &MeshAnimation::fadeOut )
             .def( "setWeight", &MeshAnimation::setWeighting )
@@ -72,16 +72,12 @@ void bindAnimation( lua_State* L )
     [
             class_< MovementAnimation, ::Animation, AnimationPtr >( "MovementAnimation" )
             .def( constructor< Ogre::SceneNode*, Ogre::Vector3, Ogre::Real >())
-            //.def( "start", &MeshAnimation::start )
-            //.def( "stop", &MeshAnimation::stop )
     ];
 
     module(L)
     [
             class_< RotationAnimation, ::Animation, AnimationPtr >( "RotationAnimation" )
             .def( constructor< Ogre::SceneNode*, Ogre::Quaternion, Ogre::Real >())
-            //.def( "start", &MeshAnimation::start )
-            //.def( "stop", &MeshAnimation::stop )
     ];
 }
 
