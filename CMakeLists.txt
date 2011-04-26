@@ -18,7 +18,7 @@ FIND_PACKAGE(Luabind)
 SET(Boost_USE_STATIC_LIBS    ON)
 SET(Boost_USE_MULTITHREADED  ON)
 SET(Boost_USE_STATIC_RUNTIME OFF)
-FIND_PACKAGE(Boost 1.45.0 COMPONENTS thread date_time)
+FIND_PACKAGE(Boost 1.40.0 COMPONENTS thread date_time)
 
 INCLUDE_DIRECTORIES(
 	${OpenGL_INCLUDE_DIR}
@@ -34,12 +34,12 @@ FILE(GLOB SRCS src/*.cpp)
 FILE(GLOB HDRS include/*.h)
 FILE(GLOB SCRIPTS scripts/*.lua scripts/gui/*.lua)
 
-INCLUDE( UnityBuild.cmake )
+#INCLUDE( UnityBuild.cmake )
 #enable_unity_build( engine SRCS )
 
 ADD_DEFINITIONS(-DGORILLA_USES_EXCEPTIONS=1)
 
-ADD_EXECUTABLE(engine 
+ADD_EXECUTABLE(engine
 	${SRCS}
 	${HDRS}
     ${SCRIPTS}
