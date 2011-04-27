@@ -5,7 +5,7 @@ layout_def = {
         position = { 10, 10 },
         size = { 500, 100 },
         background = gui.dialogBackground,
-        id = 'panel',
+        id = 'mainpanel',
         children = {
             {
                 type = 'dragbutton'
@@ -22,7 +22,7 @@ layout_def = {
                 position = { 210, -30 },
                 caption = 'ok',
                 id = 'ok_button',
-                keycode = KeyCodes.KC_ENTER,
+                keycode = KeyCodes.KC_RETURN,
                 action = function() log'layout_test:button press' end
             }
         }
@@ -33,7 +33,7 @@ guiFactories = {}
 
 function createLayout( layout )
 
-    if layout.id == nil then 
+    if layout.id == nil then
         error 'No id given for layout.'
     end
 
@@ -57,12 +57,12 @@ end
 
 function getAbsolutePosition( parent, x, y )
     if x < 0 then
-        x = parent.width + x
+        x = parent.left + parent.width + x
     else
         x = parent.left + x
     end
     if y < 0 then
-        y = parent.height + y
+        y = parent.top + parent.height + y
     else
         y = parent.top + y
     end
@@ -105,7 +105,7 @@ function textFactory( parent, parameters )
     x = parameters.position[1]
     y = parameters.position[2]
     x, y = getAbsolutePosition( parent, x, y )
-    text = Text( gui.mainLayer, x, y, 
+    text = Text( gui.mainLayer, x, y,
         parameters.text,
         parameters.font,
         parameters.size,
@@ -121,10 +121,10 @@ function buttonFactory( parent, parameters )
     x, y = getAbsolutePosition( parent, x, y )
     button = Button( gui.mainLayer, x, y, parameters.caption )
     parent:addChild( button )
-    if parameters.id ~= nil then
+    if parameters.id then
         parent[parameters.id] = button
     end
-    if parameters.action ~= nil then
+    if parameters.action then
         button:setClickAction( parameters.action )
     end
     if parameters.keycode then

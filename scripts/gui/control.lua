@@ -5,7 +5,7 @@ gui.modeless = gui.modeless or {}
 gui.modal = gui.modal or {}
 
 function gui.pushModal( obj )
-    if obj.mouseMoved and obj.keypressed then
+    if obj ~= nil and obj.mouseMoved and obj.keypressed and obj ~= gui then
         table.insert( gui.modal, 1, obj )
     else
         error "gui.pushModal given an invalid object."
@@ -18,7 +18,7 @@ end
 
 function gui.addModeless( obj )
     -- Key release handlers are optional.
-    if obj.mouseMoved and obj.keypressed then
+    if obj ~= nil and obj.mouseMoved and obj.keypressed and obj ~= gui then
         table.insert( gui.modeless, obj )
     else
         error "gui.pushModeless given an invalid object."
