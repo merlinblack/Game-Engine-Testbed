@@ -36,7 +36,7 @@ THE SOFTWARE.
 
 class Engine : public EventListenerSender, public Ogre::WindowEventListener
 {
-    RenderSystem renderSystem;
+    ::RenderSystem renderSystem;
     InputSystem inputSystem;
     ScriptingSystem scriptingSystem;
     EventManager eventManager;
