@@ -163,48 +163,48 @@ void bindGorilla( lua_State *L )
             // getMarkupTexts
             ,
             class_<Gorilla::Rectangle>( "Rectangle" )
-            .def( "intersects", &Rectangle::intersects )
-            .def( "position", (Vector2 (Rectangle::*)() const )&Rectangle::position )
-            .def( "position", (void (Rectangle::*)( const Real&, const Real& ))&Rectangle::position )
-            .def( "position", (void (Rectangle::*)( const Vector2& ))&Rectangle::position )
+            .def( "intersects", &Gorilla::Rectangle::intersects )
+            .def( "position", (Vector2 (Gorilla::Rectangle::*)() const )&Gorilla::Rectangle::position )
+            .def( "position", (void (Gorilla::Rectangle::*)( const Real&, const Real& ))&Gorilla::Rectangle::position )
+            .def( "position", (void (Gorilla::Rectangle::*)( const Vector2& ))&Gorilla::Rectangle::position )
             .property( "left", 
-                    (Real (Rectangle::*)() const )&Rectangle::left,
-                    (void (Rectangle::*)( const Real& ))&Rectangle::left )
+                    (Real (Gorilla::Rectangle::*)() const )&Gorilla::Rectangle::left,
+                    (void (Gorilla::Rectangle::*)( const Real& ))&Gorilla::Rectangle::left )
             .property( "top", 
-                    (Real (Rectangle::*)() const )&Rectangle::top,
-                    (void (Rectangle::*)( const Real& ))&Rectangle::top )
+                    (Real (Gorilla::Rectangle::*)() const )&Gorilla::Rectangle::top,
+                    (void (Gorilla::Rectangle::*)( const Real& ))&Gorilla::Rectangle::top )
             .property( "width", 
-                    (Real (Rectangle::*)() const )&Rectangle::width,
-                    (void (Rectangle::*)( const Real& ))&Rectangle::width )
+                    (Real (Gorilla::Rectangle::*)() const )&Gorilla::Rectangle::width,
+                    (void (Gorilla::Rectangle::*)( const Real& ))&Gorilla::Rectangle::width )
             .property( "height", 
-                    (Real (Rectangle::*)() const )&Rectangle::height,
-                    (void (Rectangle::*)( const Real& ))&Rectangle::height )
-            .def( "noBackground", &Rectangle::no_background )
-            .def( "noBorder", &Rectangle::no_border )
+                    (Real (Gorilla::Rectangle::*)() const )&Gorilla::Rectangle::height,
+                    (void (Gorilla::Rectangle::*)( const Real& ))&Gorilla::Rectangle::height )
+            .def( "noBackground", &Gorilla::Rectangle::no_background )
+            .def( "noBorder", &Gorilla::Rectangle::no_border )
             .def( "backgroundColour", 
-                    (ColourValue (Rectangle::*)( QuadCorner ) const )&Gorilla::Rectangle::background_colour )
+                    (ColourValue (Gorilla::Rectangle::*)( QuadCorner ) const )&Gorilla::Rectangle::background_colour )
             .def( "backgroundColour",
-                    (void (Rectangle::*)( const ColourValue& ))&Rectangle::background_colour )
+                    (void (Gorilla::Rectangle::*)( const ColourValue& ))&Gorilla::Rectangle::background_colour )
             .def( "backgroundColour",
-                    (void (Rectangle::*)( QuadCorner, const ColourValue& ))&Rectangle::background_colour )
-            .def( "backgroundGradient", &Rectangle::background_gradient )
+                    (void (Gorilla::Rectangle::*)( QuadCorner, const ColourValue& ))&Gorilla::Rectangle::background_colour )
+            .def( "backgroundGradient", &Gorilla::Rectangle::background_gradient )
             .def( "backgroundImage",
-                    (void (Rectangle::*)( const String& ))&Rectangle::background_image )
+                    (void (Gorilla::Rectangle::*)( const String& ))&Gorilla::Rectangle::background_image )
             .def( "borderColour",
-                    (ColourValue (Rectangle::*)( Border ) const )&Rectangle::border_colour )
+                    (ColourValue (Gorilla::Rectangle::*)( Border ) const )&Gorilla::Rectangle::border_colour )
             .def( "borderColour",
-                    (void (Rectangle::*)( const ColourValue& ))&Rectangle::border_colour )
+                    (void (Gorilla::Rectangle::*)( const ColourValue& ))&Gorilla::Rectangle::border_colour )
             .def( "borderColour",
-                    (void (Rectangle::*)( Border, const ColourValue& ))&Rectangle::border_colour )
+                    (void (Gorilla::Rectangle::*)( Border, const ColourValue& ))&Gorilla::Rectangle::border_colour )
             .property( "borderWidth",
-                    (Real (Rectangle::*)() const )&Rectangle::border_width,
-                    (void (Rectangle::*)( Real ))&Rectangle::border_width )
+                    (Real (Gorilla::Rectangle::*)() const )&Gorilla::Rectangle::border_width,
+                    (void (Gorilla::Rectangle::*)( Real ))&Gorilla::Rectangle::border_width )
             .def( "border",
-                    (void (Rectangle::*)( Real, const ColourValue& ))&Rectangle::border )
+                    (void (Gorilla::Rectangle::*)( Real, const ColourValue& ))&Gorilla::Rectangle::border )
             .def( "border",
-                    (void (Rectangle::*)( Real, const ColourValue&, const ColourValue&,
+                    (void (Gorilla::Rectangle::*)( Real, const ColourValue&, const ColourValue&,
                                                 const ColourValue&, const ColourValue& ))
-                    &Rectangle::border )
+                    &Gorilla::Rectangle::border )
             ,
             class_<Caption>( "Caption" )
             .def( "intersects", &Caption::intersects )
