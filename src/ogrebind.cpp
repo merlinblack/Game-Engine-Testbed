@@ -484,7 +484,7 @@ void bindViewport( lua_State *L )
 }
 
 // Keep this at the bottom so we don't need prototypes for other bind functions.
-void bindEngine( lua_State* L )
+void bindOgre( lua_State* L )
 {
     bindQuaternion( L );
     bindVector3( L );

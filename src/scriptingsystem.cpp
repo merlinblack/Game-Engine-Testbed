@@ -31,10 +31,10 @@ THE SOFTWARE.
 #include <luaresource.h>
 #include <gameentity.h>
 
-void bindEngine( lua_State* L ); // From luabindings.cpp
-void bindAnimation( lua_State* L ); // From animationbinding.cpp
-void bindNavigationMesh( lua_State* L); // From navmeshbinding.cpp
-void bindGorilla( lua_State *L ); // From gorillabinding.cpp
+void bindOgre( lua_State* L ); // From ogrebind.cpp
+void bindAnimation( lua_State* L ); // From animationbind.cpp
+void bindNavigationMesh( lua_State* L); // From navmeshbind.cpp
+void bindGorilla( lua_State *L ); // From gorillabind.cpp
 
 int ScriptingSystem::GUID = 0;
 
@@ -126,7 +126,7 @@ void ScriptingSystem::initialise()
     lua_settable( mL, LUA_REGISTRYINDEX );
 
     bind();
-    bindEngine( mL );
+    bindOgre( mL );
     bindGameEntityClasses( mL );
     bindAnimation( mL );
     bindNavigationMesh( mL );
@@ -134,9 +134,9 @@ void ScriptingSystem::initialise()
 
     LuaResourcePtr mainlua = LuaResourceManager::getSingleton().load( "main.lua" );
 
-    if( luaL_loadbuffer( mL, 
-                mainlua->getScriptSource().c_str(), 
-                mainlua->calculateSize(), "main.lua" ) 
+    if( luaL_loadbuffer( mL,
+                mainlua->getScriptSource().c_str(),
+                mainlua->calculateSize(), "main.lua" )
             || lua_pcall( mL, 0, LUA_MULTRET, 0) )
     {
         Ogre::LogManager::getSingleton().stream() << " ****************************** ";
