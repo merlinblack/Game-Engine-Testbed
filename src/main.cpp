@@ -37,16 +37,19 @@ int main()
 {
     cout << "Staring engine." << endl;
 
+    // Commented out to aid debugging.
     //try
     {
         Engine engine;
 
         if( engine.initialise() )
         {
-            cout << endl << "Successfully started game engine." << endl << endl;
-        }
+            cout << endl << "Successfully initialised game engine." << endl << endl;
 
-        engine.run();
+            engine.run();
+        }
+        else
+            cout << endl << "Could not initialise game engine." << endl << endl;
     }
 /*
     catch( exception& e )
