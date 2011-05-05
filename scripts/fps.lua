@@ -1,9 +1,10 @@
 require "lualib"
+require "gui/dialogPanel"
 fps={}
-fps.panel = Panel( gui.mainLayer, 0, gui.screen.height-145, 300, 110 )
+fps.panel = makeDialogPanel( gui.mainLayer, 0, gui.screen.height-145, 300, 110 )
 fps.panel:background( gui.dialogBackground )
-fps.text = MarkupText( gui.mainLayer, 25, gui.screen.height-130, "" )
-fps.text2 = MarkupText( gui.mainLayer, 135, gui.screen.height-130, "" )
+fps.text = MarkupText( gui.mainLayer, 25, gui.screen.height-133, "" )
+fps.text2 = MarkupText( gui.mainLayer, 135, gui.screen.height-133, "" )
 fps.panel:addChild( fps.text )
 fps.panel:addChild( fps.text2 )
 fps.text.markup.text = "%3Average FPS\nBest FPS\nWorst\nTriangles\nBatch Count"
