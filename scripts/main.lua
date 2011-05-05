@@ -5,7 +5,7 @@ require 'autocomplete'
 require 'events'
 
 function version()
-    message( 'Game Engine Testbed %3v0.2%r\nOgre 3d %3v1.7.2%r\nLua %3v5.1.4%r\nLuabind %3v0.9git%r' )
+    message( 'Game Engine Testbed %3v0.2%r\nOgre 3d %3v1.8.0%r\nLua %3v5.1.4%r\nLuabind %3v0.9git%r\n' )
 end
 
 local old_dofile = dofile

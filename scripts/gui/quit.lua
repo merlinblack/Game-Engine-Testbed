@@ -1,3 +1,5 @@
+require 'gui/dialogPanel'
+
 function quitDialogTask()
     console.setVisible(false)
     mouse.show()
@@ -9,8 +11,7 @@ function quitDialogTask()
 
     local layer = gui.mainLayer
 
-    local window = Panel( layer, x, y, w, h )
-    window:background( gui.dialogBackground )
+    local window = makeDialogPanel( layer, x, y, w, h )
 
     local text = Text( layer, x + w/2, y+h*0.40, "Are you sure?", 20  )
     local icon = Panel( layer, x + 8, y + 8, 32, 32 )

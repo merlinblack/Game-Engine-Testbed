@@ -1,7 +1,9 @@
+require 'gui/dialogPanel'
+
 function messageDialog(task)
     console.setVisible(false)
     mouse.show()
-    
+
     local l = gui.mainLayer
 
     local h = (task.data.lines * 20) + 100
@@ -14,8 +16,7 @@ function messageDialog(task)
     if w < 300 then w = 300 end
     local x = gui.screen.width/2 - w/2
 
-    local window = Panel( l, x, y, w, h )
-    window:background( gui.dialogBackground ) 
+    local window = makeDialogPanel( l, x, y, w, h )
 
     local icon = Panel( l, x + 8, y + 8, 32, 32 )
     icon:background( "icon.info" )
