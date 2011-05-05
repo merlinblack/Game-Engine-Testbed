@@ -1,7 +1,8 @@
+require 'gui/dialogPanel'
 clock={}
-clock.panel = Panel( gui.mainLayer, 0, gui.screen.height - 30, 300, 30 )
+clock.panel = makeDialogPanel( gui.mainLayer, 0, gui.screen.height - 22, 300, 30 )
 clock.panel:background( gui.dialogBackground )
-clock.text = Text( gui.mainLayer, 150, gui.screen.height - 15, "Clock", 14 )
+clock.text = Text( gui.mainLayer, 150, gui.screen.height - 7, "Clock", 14 )
 clock.panel:addChild( clock.text )
 
 function clock.update()
@@ -17,7 +18,7 @@ createTask( clock.update )
 
 function clock.resize( event )
     clock.x = clock.panel.rect.top
-    clock.destx = event.data.height - 30
+    clock.destx = event.data.height - 22
     createTask( clock.animatePosition )
 end
 
