@@ -126,7 +126,7 @@ class GameEntityWrapper : public GameEntity, public luabind::wrap_base
 class GameEntityManager : public Ogre::Singleton<GameEntityManager>
 {
     typedef std::pair<size_t, GameEntityPtr> mapping;
-    
+
     std::map<size_t, GameEntityPtr> entities;
 
     Ogre::SceneManager* sceneManager;
@@ -153,6 +153,7 @@ public:
     Ogre::Ray getCameraRay( float x, float y );
     std::list<GameEntityPtr> mousePick( float x, float y );
     void mousePickLua( lua_State* L, float x, float y );
+    void getGameEntityList( lua_State *L );
 };
 
 void bindGameEntityClasses( lua_State* L );
