@@ -374,6 +374,21 @@ void GameEntityManager::mousePickLua( lua_State* L, float x, float y )
     return;
 }
 
+void GameEntityManager::getGameEntityList( lua_State *L )
+{
+    luabind::object geTable = luabind::newtable( L );
+    size_t index = 0;
+
+    std::map<size_t, GameEntityPtr>::iterator entityIter;
+
+    for( entityIter = entities.begin(); entityIter != entities.end(); entityIter++ )
+    {
+        geTable[++index] = entityIter->second;
+    }
+
+    geTable.push( L );
+}
+
 std::ostream& operator<<( std::ostream& stream, const GameEntity& ge )
 {
     return stream << "Game Entity: " << ge.getName();
@@ -403,6 +418,7 @@ void bindGameEntityClasses( lua_State* L )
             .def( "hitPosition", &GameEntity::hitPosition )
             .def( "highlight", &GameEntity::highlight )
             .def( "createHighlightMaterial", &GameEntity::createHighlightMaterial )
+            .def( "removeFromManager", &GameEntity::removeFromManager )
             .def(tostring(self))
             .def( self == other<GameEntityPtr>() )
             ,
@@ -417,6 +433,7 @@ void bindGameEntityClasses( lua_State* L )
             .def( "get", (GameEntityPtr (GameEntityManager::*)(std::string)) &GameEntityManager::getGameEntity )
             .def( "get", (GameEntityPtr (GameEntityManager::*)(size_t)) &GameEntityManager::getGameEntity )
             .def( "mousePick", &GameEntityManager::mousePickLua )
+            .def( "getEntityList", &GameEntityManager::getGameEntityList )
             .def(tostring(self))
             //.def( "update", &GameEntityManager::update ) // Usually done every game loop.
     ];
