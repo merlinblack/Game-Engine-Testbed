@@ -1,8 +1,7 @@
-require 'gui/dialogPanel'
+require 'gui/dialogpanel'
 clock={}
-clock.panel = makeDialogPanel( gui.mainLayer, 0, gui.screen.height - 22, 300, 30 )
-clock.panel:background( gui.dialogBackground )
-clock.text = Text( gui.mainLayer, 150, gui.screen.height - 7, "Clock", 14 )
+clock.panel = DialogPanel( gui.mainLayer, 0, gui.screen.height - 30, 300, 30 )
+clock.text = Text( gui.mainLayer, 150, gui.screen.height - 15, "Clock", 14 )
 clock.panel:addChild( clock.text )
 
 function clock.update()
@@ -11,32 +10,33 @@ function clock.update()
         wait(1)
     end
     clock.panel:destroy()
+    events.unsubscribe( 'EVT_WINDOW_RESIZE', clock.resize )
 end
 
 clock.stop = false
 createTask( clock.update )
 
 function clock.resize( event )
-    clock.x = clock.panel.rect.top
-    clock.destx = event.data.height - 22
+    clock.y = clock.panel.top
+    clock.desty = event.data.height - 30
     createTask( clock.animatePosition )
 end
 
 function clock.animatePosition()
-    local speed = 25
-    while clock.moving == true do wait(1) end
+    local speed = 5
+    while clock.moving == true do wait(2) end
     clock.moving = true
-    while math.abs(clock.x - clock.destx) > speed do
-        if clock.x < clock.destx then
-            clock.x = clock.x + speed
+    while math.abs(clock.y - clock.desty) > speed do
+        if clock.y < clock.desty then
+            clock.y = clock.y + speed
         else
-            clock.x = clock.x - speed
+            clock.y = clock.y - speed
         end
-        clock.panel:move( 0, clock.x - clock.panel.rect.top )
-        wait(.1)
+        clock.panel:move( 0, clock.y - clock.panel.top )
+        wait(.01)
     end
-    clock.x = clock.destx
-    clock.panel:move( 0, clock.x - clock.panel.rect.top )
+    clock.y = clock.desty
+    clock.panel:move( 0, clock.y - clock.panel.top )
     clock.moving = false
 end
 
