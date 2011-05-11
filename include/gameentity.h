@@ -98,6 +98,9 @@ public:
 
     void highlight( bool on = true );
     void createHighlightMaterial();
+
+    bool isVisible();
+    void setVisible( bool visible );
 };
 
 // This allows GameEntities passed from Lua to C++ and back
