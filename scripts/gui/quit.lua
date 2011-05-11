@@ -1,4 +1,4 @@
-require 'gui/dialogPanel'
+require 'gui/dialogpanel'
 
 function quitDialogTask()
     console.setVisible(false)
@@ -11,7 +11,7 @@ function quitDialogTask()
 
     local layer = gui.mainLayer
 
-    local window = makeDialogPanel( layer, x, y, w, h )
+    local window = DialogPanel( layer, x, y, w, h )
 
     local text = Text( layer, x + w/2, y+h*0.40, "Are you sure?", 20  )
     local icon = Panel( layer, x + 8, y + 8, 32, 32 )

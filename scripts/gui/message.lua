@@ -1,4 +1,4 @@
-require 'gui/dialogPanel'
+require 'gui/dialogpanel'
 
 function messageDialog(task)
     console.setVisible(false)
@@ -16,7 +16,7 @@ function messageDialog(task)
     if w < 300 then w = 300 end
     local x = gui.screen.width/2 - w/2
 
-    local window = makeDialogPanel( l, x, y, w, h )
+    local window = DialogPanel( l, x, y, w, h )
 
     local icon = Panel( l, x + 8, y + 8, 32, 32 )
     icon:background( "icon.info" )

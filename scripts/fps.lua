@@ -1,8 +1,7 @@
 require "lualib"
-require "gui/dialogPanel"
+require "gui/dialogpanel"
 fps={}
-fps.panel = makeDialogPanel( gui.mainLayer, 0, gui.screen.height-145, 300, 110 )
-fps.panel:background( gui.dialogBackground )
+fps.panel = DialogPanel( gui.mainLayer, 0, gui.screen.height-145, 300, 110 )
 fps.text = MarkupText( gui.mainLayer, 25, gui.screen.height-133, "" )
 fps.text2 = MarkupText( gui.mainLayer, 135, gui.screen.height-133, "" )
 fps.panel:addChild( fps.text )
@@ -11,7 +10,7 @@ fps.text.markup.text = "%3Average FPS\nBest FPS\nWorst\nTriangles\nBatch Count"
 fps.logo = Panel( gui.mainLayer, 210, gui.screen.height-125, 64, 64 )
 fps.logo:background( 'ogrehead' )
 fps.panel:addChild( fps.logo )
-fps.drag = DragButton( gui.mainLayer, 0, gui.screen.height-145, fps.panel )
+fps.drag = DragButton( gui.mainLayer, 8, gui.screen.height-137, fps.panel )
 fps.panel:addChild( fps.drag )
 
 function fps.update()
@@ -37,7 +36,7 @@ createTask( fps.update )
 gui.addModeless( fps.panel )
 
 function fps.resize( event )
-    fps.x = fps.panel.rect.top
+    fps.x = fps.panel.top
     fps.destx = event.data.height - 145
     createTask( fps.animatePosition )
 end
@@ -52,10 +51,10 @@ function fps.animatePosition()
         else
             fps.x = fps.x - speed
         end
-        fps.panel:move( 0, fps.x - fps.panel.rect.top )
+        fps.panel:move( 0, fps.x - fps.panel.top )
         wait(.1)
     end
     fps.x = fps.destx
-    fps.panel:move( 0, fps.x - fps.panel.rect.top )
+    fps.panel:move( 0, fps.x - fps.panel.top )
     fps.moving = false
 end
