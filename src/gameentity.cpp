@@ -201,6 +201,22 @@ void GameEntity::createHighlightMaterial()
     }
 }
 
+bool GameEntity::isVisible()
+{
+    if( ! mesh )
+        return false;
+
+    return mesh->isVisible();
+}
+
+void GameEntity::setVisible( bool visible )
+{
+    if( ! mesh )
+        return;
+
+    mesh->setVisible( visible );
+}
+
 template <> GameEntityManager* Ogre::Singleton<GameEntityManager>::ms_Singleton = 0;
 
 GameEntityManager* GameEntityManager::getSingletonPtr()
@@ -419,6 +435,7 @@ void bindGameEntityClasses( lua_State* L )
             .def( "highlight", &GameEntity::highlight )
             .def( "createHighlightMaterial", &GameEntity::createHighlightMaterial )
             .def( "removeFromManager", &GameEntity::removeFromManager )
+            .property( "visible", &GameEntity::isVisible, &GameEntity::setVisible )
             .def(tostring(self))
             .def( self == other<GameEntityPtr>() )
             ,
