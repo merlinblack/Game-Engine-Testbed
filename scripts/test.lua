@@ -126,11 +126,11 @@ function loadBridge()
     bridge_walkable = scene:createEntity( 'bridge_walk.mesh' )
     local n = bridge.node
     n:setPosition( -32, 0, -96 )
-    nv:addFromEntity( bridge_walkable, n:getPosition(), n:getOrientation(), Vector3.UNIT_SCALE )
+    nv:addFromEntity( bridge_walkable, n:getPosition(), n:getOrientation(), Vector3.UNIT_SCALE, 1 )
     n = bridge2.node
     n:setPosition( -256, 0, 96 )
     n:yaw( 90 )
-    nv:addFromEntity( bridge_walkable, n:getPosition(), n:getOrientation(), Vector3.UNIT_SCALE )
+    nv:addFromEntity( bridge_walkable, n:getPosition(), n:getOrientation(), Vector3.UNIT_SCALE, 2 )
     nv:computeNeighbours()
     nv.show = true
 end

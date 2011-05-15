@@ -60,6 +60,7 @@ class NavigationCell
 
     Ogre::Vector3 mVertices[3];
     Ogre::Vector3 mCentre;
+    int mTag;
 
     // Pointers to cell's neighbours.
     NavigationCell* mLinks[3];
@@ -79,7 +80,7 @@ class NavigationCell
     void debugDrawCell( Ogre::ManualObject *debug, Ogre::String matNormal, Ogre::String matSide );
 
 public:
-    NavigationCell( Ogre::Vector3 a, Ogre::Vector3 b, Ogre::Vector3 c );
+    NavigationCell( Ogre::Vector3 a, Ogre::Vector3 b, Ogre::Vector3 c, int tag );
 
     enum LINE_CLASSIFICATION
     {
@@ -142,15 +143,20 @@ public:
             Ogre::MeshPtr mesh,
             Ogre::Vector3 position = Ogre::Vector3::ZERO,
             Ogre::Quaternion rotation = Ogre::Quaternion::IDENTITY,
-            Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE );
+            Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE,
+            int tag = 0 );
 
     void addFromOgreEntity( 
             Ogre::Entity *entity,
             Ogre::Vector3 position = Ogre::Vector3::ZERO,
             Ogre::Quaternion rotation = Ogre::Quaternion::IDENTITY,
-            Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE );
+            Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE,
+            int tag = 0 );
 
     void computeNeighbours();
+    void computeNeighboursForList( NavigationCellList *list );
+
+    NavigationCellList *getListFromTag( int tag );
 
     // Finds cell that contains the specified point, but not necessarily on its surface.
     NavigationCell* getCellContainingPoint( Ogre::Vector3& p );
