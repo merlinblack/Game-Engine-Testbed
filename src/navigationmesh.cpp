@@ -35,13 +35,14 @@ THE SOFTWARE.
 // The speration tolerance that vertices in a navmesh are considered in the same place.
 #define VERTEX_SNAP_TOLERANCE 2.0f
 
-NavigationCell::NavigationCell( Ogre::Vector3 a, Ogre::Vector3 b, Ogre::Vector3 c )
+NavigationCell::NavigationCell( Ogre::Vector3 a, Ogre::Vector3 b, Ogre::Vector3 c, int tag )
 {
     mVertices[0] = a;
     mVertices[1] = b;
     mVertices[2] = c;
     mLinks[0] = mLinks[1] = mLinks[2] = 0;
     mCentre = ( a + b + c ) / 3;
+    mTag = tag;
 }
 
 bool NavigationCell::hasVertex( Ogre::Vector3& vec )
@@ -184,6 +185,10 @@ void NavigationCell::getDebugInfoLua( lua_State *L )
     info["open"] = isOpen;
     info["closed"] = isClosed;
 
+    info["tag"] = mTag;
+
+    info["centre"] = mCentre;
+
     info.push( L );
 
     return;
@@ -277,7 +282,8 @@ void NavigationMesh::addFromOgreMesh(
         Ogre::MeshPtr mesh,
         Ogre::Vector3 position,
         Ogre::Quaternion rotation,
-        Ogre::Vector3 scale
+        Ogre::Vector3 scale,
+        int tag
         )
 {
     using namespace Ogre;
@@ -295,7 +301,7 @@ void NavigationMesh::addFromOgreMesh(
     // Add each triangle as a navigation cell.
     for( size_t i = 0; i < index_count; i += 3 )
     {
-        NavigationCell cell( vertices[indices[i]], vertices[indices[i+1]], vertices[indices[i+2]] );
+        NavigationCell cell( vertices[indices[i]], vertices[indices[i+1]], vertices[indices[i+2]], tag );
 
         mCells.push_back( cell );
     }
@@ -308,34 +314,49 @@ void NavigationMesh::addFromOgreMesh(
 
 void NavigationMesh::computeNeighbours()
 {
+    NavigationCellList list;
+    CellVector::iterator current;
+    
+    for( current = mCells.begin(); current != mCells.end(); current++ )
+        list.push_back( &(*current) );
+
+    computeNeighboursForList( &list );
+}
+
+void NavigationMesh::computeNeighboursForList( NavigationCellList *list )
+{
     // There will be a better way, but this works for now
     // and this does not run very often.
 
-    CellVector::iterator current;
+    NavigationCellList::iterator current;
     CellVector::iterator test;
 
-    for( current = mCells.begin(); current != mCells.end(); current++ )
+    for( current = list->begin(); current != list->end(); current++ )
     {
+        (*current)->mLinks[0] = 0;
+        (*current)->mLinks[1] = 0;
+        (*current)->mLinks[2] = 0;
+
         for( test = mCells.begin(); test != mCells.end(); test++ )
         {
-            if( current != test )
+            if( (*current) != &(*test) )
             {
-                if( test->hasVertex( current->mVertices[0] ) )
+                if( test->hasVertex( (*current)->mVertices[0] ) )
                 {
-                    if( test->hasVertex( current->mVertices[1] ) )
+                    if( test->hasVertex( (*current)->mVertices[1] ) )
                     {
-                        current->mLinks[0] = &(*test);
+                        (*current)->mLinks[0] = &(*test);
                         continue;
                     }
-                    if( test->hasVertex( current->mVertices[2] ) )
+                    if( test->hasVertex( (*current)->mVertices[2] ) )
                     {
-                        current->mLinks[2] = &(*test);
+                        (*current)->mLinks[2] = &(*test);
                         continue;
                     }
                 }
-                if( test->hasVertex( current->mVertices[1] ) && test->hasVertex( current->mVertices[2] ) )
+                if( test->hasVertex( (*current)->mVertices[1] ) && test->hasVertex( (*current)->mVertices[2] ) )
                 {
-                    current->mLinks[1] = &(*test);
+                    (*current)->mLinks[1] = &(*test);
                 }
             }
         }
@@ -347,10 +368,11 @@ void NavigationMesh::computeNeighbours()
 void NavigationMesh::addFromOgreEntity( Ogre::Entity *entity,
         Ogre::Vector3 position,
         Ogre::Quaternion rotation,
-        Ogre::Vector3 scale
+        Ogre::Vector3 scale,
+        int tag
         )
 {
-    addFromOgreMesh( entity->getMesh(), position, rotation, scale );
+    addFromOgreMesh( entity->getMesh(), position, rotation, scale, tag );
 }
 
 // Finds cell that contains the specified point, but not necessarily on its surface.

@@ -3,7 +3,7 @@ am = AnimationManager.getSingleton()
 nv = NavigationMesh() -- Vector3.ZERO, Quaternion.IDENTITY, Vector3.UNIT_SCALE )
 scene:destroyEntity'Nav'
 ne = scene:createEntity( 'level2_walk.mesh' )
-nv:addFromEntity( ne, Vector3.ZERO, Quaternion.IDENTITY, Vector3.UNIT_SCALE )
+nv:addFromEntity( ne, Vector3.ZERO, Quaternion.IDENTITY, Vector3.UNIT_SCALE, 0 )
 nv:computeNeighbours()
 
 function moveTo( v )
