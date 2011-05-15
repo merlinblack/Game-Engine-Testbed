@@ -55,9 +55,9 @@ typedef boost::shared_ptr<EventData> EventDataPtr;
 
 class EventManager
 {
-    std::queue<Event*> pool;
-    std::queue<EventPtr> active;
-    std::queue<EventPtr> current;
+    std::deque<Event*> pool;
+    std::deque<EventPtr> active;
+    std::deque<EventPtr> current;
     std::list<EventListenerSender*> listeners;
 
 public:

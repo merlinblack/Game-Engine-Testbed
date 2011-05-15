@@ -39,7 +39,7 @@ EventManager::EventManager()
 {
     // Create initial event pool.
     for( int i = 0; i < EVENT_POOL_INITIAL_SIZE; i++ )
-        pool.push( new Event() );
+        pool.push_back( new Event() );
 }
 
 EventManager::~EventManager()
@@ -55,7 +55,7 @@ EventManager::~EventManager()
     while( ! pool.empty() )
     {
         Event* event = pool.front();
-        pool.pop();
+        pool.pop_front();
         delete event;
     }
 }
@@ -74,7 +74,7 @@ void EventManager::removeListener( EventListenerSender* listener )
 
 void EventManager::queueEvent( EventPtr event )
 {
-    current.push( event );
+    current.push_back( event );
 }
 
 void EventManager::processEvents()
@@ -88,7 +88,7 @@ void EventManager::processEvents()
         while( iter != listeners.end() && (!(*iter)->EventNotification( event )) )
             iter++;
 
-        active.pop();
+        active.pop_front();
     }
 
     swap( active, current );
@@ -101,12 +101,12 @@ EventPtr EventManager::newEventFromPool( size_t type_hash )
         //std::cout << "Event Manager adding to event pool " << EVENT_POOL_INCREMENT << " events." << std::endl;
 
         for( int i = 0; i < EVENT_POOL_INCREMENT; i++ )
-            pool.push( new Event()  );
+            pool.push_back( new Event() );
     }
     
     EventPtr event;
     event.reset(  pool.front(), PooledEventDeleter(this) );
-    pool.pop();
+    pool.pop_front();
 
     event->type = type_hash;
 
@@ -116,7 +116,7 @@ EventPtr EventManager::newEventFromPool( size_t type_hash )
 void EventManager::returnEventToPool( Event* event )
 {
     //std::cout << "Event Manager returning event to pool. Pool size is " << pool.size() << std::endl;
-    pool.push( event );
+    pool.push_back( event );
 }
 
 void PooledEventDeleter::operator() ( Event* event )
