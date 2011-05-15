@@ -168,7 +168,7 @@ void ScriptingSystem::bind()
         ,
         def( "queueEvent", &queueEventThunk )
         ,
-        class_<EventData, boost::shared_ptr<EventData> >( "EventData" ),
+        class_<EventData, EventDataPtr >( "EventData" ),
         class_<InputEventData, EventData, EventDataPtr >( "InputEventData" )
             .def( constructor<>() )
             .def_readwrite( "x", &InputEventData::x )
@@ -179,7 +179,7 @@ void ScriptingSystem::bind()
         class_<WindowEventData, EventData, EventDataPtr >( "WindowEventData" )
             .def_readwrite( "width", &WindowEventData::width )
             .def_readwrite( "height", &WindowEventData::height ),
-        class_<AnimationEventData, EventData, EventPtr >( "AnimationEventData" )
+        class_<AnimationEventData, EventData, EventDataPtr >( "AnimationEventData" )
             .def_readwrite( "animation", &AnimationEventData::animation )
     ];
 }
