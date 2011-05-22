@@ -30,6 +30,7 @@ THE SOFTWARE.
 #include <animationeventdata.h>
 #include <luaresource.h>
 #include <gameentity.h>
+#include <version.h>
 
 void bindOgre( lua_State* L ); // From ogrebind.cpp
 void bindAnimation( lua_State* L ); // From animationbind.cpp
@@ -181,6 +182,8 @@ void ScriptingSystem::bind()
             .def_readwrite( "height", &WindowEventData::height ),
         class_<AnimationEventData, EventData, EventDataPtr >( "AnimationEventData" )
             .def_readwrite( "animation", &AnimationEventData::animation )
+        ,
+        def( "versionString", versionString )
     ];
 }
 
