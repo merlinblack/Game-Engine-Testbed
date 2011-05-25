@@ -55,6 +55,9 @@ TARGET_LINK_LIBRARIES(engine
     ${LUABIND_LIBRARIES}
 	)
 
+INCLUDE( GitVersioning )
+enable_git_versioning( engine )
+
 MESSAGE(STATUS "Boost libraries:   " ${Boost_LIBRARIES} )
 MESSAGE(STATUS "OIS libraries:     " ${OIS_LIBRARIES} )
 MESSAGE(STATUS "OGRE libraries:    " ${OGRE_LIBRARIES} )
