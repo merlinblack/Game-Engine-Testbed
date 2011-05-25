@@ -76,6 +76,7 @@ protected:
     std::list<std::string>::iterator    history_line;
 
     void addToHistory( const std::string& cmd );
+    std::string escapePercents( const std::string& cmd );
 };
 
 #endif // LUACONSOLE_H

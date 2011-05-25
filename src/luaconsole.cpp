@@ -64,10 +64,10 @@ void LuaConsole::init(Gorilla::Screen *screen, lua_State *L)
     mScreen = screen;
     mLayer = mScreen->createLayer(15);
     mGlyphData = mLayer->_getGlyphData( CONSOLE_FONT_INDEX );
-    
+
     mConsoleText = mLayer->createMarkupText( CONSOLE_FONT_INDEX, 10, 10, Ogre::StringUtil::BLANK );
     mConsoleText->width( mScreen->getWidth() - 20 );
-    
+
     mDecoration = mLayer->createRectangle( 8, 8, mScreen->getWidth() - 16,
                                            (mGlyphData->mLineHeight * CONSOLE_LINE_COUNT) + 2 );
     mDecoration->background_gradient( Gorilla::Gradient_NorthSouth,
@@ -255,14 +255,31 @@ void LuaConsole::addToHistory( const string& cmd )
     history_line = history.end();
 }
 
+string LuaConsole::escapePercents( const string& cmd )
+{
+    // Escape '%' characters.
+    string escaped = cmd;
+    size_t pos = 0;
+    while( (pos = escaped.find( '%', pos )) != string::npos )
+    {
+        escaped.insert( pos, 1, '%' );
+        ++pos;
+        ++pos;
+    }
+    return escaped;
+}
+
 bool LuaConsole::injectKeyPress( const OIS::KeyEvent &evt )
 {
+    string escaped;
+
     switch( evt.key )
     {
         case OIS::KC_RETURN:
-            print( interpreter->getPrompt() + editline.getText() );
+            escaped = escapePercents( editline.getText() );
+            print( interpreter->getPrompt() + escaped );
             interpreter->insertLine( editline.getText() );
-            addToHistory( editline.getText() );
+            addToHistory( escaped );
             print( interpreter->getOutput() );
             interpreter->clearOutput();
             editline.clear();
