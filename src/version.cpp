@@ -27,12 +27,15 @@ THE SOFTWARE.
 #include <OgrePrerequisites.h>
 #include <OgreString.h>
 #include <OgreStringConverter.h>
+#include <git_versioning.h>
 
 Ogre::String versionString()
 {
     Ogre::String version;
 
-    version = "Game Engine Testbed 0.2\n";
+    version = "Game Engine Testbed\n";
+    version += GIT_REPO_VERSION_STR;
+    version += "\n";
 
     version += "Ogre ";
     version += Ogre::StringConverter::toString( OGRE_VERSION_MAJOR );
