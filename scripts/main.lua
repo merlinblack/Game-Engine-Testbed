@@ -5,7 +5,7 @@ require 'autocomplete'
 require 'events'
 
 function version()
-    message( versionString() )
+    message( '%@14%' .. versionString()..'\n\n' )
 end
 
 local old_dofile = dofile
