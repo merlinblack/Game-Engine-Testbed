@@ -6,7 +6,7 @@ IF( GIT_EXECUTABLE )
         )
     FILE(WRITE ${CMAKE_BINARY_DIR}/GitVersioning/version.cmake
     "  EXECUTE_PROCESS(
-        COMMAND ${GIT_EXECUTABLE} describe
+        COMMAND \"${GIT_EXECUTABLE}\" describe
         RESULT_VARIABLE GIT_RESULT
         OUTPUT_VARIABLE GIT_REPO_VERSION
         ERROR_VARIABLE  GIT_ERROR
@@ -14,7 +14,7 @@ IF( GIT_EXECUTABLE )
         )
     IF( NOT \${GIT_RESULT} EQUAL 0 )
         EXECUTE_PROCESS(
-            COMMAND ${GIT_EXECUTABLE} describe --all
+            COMMAND \"${GIT_EXECUTABLE}\" describe --all
             RESULT_VARIABLE GIT_RESULT
             OUTPUT_VARIABLE GIT_REPO_VERSION
             ERROR_VARIABLE  GIT_ERROR
