@@ -1,0 +1,14 @@
+drag.normal.svg 16 16
+drag.hover.svg 16 16
+drag.pressed.svg 16 16
+checkbox.true.svg 16 16
+checkbox.false.svg 16 16
+icon.exit.svg 32 32
+icon.info.svg 32 32
+button.hover.svg 80 24
+button.normal.svg 80 24
+button.pressed.svg 80 24
+nw.svg 8 8
+ne.svg 8 8
+se.svg 8 8
+sw.svg 8 8

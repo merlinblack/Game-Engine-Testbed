@@ -17,7 +17,7 @@ yellow.arrow.png
 dejavu_sans_book_14.png
 acoustic_bass_regular_10.png
 acoustic_bass_regular_20.png
-nw.png
-ne.png
-se.png
 sw.png
+se.png
+ne.png
+nw.png
