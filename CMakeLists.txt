@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 2.6)
 PROJECT(engine)
 
 if (WIN32)
-	set(CMAKE_MODULE_PATH_ADD $ENV{PROGRAMFILES}/OGRE/CMake )
+    set(CMAKE_MODULE_PATH_ADD $ENV{PROGRAMFILES}/OGRE/CMake )
 elseif (UNIX)
-	set(CMAKE_MODULE_PATH_ADD /usr/local/lib/OGRE/cmake )
+    set(CMAKE_MODULE_PATH_ADD /usr/lib/OGRE/cmake /usr/local/lib/OGRE/cmake )
 endif ()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} " " ${CMAKE_MODULE_PATH_ADD} " " ${PROJECT_SOURCE_DIR}/cmake )
