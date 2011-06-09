@@ -32,16 +32,20 @@ function mouseMovedEventListener( event )
 end
 
 function keyPressedEventListener( event )
-    key = event.data.key
-    keybinder.keypressed( key )
-    gui.keypressed( key )
+    if not console.isVisible() then
+        key = event.data.key
+        keybinder.keypressed( key )
+        gui.keypressed( key )
+    end
     return false
 end
 
 function keyReleasedEventListener( event )
-    key = event.data.key
-    keybinder.keyreleased( key )
-    gui.keyreleased( key )
+    if not console.isVisible() then
+        key = event.data.key
+        keybinder.keyreleased( key )
+        gui.keyreleased( key )
+    end
     return false
 end
 

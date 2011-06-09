@@ -43,6 +43,15 @@ end
 function Button:keypressed( key )
     if self.key ~= KeyCodes.KC_UNKNOWN then
         if key == self.key then
+            self.state = "click"
+            self:updateVisualState()
+        end
+    end
+end
+
+function Button:keyreleased( key )
+    if self.key ~= KeyCodes.KC_UNKNOWN then
+        if key == self.key then
             self:onClick()
         end
     end
