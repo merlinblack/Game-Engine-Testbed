@@ -36,6 +36,12 @@ function Panel:keypressed( key )
     end
 end
 
+function Panel:keyreleased( key )
+    for _,child in pairs(self.children) do
+        if child.keyreleased then child:keyreleased( key ) end
+    end
+end
+
 function Panel:addChild( widget )
     table.insert(self.children, widget)
 end

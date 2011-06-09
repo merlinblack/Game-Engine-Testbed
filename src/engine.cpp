@@ -170,7 +170,7 @@ bool Engine::EventNotification( EventPtr event )
 
             return true; // We want the event taken out of the current queue.
         }
-        if( console.isVisible() )
+        if( console.isVisible() && data->key != OIS::KC_RETURN ) // See Keyup handling for why not RETURN key.
         {
             OIS::KeyEvent arg( 0, data->key, data->parm );
             console.injectKeyPress( arg );
@@ -180,8 +180,30 @@ bool Engine::EventNotification( EventPtr event )
     }
     if( event->type == Event::hash( "EVT_KEYUP" ) )
     {
+        boost::shared_ptr<InputEventData> data = boost::dynamic_pointer_cast<InputEventData>( event->data );
+
+        if( data->key == OIS::KC_NUMPADENTER )
+        {
+            // Map the Enter key on the keypad to Return on the main keyboard
+            // Re-use old event and most of the data, reference counting will sort it out...
+            data->key = OIS::KC_RETURN;
+
+            queueEvent( event );
+
+            return true; // We want the event taken out of the current queue.
+        }
         if( console.isVisible() )
         {
+            // Send RETURN key on the up rather than down event, so that any script run will not recieve the
+            // up key press and possibly react to it.  For example the quit() script.
+            // This avoids some scripts having to filter out RETURN key releases from when they where started
+            // from the console.
+            if( data->key == OIS::KC_RETURN )
+            {
+                OIS::KeyEvent arg( 0, data->key, data->parm );
+                console.injectKeyPress( arg );
+            }
+
             // Eat key up event.
             return true;
         }
