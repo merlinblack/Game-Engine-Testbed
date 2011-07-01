@@ -1,3 +1,19 @@
+material debug/vertexcolour
+{
+    technique
+    { 
+        pass 
+        { 
+            lighting off 
+            scene_blend alpha_blend 
+            depth_check on 
+            depth_write off 
+            ambient vertexcolour 
+            diffuse vertexcolour 
+            specular vertexcolour 
+        } 
+    } 
+}
 material debug/red
 {
     receive_shadows off

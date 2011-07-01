@@ -116,7 +116,7 @@ void Engine::run()
         renderSystem.renderOneFrame();
 
         // Play nice with the operating system by sleeping a little.
-        Sleep( 10 );
+        Sleep( 0 );
     }
 }
 
