@@ -122,25 +122,10 @@ void Engine::run()
 
 bool Engine::EventNotification( EventPtr event )
 {
-    // These are for testing. TOREMOVE!
-    static float _X;
-    static float _Y;
-    static short _WIDTH;
-    static short _HEIGHT;
-
     if( event->type == Event::hash( "MSG_QUIT" ) )
     {
         stop = true;
         return true;
-    }
-
-    if( event->type == Event::hash( "EVT_WINDOW_RESIZE" ) )
-    {
-        boost::shared_ptr<WindowEventData> data = boost::dynamic_pointer_cast<WindowEventData>( event->data );
-        _WIDTH = data->width;
-        _HEIGHT = data->height;
-
-        return false;   // We don't eat this event as other listeners may need to know too.
     }
 
     if( event->type == Event::hash( "EVT_KEYDOWN" ) )
@@ -207,16 +192,6 @@ bool Engine::EventNotification( EventPtr event )
             // Eat key up event.
             return true;
         }
-        return false;
-    }
-
-    if( event->type == Event::hash("EVT_MOUSEMOVE") )
-    {
-        boost::shared_ptr<InputEventData> data = boost::dynamic_pointer_cast<InputEventData>( event->data );
-
-        _X = (float)data->x / _WIDTH;
-        _Y = (float)data->y / _HEIGHT;
-
         return false;
     }
 
