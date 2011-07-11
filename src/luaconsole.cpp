@@ -105,7 +105,11 @@ void LuaConsole::setVisible(bool fVisible)
     mLayer->setVisible( visible );
 }
 
+#if OGRE_VERSION_MINOR < 7
 void LuaConsole::messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName )
+#else
+void LuaConsole::messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool &skip )
+#endif
 {
     if( enableLogging )
         print( message );
@@ -347,7 +351,7 @@ bool LuaConsole::injectKeyPress( const OIS::KeyEvent &evt )
                 else
                     lua_pop(L, 1);
             }
-            break;            
+            break;
 
         default:
             textChanged = editline.injectKeyPress( evt );
