@@ -30,6 +30,7 @@ THE SOFTWARE.
 #include <OgreEntity.h>
 #include <OgreSceneNode.h>
 #include <OgreSingleton.h>
+#include <OgreLogManager.h>
 #include <luabind/luabind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/functional/hash.hpp>
@@ -117,6 +118,8 @@ class GameEntityWrapper : public GameEntity, public luabind::wrap_base
         m_self.get(L);
         if( ! lua_isnil( L, -1 ) ) // If the Lua side is not there anymore just ignore.
             call<void>( "update" );
+        else
+            Ogre::LogManager::getSingleton().stream() << "Game Entity Lua side missing.";
         lua_pop( L, 1 );
     }
 

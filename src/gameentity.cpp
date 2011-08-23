@@ -438,6 +438,7 @@ void bindGameEntityClasses( lua_State* L )
             .property( "visible", &GameEntity::isVisible, &GameEntity::setVisible )
             .def(tostring(self))
             .def( self == other<GameEntityPtr>() )
+            .def("__finalize", &GameEntity::removeFromManager)
             ,
             class_<GameEntityManager>("GameEntityManager")
             .scope
