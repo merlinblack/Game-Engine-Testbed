@@ -31,7 +31,7 @@ def export_to_lua(sce):
     for ob in [ x for x in sce.objects if x.type == 'Mesh']:
         print ob
         f.write( 'mesh = {}\n' )
-        f.write( 'mesh.name = \'' + ob.name + '\'\n' )
+        f.write( 'mesh.name = \'' + ob.name.replace('.','_') + '\'\n' )
         f.write( 'mesh.filename = \'' + ob.getData( name_only=True ) + '.mesh\'\n' )
         f.write( 'mesh.loc = { ' + str(ob.LocX) + ', ' + str(ob.LocZ) + ', ' + str(-ob.LocY) + ' }\n' )
         q = ob.getMatrix().toQuat()
@@ -44,7 +44,7 @@ def export_to_lua(sce):
     for ob in [ x for x in sce.objects if x.type == 'Camera']:
         print ob
         f.write( 'camera={}\n' )
-        f.write( 'camera.name = \'' + ob.name + '\'\n' )
+        f.write( 'camera.name = \'' + ob.name.replace('.','_') + '\'\n' )
         f.write( 'camera.loc = { ' + str(ob.LocX) + ', ' + str(ob.LocZ) + ', ' + str(-ob.LocY) + ' }\n' )
         q = ob.getMatrix().toQuat()
         f.write( 'camera.rot = { ' + str(q.w) + ', ' + str(q.x) + ', ' + str(q.z) + ', ' + str(-q.y) + ' }\n' )
@@ -55,7 +55,7 @@ def export_to_lua(sce):
     for ob in [ x for x in sce.objects if x.type == 'Empty']:
         print ob
         f.write( 'point={}\n' )
-        f.write( 'point.name = \'' + ob.name + '\'\n' )
+        f.write( 'point.name = \'' + ob.name.replace('.','_') + '\'\n' )
         f.write( 'point.loc = { ' + str(ob.LocX) + ', ' + str(ob.LocZ) + ', ' + str(-ob.LocY) + ' }\n' )
         q = ob.getMatrix().toQuat()
         f.write( 'point.rot = { ' + str(q.w) + ', ' + str(q.x) + ', ' + str(q.z) + ', ' + str(-q.y) + ' }\n' )
@@ -69,14 +69,14 @@ def export_to_lua(sce):
 def writeProperties( f, obj, obj_type ):
     for prop in obj.getAllProperties():
         if prop.type == "FLOAT" or prop.type == "INT":
-            f.write( obj_type + "." + prop.name + " = " + str(prop.data) + "\n" )
+            f.write( obj_type + "." + prop.name.replace('.','_') + " = " + str(prop.data) + "\n" )
         elif prop.type == "STRING":
-            f.write( obj_type + "." + prop.name + " = '" + prop.data + "'\n" )
+            f.write( obj_type + "." + prop.name.replace('.','_') + " = '" + prop.data + "'\n" )
         elif prop.type == "BOOL":
             if prop.data == True:
-                f.write( obj_type + "." + prop.name + " = true\n" )
+                f.write( obj_type + "." + prop.name.replace('.','_') + " = true\n" )
             else:
-                f.write( obj_type + "." + prop.name + " = false\n" )
+                f.write( obj_type + "." + prop.name.replace('.','_') + " = false\n" )
 
 def main():
 
