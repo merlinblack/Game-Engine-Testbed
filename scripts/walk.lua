@@ -1,10 +1,5 @@
 local scene = Ogre.getSceneManager()
 am = AnimationManager.getSingleton()
-nv = NavigationMesh() -- Vector3.ZERO, Quaternion.IDENTITY, Vector3.UNIT_SCALE )
-scene:destroyEntity'Nav'
-ne = scene:createEntity( 'level2_walk.mesh' )
-nv:addFromEntity( ne, Vector3.ZERO, Quaternion.IDENTITY, Vector3.UNIT_SCALE, 0 )
-nv:computeNeighbours()
 
 function moveTo( v )
     local ma = MovementAnimation( player.node, v, player.walkspeed )
@@ -40,7 +35,7 @@ function followList( list )
     wa:fadeIn()
     player.walking = true
     player.stopwalking = false
-    player.walkspeed = player.walkspeed or 15
+    player.walkspeed = player.walkspeed or 30
     for i, vector in pairs(list) do
         if i ~= 1 then
             local r
@@ -73,7 +68,7 @@ function getpath()
     local d = getWalkableEntityHitPosition(mouse.x/mouse.width, mouse.y/mouse.height)
     local maxAngle = Radian( Degree(90) )
 
-    return nv:findPath( p, d, maxAngle, 5 )
+    return nv:findPath( p, d, maxAngle, 10 )
 end
 
 function walkTask()

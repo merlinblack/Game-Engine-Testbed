@@ -142,6 +142,12 @@ function setup()
     require 'walk'
     require 'test'
     require 'mydebug'
+    require 'loadlevel'
+
+    player = createGameEntity( root, 'Robot', 'robot.mesh' )
+    player.node:scale( .5, .5, .5 )
+
+    loadLevel 'levels/level2'
 
     print "Setup task completed"
 end

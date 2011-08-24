@@ -28,7 +28,7 @@ level.meshes[mesh.name] = mesh
 
 mesh = {}
 mesh.name = 'Bridge2'
-mesh.filename = 'bridge.mesh'
+mesh.filename = 'Bridge.mesh'
 mesh.loc = { -256.0, 0.0, 96.0 }
 mesh.rot = { 0.70710682869, 0.0, -0.70710682869, -0.0 }
 mesh.scale = { 1.0, 1.0, 1.0 }
@@ -39,7 +39,7 @@ mesh.walkmesh = 'Bridge_walk2'
 
 mesh = {}
 mesh.name = 'Bridge1'
-mesh.filename = 'bridge.mesh'
+mesh.filename = 'Bridge.mesh'
 mesh.loc = { -32.0, 0.0, -96.0 }
 mesh.rot = { 1.0, 0.0, 0.0, -0.0 }
 mesh.scale = { 1.0, 1.0, 1.0 }
@@ -69,14 +69,14 @@ level.meshes[mesh.name] = mesh
 -------------
 
 camera={}
-camera.name = 'Camera.001'
+camera.name = 'Camera_001'
 camera.loc = { 356.0, 116.0, -326.0 }
 camera.rot = { 0.323744416237, 0.271653831005, 0.694272041321, -0.582563400269 }
 level.cameras[camera.name] = camera
 -------------
 
 point={}
-point.name = 'robot_spawnpoint'
+point.name = 'player_spawn'
 point.loc = { -139.24432373, 0.206147372723, 271.409637451 }
 point.rot = { 0.819152057171, 0.0, 0.573576450348, -0.0 }
 level.points[point.name] = point
