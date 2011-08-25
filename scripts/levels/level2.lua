@@ -11,7 +11,7 @@ local mesh, camera, point
 mesh = {}
 mesh.name = 'Bridge_walk2'
 mesh.filename = 'Bridge_walk.mesh'
-mesh.loc = { -256.0, 0.0, 96.0 }
+mesh.loc = { -256.0, -5.0, 96.0 }
 mesh.rot = { 0.70710682869, 0.0, -0.70710682869, -0.0 }
 mesh.scale = { 1.0, 1.0, 1.0 }
 level.meshes[mesh.name] = mesh
@@ -62,7 +62,7 @@ mesh.walkmesh = 'Island_walk'
 mesh = {}
 mesh.name = 'Bridge_walk1'
 mesh.filename = 'Bridge_walk.mesh'
-mesh.loc = { -32.0, 0.0, -96.0 }
+mesh.loc = { -32.0, -5.0, -96.0 }
 mesh.rot = { 1.0, 0.0, 0.0, -0.0 }
 mesh.scale = { 1.0, 1.0, 1.0 }
 level.meshes[mesh.name] = mesh
