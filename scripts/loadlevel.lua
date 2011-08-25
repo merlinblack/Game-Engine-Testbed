@@ -13,8 +13,8 @@ function loadLevel( name )
 
     cameraControl.mainNode:setPosition( loc[1], loc[2], loc[3] )
     cameraControl.mainNode:setOrientation( Quaternion(rot[1], rot[2], rot[3], rot[4]) )
+    cameraControl.mainNode:pitch(-90)
     cameraControl.pitchNode:setOrientation( Quaternion() )
-    cameraControl.pitchNode:pitch(-90)
 
     print 'Finished loading level'
 
