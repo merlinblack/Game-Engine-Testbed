@@ -68,6 +68,16 @@ mesh.scale = { 1.0, 1.0, 1.0 }
 level.meshes[mesh.name] = mesh
 -------------
 
+mesh = {}
+mesh.name = 'StreetLamp'
+mesh.filename = 'StreetLamp.mesh'
+mesh.loc = { 64.0, 80.0, -0.0 }
+mesh.rot = { 1.0, 0.0, 0.0, -0.0 }
+mesh.scale = { 1.0, 1.0, 1.0 }
+level.meshes[mesh.name] = mesh
+mesh.isEntity = true
+-------------
+
 camera={}
 camera.name = 'Camera_001'
 camera.loc = { 356.0, 116.0, -326.0 }
