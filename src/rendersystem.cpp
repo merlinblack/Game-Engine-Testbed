@@ -87,7 +87,7 @@ bool ::RenderSystem::initialise()
     queueEvent( event );
 
     // Setup a small test scene.
-    mSceneManager->setSkyBox( true, "CloudyNoonSkyBox" );
+    mSceneManager->setSkyBox( true, "StormySkyBox" );
 
     mSceneManager->setAmbientLight( ColourValue( 0.25, 0.25, 0.25 ) );
     mSceneManager->setShadowTechnique( SHADOWTYPE_STENCIL_MODULATIVE );
