@@ -385,7 +385,7 @@ void bindCamera( lua_State* L )
     ];
 }
 
-void Scene_setSkyBox( SceneManager* mgr, String materialName )
+void Scene_setSkyBox( SceneManager* mgr, const String& materialName )
 {
     mgr->setSkyBox( true, materialName );
 }
@@ -420,7 +420,8 @@ void bindSceneManager( lua_State* L )
         .def("setShadowTechnique", &SceneManager::setShadowTechnique )
         .def("setSkyBox", &Scene_setSkyBox )
         .def("disableSkyBox", &Scene_disableSkyBox )
-
+        .def("createLight", (Light* (SceneManager::*)())&SceneManager::createLight )
+        .def("createLight", (Light* (SceneManager::*)(const String&))&SceneManager::createLight )
         .def(tostring(self))
     ];
 

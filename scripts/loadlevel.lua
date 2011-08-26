@@ -5,6 +5,7 @@ function loadLevel( name )
     fixWalkmeshLinks( level )
 
     currentEntities = createEntities( level )
+    currentLights = createLights( level )
 
     moveEntityToWaypoint( player, level.points.player_spawn )
 
@@ -36,6 +37,18 @@ function moveEntityToWaypoint( entity, waypoint )
 
     entity.node:setPosition( location )
     entity.node:setOrientation( rotation )
+end
+
+function createLights( level )
+    local scene = Ogre.getSceneManager()
+    local currentLights = {}
+    for _,light in pairs( level.lights ) do
+        local l = scene:createLight( light.name )
+        l:setDiffuse( ColourValue( light.colour[1], light.colour[2], light.colour[3] ) )
+        l:setPosition( light.loc[1], light.loc[2], light.loc[3] )
+        currentLights[light.name] = l
+    end
+    return currentLights
 end
 
 function createEntities( level )
