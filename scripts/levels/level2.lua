@@ -9,6 +9,16 @@ local mesh, camera, point
 -------------
 
 mesh = {}
+mesh.name = 'StreetLamp2'
+mesh.filename = 'StreetLamp.mesh'
+mesh.loc = { -321.81552124, 75.0, -5.33331298828 }
+mesh.rot = { 1.0, 0.0, 0.0, -0.0 }
+mesh.scale = { 1.0, 1.0, 1.0 }
+level.meshes[mesh.name] = mesh
+mesh.isEntity = true
+-------------
+
+mesh = {}
 mesh.name = 'Bridge_walk2'
 mesh.filename = 'Bridge_walk.mesh'
 mesh.loc = { -256.0, -5.0, 96.0 }

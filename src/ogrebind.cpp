@@ -346,6 +346,30 @@ void bindSceneNode( lua_State* L )
     LUA_STATIC_END;
 }
 
+void bindLight( lua_State* L )
+{
+    module(L)
+    [
+        class_<Light, MovableObject>("Light")
+        .property( "type", &Light::getType, &Light::setType )
+        .def( "setDiffuse", (void( Light::*)(Real, Real, Real))&Light::setDiffuseColour )
+        .def( "setDiffuse", (void( Light::*)(const ColourValue&))&Light::setDiffuseColour )
+        .def( "setSpecular", (void( Light::*)(Real, Real, Real))&Light::setSpecularColour )
+        .def( "setSpecular", (void( Light::*)(const ColourValue&))&Light::setSpecularColour )
+        .def( "setAttenuation", &Light::setAttenuation )
+        .def( "setPosition", (void( Light::*)(Real, Real, Real))&Light::setPosition )
+        .def( "setPosition", (void( Light::*)(const Vector3&))&Light::setPosition )
+        .def( "setDirection", (void( Light::*)(Real, Real, Real))&Light::setDirection )
+        .def( "setDirection", (void( Light::*)(const Vector3&))&Light::setDirection )
+    ];
+
+    LUA_STATIC_START( Light )
+        LUA_STATIC( Light, LT_POINT );
+        LUA_STATIC( Light, LT_DIRECTIONAL );
+        LUA_STATIC( Light, LT_SPOTLIGHT );
+    LUA_STATIC_END;
+}
+
 void bindCamera( lua_State* L )
 {
     module(L)
@@ -359,6 +383,16 @@ void bindCamera( lua_State* L )
         .def("setFarClipDistance", &Camera::setFarClipDistance )
         .def(tostring(self))
     ];
+}
+
+void Scene_setSkyBox( SceneManager* mgr, String materialName )
+{
+    mgr->setSkyBox( true, materialName );
+}
+
+void Scene_disableSkyBox( SceneManager* mgr )
+{
+    mgr->setSkyBox( false, String() );
 }
 
 void bindSceneManager( lua_State* L )
@@ -384,6 +418,8 @@ void bindSceneManager( lua_State* L )
         .def("getAmbientLight", &SceneManager::getAmbientLight )
         .def("setDisplaySceneNodes", &SceneManager::setDisplaySceneNodes )
         .def("setShadowTechnique", &SceneManager::setShadowTechnique )
+        .def("setSkyBox", &Scene_setSkyBox )
+        .def("disableSkyBox", &Scene_disableSkyBox )
 
         .def(tostring(self))
     ];
@@ -493,6 +529,7 @@ void bindOgre( lua_State* L )
     bindEntity( L );
     bindSceneNode( L );
     bindCamera( L );
+    bindLight( L );
     bindSceneManager( L );
     bindRadian( L );
     bindFrameStats( L );
