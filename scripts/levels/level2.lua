@@ -5,7 +5,8 @@ local level = {}
 level.meshes = {}
 level.cameras = {}
 level.points = {}
-local mesh, camera, point
+level.lights = {}
+local mesh, camera, point, light
 -------------
 
 mesh = {}
@@ -101,6 +102,28 @@ point.loc = { -139.24432373, 0.206147372723, 271.409637451 }
 point.rot = { 0.819152057171, 0.0, 0.573576450348, -0.0 }
 level.points[point.name] = point
 point.spawn = 'Robot'
+-------------
+
+light={}
+light.name = 'Lamp_001'
+light.loc = { -322.135070801, 103.887908936, -5.90168714523 }
+light.rot = { 1.0, 0.0, 0.0, -0.0 }
+light.type = 'Lamp'
+light.colour = { 1.0, 0.701810717583, 0.180720746517 }
+light.energy = 4.0
+light.dist = 120.0
+level.lights[light.name] = light
+-------------
+
+light={}
+light.name = 'Lamp'
+light.loc = { 64.0357666016, 103.887908936, -0.16259765625 }
+light.rot = { 1.0, 0.0, 0.0, -0.0 }
+light.type = 'Lamp'
+light.colour = { 1.0, 0.701810717583, 0.180720746517 }
+light.energy = 4.0
+light.dist = 120.0
+level.lights[light.name] = light
 -------------
 
 return level

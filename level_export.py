@@ -25,7 +25,8 @@ def export_to_lua(sce):
     f.write( 'level.meshes = {}\n' )
     f.write( 'level.cameras = {}\n' )
     f.write( 'level.points = {}\n' )
-    f.write( 'local mesh, camera, point\n' )
+    f.write( 'level.lights = {}\n' )
+    f.write( 'local mesh, camera, point, light\n' )
     f.write( '-------------\n\n' )
 
     for ob in [ x for x in sce.objects if x.type == 'Mesh']:
@@ -61,6 +62,22 @@ def export_to_lua(sce):
         f.write( 'point.rot = { ' + str(q.w) + ', ' + str(q.x) + ', ' + str(q.z) + ', ' + str(-q.y) + ' }\n' )
         f.write( 'level.points[point.name] = point\n' )
         writeProperties( f, ob, 'point' )
+        f.write( '-------------\n\n' )
+
+    for ob in [ x for x in sce.objects if x.type == 'Lamp']:
+        print ob
+        f.write( 'light={}\n' )
+        f.write( 'light.name = \'' + ob.name.replace('.','_') + '\'\n' )
+        f.write( 'light.loc = { ' + str(ob.LocX) + ', ' + str(ob.LocZ) + ', ' + str(-ob.LocY) + ' }\n' )
+        q = ob.getMatrix().toQuat()
+        f.write( 'light.rot = { ' + str(q.w) + ', ' + str(q.x) + ', ' + str(q.z) + ', ' + str(-q.y) + ' }\n' )
+        f.write( 'light.type = \'' + ob.getType() + '\'\n' )
+        lampdata = ob.getData()
+        f.write( 'light.colour = { ' + str(lampdata.R) + ', ' + str(lampdata.G) + ', ' + str(lampdata.B) + ' }\n' )
+        f.write( 'light.energy = ' + str(lampdata.energy) + '\n' )
+        f.write( 'light.dist = ' + str(lampdata.dist) + '\n' )
+        f.write( 'level.lights[light.name] = light\n' )
+        writeProperties( f, ob, 'light' )
         f.write( '-------------\n\n' )
 
     f.write( 'return level\n' )

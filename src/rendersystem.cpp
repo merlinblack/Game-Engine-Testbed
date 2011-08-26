@@ -92,10 +92,12 @@ bool ::RenderSystem::initialise()
     mSceneManager->setAmbientLight( ColourValue( 0.25, 0.25, 0.25 ) );
     mSceneManager->setShadowTechnique( SHADOWTYPE_STENCIL_MODULATIVE );
 
+    /*
     Light* light = mSceneManager->createLight( "Light1" );
     light->setDiffuseColour( 1.0, 1.0, 1.0 );
     light->setSpecularColour( 1.0, 1.0, 1.0 );
     light->setPosition( -50, 200, 50 );
+    */
 
     return true;
 }
