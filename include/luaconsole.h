@@ -43,7 +43,7 @@ public:
     bool    frameEnded(const Ogre::FrameEvent &evt);
 
     // Log Listener
-#if OGRE_VERSION_MINOR < 7
+#if OGRE_VERSION < 67584
     void messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName );
 #else
     void messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool &skip );

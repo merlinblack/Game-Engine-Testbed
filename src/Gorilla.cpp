@@ -33,7 +33,11 @@
 
 #pragma warning ( disable : 4244 )
 
+#if OGRE_VERSION < 67584 /* 1.8.0 */
 template<> Gorilla::Silverback* Ogre::Singleton<Gorilla::Silverback>::ms_Singleton = 0;
+#else
+template<> Gorilla::Silverback* Ogre::Singleton<Gorilla::Silverback>::msSingleton = 0;
+#endif
 
 #define PUSH_VERTEX(VERTICES, VERTEX, X, Y, UV, COLOUR)   \
   VERTEX.position.x = X;                                           \
@@ -740,7 +744,7 @@ namespace Gorilla
  }
  
  LayerContainer::LayerContainer(TextureAtlas* atlas)
- : mAtlas(atlas), mIndexRedrawAll(false)
+ : mIndexRedrawAll(false), mAtlas(atlas)
  {
  }
  
@@ -1007,7 +1011,7 @@ namespace Gorilla
  
  
  Screen::Screen(Ogre::Viewport* viewport, TextureAtlas* atlas)
- : LayerContainer(atlas), mViewport(viewport), mIsVisible(true), mScale(1,1,1), mCanRender(false)
+ : LayerContainer(atlas), mViewport(viewport), mIsVisible(true), mCanRender(false), mScale(1,1,1)
  {
   mRenderOpPtr = &mRenderOp;
   mSceneMgr = mViewport->getCamera()->getSceneManager();

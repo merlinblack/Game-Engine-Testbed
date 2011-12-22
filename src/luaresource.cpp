@@ -84,8 +84,13 @@ const Ogre::String LuaResource::getScriptSource() const
     return mScriptSource;
 }
 
+#if OGRE_VERSION < 67584 /* 1.8.0 */
 template<>
 LuaResourceManager* Ogre::Singleton<LuaResourceManager>::ms_Singleton = 0;
+#else
+template<>
+LuaResourceManager* Ogre::Singleton<LuaResourceManager>::msSingleton = 0;
+#endif
 
 /** @brief LuaResourceManager
   *
@@ -138,6 +143,8 @@ LuaResourcePtr LuaResourceManager::load(const Ogre::String& name, const Ogre::St
   *
   * @todo: document this function
   */
+
+#if OGRE_VERSION < 67584 /* 1.8.0 */
 LuaResourceManager * LuaResourceManager::getSingeltonPtr()
 {
     return ms_Singleton;
@@ -152,4 +159,20 @@ LuaResourceManager & LuaResourceManager::getSingleton()
     assert(ms_Singleton);
     return *ms_Singleton;
 }
+#else
+LuaResourceManager * LuaResourceManager::getSingeltonPtr()
+{
+    return msSingleton;
+}
+
+/** @brief getSingleton
+  *
+  * @todo: document this function
+  */
+LuaResourceManager & LuaResourceManager::getSingleton()
+{
+    assert(msSingleton);
+    return *msSingleton;
+}
+#endif
 

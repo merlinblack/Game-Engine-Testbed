@@ -217,17 +217,30 @@ void GameEntity::setVisible( bool visible )
     mesh->setVisible( visible );
 }
 
+#if OGRE_VERSION < 67584 /* 1.8.0 */
 template <> GameEntityManager* Ogre::Singleton<GameEntityManager>::ms_Singleton = 0;
+#else
+template <> GameEntityManager* Ogre::Singleton<GameEntityManager>::msSingleton = 0;
+#endif
 
 GameEntityManager* GameEntityManager::getSingletonPtr()
 {
+#if OGRE_VERSION < 67584 /* 1.8.0 */
     return ms_Singleton;
+#else
+    return msSingleton;
+#endif
 }
 
 GameEntityManager& GameEntityManager::getSingleton()
 {
+#if OGRE_VERSION < 67584 /* 1.8.0 */
     assert( ms_Singleton );
     return *ms_Singleton;
+#else
+    assert( msSingleton );
+    return *msSingleton;
+#endif
 }
 
 GameEntityManager::GameEntityManager() : sceneManager(0), sceneQuery(0)
