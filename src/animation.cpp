@@ -230,7 +230,11 @@ bool RotationAnimation::isFinished()
     return mProgress > 1;
 }
 
+#if OGRE_VERSION < 67584 /* 1.8.0 */
 template<> AnimationManager *Ogre::Singleton<AnimationManager>::ms_Singleton=0;
+#else
+template<> AnimationManager *Ogre::Singleton<AnimationManager>::msSingleton=0;
+#endif
 
 AnimationManager::AnimationManager() :
         finishEvent( Event::hash( "EVT_ANIMATIONFINISHED" ) ),
@@ -256,13 +260,22 @@ void AnimationManager::shutdown()
 
 AnimationManager* AnimationManager::getSingletonPtr()
 {
+#if OGRE_VERSION < 67584 /* 1.8.0 */
     return ms_Singleton;
+#else
+    return msSingleton;
+#endif
 }
 
 AnimationManager& AnimationManager::getSingleton()
 {
+#if OGRE_VERSION < 67584 /* 1.8.0 */
     assert( ms_Singleton );
-    return *ms_Singleton;
+    return( *ms_Singleton );
+#else
+    assert( msSingleton );
+    return *msSingleton;
+#endif
 }
 
 void AnimationManager::addAnimation( AnimationPtr animation )

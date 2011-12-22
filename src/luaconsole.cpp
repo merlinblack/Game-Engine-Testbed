@@ -22,6 +22,7 @@
 using namespace Ogre;
 using namespace std;
 
+#if OGRE_VERSION < 67584 /* 1.8.0 */
 template<> LuaConsole *Singleton<LuaConsole>::ms_Singleton=0;
 
 LuaConsole* LuaConsole::getSingletonPtr()
@@ -34,6 +35,20 @@ LuaConsole& LuaConsole::getSingleton()
     assert( ms_Singleton );
     return *ms_Singleton;
 }
+#else
+template<> LuaConsole *Singleton<LuaConsole>::msSingleton=0;
+
+LuaConsole* LuaConsole::getSingletonPtr()
+{
+    return msSingleton;
+}
+
+LuaConsole& LuaConsole::getSingleton()
+{
+    assert( msSingleton );
+    return *msSingleton;
+}
+#endif
 
 LuaConsole::LuaConsole()
 {
@@ -105,7 +120,7 @@ void LuaConsole::setVisible(bool fVisible)
     mLayer->setVisible( visible );
 }
 
-#if OGRE_VERSION_MINOR < 7
+#if OGRE_VERSION < 67584
 void LuaConsole::messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName )
 #else
 void LuaConsole::messageLogged( const Ogre::String& message, Ogre::LogMessageLevel lml, bool maskDebug, const Ogre::String &logName, bool &skip )
