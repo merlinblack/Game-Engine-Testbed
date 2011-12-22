@@ -24,10 +24,6 @@ THE SOFTWARE.
 */
 #include "luaresource.h"
 
-/** @brief LuaResource
-  *
-  * @todo: document this function
-  */
 LuaResource::LuaResource(Ogre::ResourceManager* creator, const Ogre::String& name,
     Ogre::ResourceHandle handle, const Ogre::String& group ,
     bool isManual , Ogre::ManualResourceLoader* loader) :
@@ -36,37 +32,21 @@ LuaResource::LuaResource(Ogre::ResourceManager* creator, const Ogre::String& nam
     createParamDictionary("LuaResource");
 }
 
-/** @brief ~LuaResource
-  *
-  * @todo: document this function
-  */
 LuaResource::~LuaResource()
 {
     unload();
 }
 
-/** @brief calculateSize
-  *
-  * @todo: document this function
-  */
 size_t LuaResource::calculateSize() const
 {
     return mScriptSource.length();
 }
 
-/** @brief unloadImpl
-  *
-  * @todo: document this function
-  */
 void LuaResource::unloadImpl()
 {
     mScriptSource.clear();
 }
 
-/** @brief loadImpl
-  *
-  * @todo: document this function
-  */
 void LuaResource::loadImpl()
 {
     Ogre::DataStreamPtr stream = Ogre::ResourceGroupManager::getSingleton()
@@ -75,10 +55,6 @@ void LuaResource::loadImpl()
     mScriptSource = stream->getAsString();
 }
 
-/** @brief getScriptSource
-  *
-  * @todo: document this function
-  */
 const Ogre::String LuaResource::getScriptSource() const
 {
     return mScriptSource;
@@ -92,10 +68,6 @@ template<>
 LuaResourceManager* Ogre::Singleton<LuaResourceManager>::msSingleton = 0;
 #endif
 
-/** @brief LuaResourceManager
-  *
-  * @todo: document this function
-  */
 LuaResourceManager::LuaResourceManager()
 {
     mResourceType = "LuaScript";
@@ -105,28 +77,16 @@ LuaResourceManager::LuaResourceManager()
     Ogre::ResourceGroupManager::getSingleton()._registerResourceManager( mResourceType, this );
 }
 
-/** @brief ~LuaResourceManager
-  *
-  * @todo: document this function
-  */
 LuaResourceManager::~LuaResourceManager()
 {
     Ogre::ResourceGroupManager::getSingleton()._unregisterResourceManager(mResourceType);
 }
 
-/** @brief createImpl
-  *
-  * @todo: document this function
-  */
 Ogre::Resource* LuaResourceManager::createImpl(const Ogre::String& name, Ogre::ResourceHandle handle, const Ogre::String& group, bool isManual, Ogre::ManualResourceLoader* loader, const Ogre::NameValuePairList* createParams)
 {
     return new LuaResource( this, name, handle, group, isManual, loader );
 }
 
-/** @brief load
-  *
-  * @todo: document this function
-  */
 LuaResourcePtr LuaResourceManager::load(const Ogre::String& name, const Ogre::String& group)
 {
     LuaResourcePtr script = getByName(name);
@@ -139,21 +99,12 @@ LuaResourcePtr LuaResourceManager::load(const Ogre::String& name, const Ogre::St
     return script;
 }
 
-/** @brief getSingeltonPtr
-  *
-  * @todo: document this function
-  */
-
 #if OGRE_VERSION < 67584 /* 1.8.0 */
 LuaResourceManager * LuaResourceManager::getSingeltonPtr()
 {
     return ms_Singleton;
 }
 
-/** @brief getSingleton
-  *
-  * @todo: document this function
-  */
 LuaResourceManager & LuaResourceManager::getSingleton()
 {
     assert(ms_Singleton);
@@ -165,10 +116,6 @@ LuaResourceManager * LuaResourceManager::getSingeltonPtr()
     return msSingleton;
 }
 
-/** @brief getSingleton
-  *
-  * @todo: document this function
-  */
 LuaResourceManager & LuaResourceManager::getSingleton()
 {
     assert(msSingleton);
