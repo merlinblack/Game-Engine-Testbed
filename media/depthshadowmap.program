@@ -1,0 +1,81 @@
+vertex_program Ogre/DepthShadowmap/CasterVP cg
+{
+    source depthshadowmap.cg
+    entry_point casterVP
+    profiles arbvp1 vs_2_0
+
+    compile_arguments -DLINEAR_RANGE=0
+
+    default_params
+    {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto texelOffsets texel_offsets
+        //param_named_auto depthRange scene_depth_range
+    }
+}
+
+fragment_program Ogre/DepthShadowmap/CasterFP cg
+{
+    source depthshadowmap.cg
+    entry_point casterFP
+    profiles arbfp1 ps_2_0 fp20
+
+    compile_arguments -DLINEAR_RANGE=0
+
+    default_params
+    {
+    }
+}
+
+vertex_program Ogre/DepthShadowmap/ReceiverVP cg
+{
+    source depthshadowmap.cg
+    entry_point receiverVP
+    profiles arbvp1 vs_2_0
+
+    compile_arguments -DLINEAR_RANGE=0
+
+    default_params
+    {
+        param_named_auto world world_matrix
+        param_named_auto worldIT inverse_transpose_world_matrix
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto texViewProj texture_viewproj_matrix
+        param_named_auto lightPosition light_position 0
+        param_named_auto lightColour light_diffuse_colour 0
+        //param_named_auto shadowDepthRange shadow_scene_depth_range 0
+    }
+}
+
+fragment_program Ogre/DepthShadowmap/ReceiverFP cg
+{
+    source depthshadowmap.cg
+    entry_point receiverFP
+    profiles arbfp1 ps_2_0 fp20
+
+    compile_arguments -DLINEAR_RANGE=0 -DFUZZY_TEST=0 -DPCF=0
+
+    default_params
+    {
+        param_named inverseShadowmapSize float 0.0009765625
+        param_named fixedDepthBias float 0.01
+        param_named gradientClamp float 0.0098
+        param_named gradientScaleBias float 0
+        //param_named shadowFuzzyWidth float 1
+    }
+}
+
+// A really basic ambient pass program, support for one texture coodinate set
+vertex_program Ogre/BasicVertexPrograms/AmbientOneTexture cg
+{
+    source depthshadowmap.cg
+    entry_point ambientOneTexture_vp
+    profiles arbvp1 vs_1_1
+
+    default_params
+    {
+        param_named_auto worldViewProj worldviewproj_matrix
+        param_named_auto ambient ambient_light_colour
+    }
+}
+a

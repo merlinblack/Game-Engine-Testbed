@@ -12,7 +12,11 @@ material LightBlue
 		}
 	}
 }
-material Grass
+material Grass : Ogre/DepthShadowmap/BasicTemplateMaterial
+{
+    set_texture_alias MainTexture grass.png
+}
+material GrassOld
 {
 	receive_shadows on
 	technique

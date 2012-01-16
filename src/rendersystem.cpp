@@ -89,8 +89,15 @@ bool ::RenderSystem::initialise()
     // Setup a small test scene.
     mSceneManager->setSkyBox( true, "StormySkyBox" );
 
-    mSceneManager->setAmbientLight( ColourValue( 0.25, 0.25, 0.25 ) );
-    mSceneManager->setShadowTechnique( SHADOWTYPE_STENCIL_MODULATIVE );
+    mSceneManager->setAmbientLight( ColourValue( 0.1, 0.0701810717583, 0.0180720746517 ) );
+
+    // Shadows
+    mSceneManager->setShadowTextureSelfShadow(true);
+    mSceneManager->setShadowTextureCasterMaterial("Ogre/DepthShadowmap/Caster/Float");
+    mSceneManager->setShadowTexturePixelFormat(Ogre::PF_FLOAT32_R);
+    // You can switch this on or off, I suggest you try both and see which works best for you
+    mSceneManager->setShadowCasterRenderBackFaces(false);
+    mSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED);
 
     /*
     Light* light = mSceneManager->createLight( "Light1" );

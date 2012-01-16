@@ -1,0 +1,88 @@
+// Generic Shadow caster material (floating point shadowmap)
+material Ogre/DepthShadowmap/Caster/Float
+{
+    technique
+    {
+        pass 
+        {
+            vertex_program_ref Ogre/DepthShadowmap/CasterVP
+            {
+            }
+            fragment_program_ref Ogre/DepthShadowmap/CasterFP
+            {
+            }
+        }
+    }
+}
+
+// Basic materials which support shadows as a seperate scheme
+material Ogre/DepthShadowmap/BasicTemplateMaterial
+{
+    // This technique supports dynamic shadows
+    technique
+    {
+        // Base ambient pass
+        pass Ambient
+        {
+            // base colours, not needed for rendering, but as information
+            // to lighting pass categorisation routine
+            ambient 1 1 1
+                diffuse 0 0 0 
+                specular 0 0 0 0 
+                // Really basic vertex program
+                vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTexture
+                {
+                }
+        }
+        // Now do the lighting pass
+        // NB we don't do decal texture here because this is repeated per light
+        pass Lighting
+        {
+            // base colours, not needed for rendering, but as information
+            // to lighting pass categorisation routine
+            ambient 0 0 0 
+
+                // do this for each light
+                iteration once_per_light
+
+                scene_blend add
+
+                // Vertex program reference
+                vertex_program_ref Ogre/DepthShadowmap/ReceiverVP
+                {
+                }
+
+            // Fragment program
+            fragment_program_ref Ogre/DepthShadowmap/ReceiverFP
+            {
+            }
+
+            texture_unit
+            {
+                content_type shadow
+                    tex_address_mode clamp
+                    filtering none
+            }
+        }
+
+        // Decal pass
+        pass Decal
+        {
+            // base colours, not needed for rendering, but as information
+            // to lighting pass categorisation routine
+            lighting off
+                // Really basic vertex program
+                vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTexture
+                {
+                    param_named ambient float4 1 1 1 1
+                }
+            scene_blend modulate
+
+                texture_unit
+                {
+                    texture_alias MainTexture
+                        tex_address_mode clamp
+                }
+        }
+    }
+}

@@ -231,7 +231,8 @@ void bindEntity( lua_State* L ) // And Movable Object for now.
         class_<Entity, MovableObject>("Entity")
         .def(tostring(self))
         .def("setMaterialName", &Entity::setMaterialName )
-        .def("setDisplaySkeleton", &Entity::setDisplaySkeleton ),
+        .def("setDisplaySkeleton", &Entity::setDisplaySkeleton )
+        .def("setCastShadows", &Entity::setCastShadows ),
         class_<ManualObject, MovableObject>("ManualObject")
         .def(constructor<const String&>())
         .def("clear", &ManualObject::clear )
