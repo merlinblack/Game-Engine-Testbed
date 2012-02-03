@@ -12,6 +12,9 @@ material LightBlue
 		}
 	}
 }
+
+import Ogre/DepthShadowmap/BasicTemplateMaterial from "depthshadowmap.material"
+
 material Grass : Ogre/DepthShadowmap/BasicTemplateMaterial
 {
     set_texture_alias MainTexture grass.png
