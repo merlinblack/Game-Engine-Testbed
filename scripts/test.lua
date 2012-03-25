@@ -23,6 +23,7 @@ function test()
     for i=1,#t do
         print( t[i].name, d[i] )
     end
+    return { t, d }
 end
 
 infVector = Vector3( math.huge, math.huge, math.huge )
