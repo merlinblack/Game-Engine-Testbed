@@ -33,7 +33,7 @@
 
 #pragma warning ( disable : 4244 )
 
-#if OGRE_VERSION < 67584 /* 1.8.0 */
+#if OGRE_VERSION < 67584 // 1.8.0
 template<> Gorilla::Silverback* Ogre::Singleton<Gorilla::Silverback>::ms_Singleton = 0;
 #else
 template<> Gorilla::Silverback* Ogre::Singleton<Gorilla::Silverback>::msSingleton = 0;
@@ -1011,7 +1011,7 @@ namespace Gorilla
  
  
  Screen::Screen(Ogre::Viewport* viewport, TextureAtlas* atlas)
- : LayerContainer(atlas), mViewport(viewport), mIsVisible(true), mCanRender(false), mScale(1,1,1)
+ : LayerContainer(atlas), mViewport(viewport), mScale(1,1,1), mIsVisible(true), mCanRender(false)
  {
   mRenderOpPtr = &mRenderOp;
   mSceneMgr = mViewport->getCamera()->getSceneManager();
@@ -1861,7 +1861,6 @@ void  QuadList::border(Ogre::Real x, Ogre::Real y, Ogre::Real w, Ogre::Real h, O
   l.x += thickness;    l.y += thickness;
   
   Vertex temp;
-  Ogre::Vector2 uv = mLayer->_getSolidUV();
   
   // North
   Quad q;
