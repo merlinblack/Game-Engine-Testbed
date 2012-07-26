@@ -30,5 +30,24 @@ function keybinder.unbind( key )
     keybindings.up[key] = nil
 end
 
+function keybinder.list()
+    local skiplist={}
+    skiplist[keybindings] = true
+    skiplist[gui] = true
+    print 'Key down list'
+    for k,v in pairs( keybindings.down ) do
+        key = table.keyOf( KeyCodes, k )
+        print( key, getName(v, skiplist) )
+    end
+
+    print 'Key up list'
+    for k,v in pairs( keybindings.up ) do
+        key = table.keyOf( KeyCodes, k )
+        print( key, getName(v, skiplist) )
+    end
+end
+
+
+
 bind = keybinder.bind
 unbind = keybinder.unbind
