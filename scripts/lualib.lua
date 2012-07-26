@@ -26,6 +26,15 @@ function table.indexOf( t, e )
     return nil
 end
 
+function table.keyOf( t, e )
+    for k, v in pairs(t) do
+        if v == e then
+            return k
+        end
+    end
+    return nil
+end
+
 function round( num, digits )
     local shift = 10 ^ digits
     return math.floor( num * shift + 0.5 ) / shift

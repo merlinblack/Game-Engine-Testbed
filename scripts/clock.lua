@@ -1,12 +1,12 @@
 require 'gui/dialogpanel'
 clock={}
 clock.panel = DialogPanel( gui.mainLayer, 0, gui.screen.height - 30, 300, 30 )
-clock.text = Text( gui.mainLayer, 150, gui.screen.height - 15, "Clock", 14 )
+clock.time = Text( gui.mainLayer, 150, gui.screen.height - 15, "Clock", 14 )
 clock.panel:addChild( clock.text )
 
 function clock.update()
     while clock.stop == false do
-        clock.text.caption.text = os.date()
+        clock.time.caption.text = os.date()
         wait(1)
     end
     clock.panel:destroy()
