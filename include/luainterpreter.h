@@ -25,7 +25,8 @@ class LuaInterpreter
         {
             LI_READY = 0,
             LI_NEED_MORE_INPUT,
-            LI_ERROR
+            LI_ERROR,
+            LI_YIELDING
         };
 
         LuaInterpreter(lua_State *L);
@@ -51,15 +52,19 @@ class LuaInterpreter
         // Retrieve the Lua instance
         lua_State* getLuaInstance() { return mL; }
 
+        // Resume a prevously yielded chunk.
+        State resume();
+
     protected:
         lua_State *mL;
+        int mCoroutineRef;
         std::string mCurrentStatement;
         std::string mOutput;
         std::string mPrompt;
         State mState;
         bool mFirstLine;
 
-    private:
+        void reportStack();
 };
 
 #endif // LUAINTERPRETER_H
