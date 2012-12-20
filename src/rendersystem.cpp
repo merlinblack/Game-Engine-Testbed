@@ -43,7 +43,15 @@ void ::RenderSystem::shutdown()
 
 bool ::RenderSystem::initialise()
 {
-    mRoot = new Root();
+    try
+    {
+        mRoot = new Root();
+    }
+    catch( Ogre::Exception &e )
+    {
+        std::cout << e.what() << std::endl;
+        return false;
+    }
 
     // Show the configuration dialog and initialise the system
     // You can skip this and use root.restoreConfig() to load configuration
@@ -52,7 +60,15 @@ bool ::RenderSystem::initialise()
     {
         // If returned true, user clicked OK so initialise
         // Here we choose to let the system create a default rendering window by passing 'true'
-        mWindow = mRoot->initialise(true);
+        try
+        {
+            mWindow = mRoot->initialise(true);
+        }
+        catch( Ogre::Exception &e )
+        {
+            std::cout << e.what() << std::endl;
+            return false;
+        }
     }
     else
     {

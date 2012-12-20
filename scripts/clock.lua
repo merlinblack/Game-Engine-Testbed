@@ -9,8 +9,8 @@ function clock.update()
         clock.time.caption.text = os.date()
         wait(1)
     end
-    clock.panel:destroy()
     events.unsubscribe( 'EVT_WINDOW_RESIZE', clock.resize )
+    clock.panel:destroy()
 end
 
 clock.stop = false
