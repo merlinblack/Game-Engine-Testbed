@@ -32,10 +32,12 @@ THE SOFTWARE.
 #include <gameentity.h>
 #include <version.h>
 
+/*
 void bindOgre( lua_State* L ); // From ogrebind.cpp
 void bindAnimation( lua_State* L ); // From animationbind.cpp
 void bindNavigationMesh( lua_State* L); // From navmeshbind.cpp
 void bindGorilla( lua_State *L ); // From gorillabind.cpp
+*/
 
 int ScriptingSystem::GUID = 0;
 
@@ -127,11 +129,13 @@ void ScriptingSystem::initialise()
     lua_settable( mL, LUA_REGISTRYINDEX );
 
     bind();
+    /*
     bindOgre( mL );
     bindGameEntityClasses( mL );
     bindAnimation( mL );
     bindNavigationMesh( mL );
     bindGorilla( mL );
+    */
 
     LuaResourcePtr mainlua = LuaResourceManager::getSingleton().load( "main.lua" );
 

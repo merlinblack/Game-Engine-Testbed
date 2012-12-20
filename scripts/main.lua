@@ -136,18 +136,18 @@ function setup()
     events.subscribe( 'EVT_WINDOW_RESIZE', resizeListener )
 
     --Something to look at...
-    require 'fps'
-    require 'clock'
-    require 'cameracontrol'
-    require 'walk'
-    require 'test'
-    require 'mydebug'
-    require 'loadlevel'
+    --require 'fps'
+    --require 'clock'
+    --require 'cameracontrol'
+    --require 'walk'
+    --require 'test'
+    --require 'mydebug'
+    --require 'loadlevel'
 
-    player = createGameEntity( root, 'Robot', 'robot.mesh' )
-    player.node:scale( .5, .5, .5 )
+    --player = createGameEntity( root, 'Robot', 'robot.mesh' )
+    --player.node:scale( .5, .5, .5 )
 
-    loadLevel 'levels/level2'
+    --loadLevel 'levels/level2'
 
     print "Setup task completed"
 end
