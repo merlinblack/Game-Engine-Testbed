@@ -13,10 +13,13 @@
 
 #include <lua.hpp>
 #include <string>
+#include <vector>
 
 #define LI_PROMPT  ">"
 #define LI_PROMPT2 ">>"
 #define LI_MESSAGE "Nigels wizzbang Lua Interpreting Class. Version 0.1. 2009\n"
+
+typedef std::vector<int> CoroutineList;
 
 class LuaInterpreter
 {
@@ -57,14 +60,14 @@ class LuaInterpreter
 
     protected:
         lua_State *mL;
-        int mCoroutineRef;
+        CoroutineList mCoroutines;
         std::string mCurrentStatement;
         std::string mOutput;
         std::string mPrompt;
         State mState;
         bool mFirstLine;
 
-        void reportStack();
+        void reportStack( lua_State* );
 };
 
 #endif // LUAINTERPRETER_H

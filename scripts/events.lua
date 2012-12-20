@@ -23,6 +23,11 @@ function events.subscribe( eventType, listener )
 end
 
 function events.unsubscribe( eventType, listener )
+
+    if type(eventType) == 'string' then
+        eventType = Event.hash( eventType )
+    end
+
     index = table.indexOf( events.subscribers[eventType], listener )
     if index then
         table.remove( events.subscribers[eventType], index )

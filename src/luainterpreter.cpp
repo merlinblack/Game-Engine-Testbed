@@ -35,7 +35,6 @@ LuaInterpreter::LuaInterpreter(lua_State *L) : mL(L), mState(LI_READY), mFirstLi
 
 LuaInterpreter::~LuaInterpreter()
 {
-    mCoroutineRef = LUA_NOREF;
     lua_register( mL, "interpreterOutput", NULL );
     lua_pushlightuserdata( mL, (void *)&LuaRegistryGUID );
     lua_pushnil( mL );
@@ -104,36 +103,42 @@ LuaInterpreter::State LuaInterpreter::insertLine( std::string& line, bool fInser
         }
     }
 
-    // The statement compiled correctly, grab a reference, and run it.
+    // The statement compiled correctly, get a new thread, grab a reference, and run it.
 
-    mCoroutineRef = luaL_ref( mL, LUA_REGISTRYINDEX );
-    lua_rawgeti( mL, LUA_REGISTRYINDEX, mCoroutineRef );
+    lua_State *thread = lua_newthread( mL );
 
-    int ret = lua_resume( mL, 0 );
+    // Grab a reference
+    int mCoroutineRef = luaL_ref( mL, LUA_REGISTRYINDEX );
+
+    // Move compiled chunk to thread.
+    lua_xmove( mL, thread, 1 );
+
+    // Run!
+    int ret = lua_resume( thread, 0 );
 
     switch( ret )
     {
         default:
             // The error message (if any) will be added to the output as part
             // of the stack reporting.
-            lua_gc( mL, LUA_GCCOLLECT, 0 );     // Do a full garbage collection on errors.
+            luaL_unref( mL, LUA_REGISTRYINDEX, mCoroutineRef );
             mState = LI_ERROR;
             break;
         case LUA_YIELD:
             // Chunk has yielded.
+            mCoroutines.push_back( mCoroutineRef );
             mState = LI_YIELDING;
             break;
         case 0:
             // Ran to completion.
             luaL_unref( mL, LUA_REGISTRYINDEX, mCoroutineRef );
-            mCoroutineRef = LUA_NOREF;
             break;
     }
 
     mCurrentStatement.clear();
     mFirstLine = true;
 
-    reportStack();
+    reportStack( thread );
 
     mPrompt = LI_PROMPT;
 
@@ -145,46 +150,56 @@ LuaInterpreter::State LuaInterpreter::insertLine( std::string& line, bool fInser
 
 LuaInterpreter::State LuaInterpreter::resume()
 {
-    if( mCoroutineRef == LUA_NOREF || mState != LI_YIELDING )
+    if( mCoroutines.empty() == true )
     {
-        mState = LI_ERROR;
-        return mState;
+        return mState;  // No coroutines to run.
     }
 
-    lua_rawgeti( mL, LUA_REGISTRYINDEX, mCoroutineRef );    // Get the chuck back...
-    int ret = lua_resume( mL, 0 );
+    CoroutineList::iterator coroutine = mCoroutines.begin();
 
-    switch( ret )
+    while( coroutine != mCoroutines.end() )
     {
-        default:
-            // The error message (if any) will be added to the output as part
-            // of the stack reporting.
-            lua_gc( mL, LUA_GCCOLLECT, 0 );     // Do a full garbage collection on errors.
-            mState = LI_ERROR;
-            break;
-        case LUA_YIELD:
-            // Chunk has yielded.
-            mState = LI_YIELDING;
-            break;
-        case 0:
-            // Ran to completion.
-            luaL_unref( mL, LUA_REGISTRYINDEX, mCoroutineRef );
-            mCoroutineRef = LUA_NOREF;
-            break;
-    }
 
-    reportStack();
+        lua_rawgeti( mL, LUA_REGISTRYINDEX, *coroutine );    // Get the thread back...
+        lua_State* thread = lua_tothread( mL, -1 );
+        lua_pop( mL, 1 );
+
+        int ret = lua_resume( thread, 0 );
+
+        switch( ret )
+        {
+            default:
+                // The error message (if any) will be added to the output as part of the stack reporting.
+                luaL_unref( mL, LUA_REGISTRYINDEX, *coroutine );
+                mState = LI_ERROR;
+                coroutine = mCoroutines.erase( coroutine );
+                break;
+            case LUA_YIELD:
+                // Chunk has yielded.
+                mState = LI_YIELDING;
+                coroutine++;
+                break;
+            case 0:
+                // Ran to completion.
+                luaL_unref( mL, LUA_REGISTRYINDEX, *coroutine );
+                mState = LI_READY;
+                coroutine = mCoroutines.erase( coroutine );
+                break;
+        }
+
+        reportStack( thread );
+    }
 }
 
-void LuaInterpreter::reportStack()
+void LuaInterpreter::reportStack( lua_State* thread)
 {
     // Report stack contents
     // In the case of a yielded chunk these are the parameters to yield.
-    if ( lua_gettop(mL) > 0)
+    if ( lua_gettop(thread) > 0)
     {
-      lua_getglobal(mL, "print");
-      lua_insert(mL, 1);
-      lua_pcall(mL, lua_gettop(mL)-1, 0, 0);
+      lua_getglobal(thread, "print");
+      lua_insert(thread, 1);
+      lua_pcall(thread, lua_gettop(thread)-1, 0, 0);
     }
 }
 
