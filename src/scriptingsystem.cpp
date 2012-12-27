@@ -24,13 +24,13 @@ THE SOFTWARE.
 */
 #include <scriptingsystem.h>
 #include <OgreLogManager.h>
-#include <luabind/class_info.hpp>
 #include <inputeventdata.h>
 #include <windoweventdata.h>
 #include <animationeventdata.h>
 #include <luaresource.h>
 #include <gameentity.h>
 #include <version.h>
+#include <LuaBridge.h>
 
 /*
 void bindOgre( lua_State* L ); // From ogrebind.cpp
@@ -39,12 +39,16 @@ void bindNavigationMesh( lua_State* L); // From navmeshbind.cpp
 void bindGorilla( lua_State *L ); // From gorillabind.cpp
 */
 
+template<class D, class B>
+D* downcast( B* ptr )
+{
+    return dynamic_cast<D*>( ptr );
+}
+
 int ScriptingSystem::GUID = 0;
 
-void queueEventThunk( lua_State *L, EventPtr event )
+void queueEventThunk( Event event, lua_State *L )
 {
-    using namespace luabind;
-
     lua_pushlightuserdata( L, (void *)&ScriptingSystem::GUID );
     lua_gettable( L, LUA_REGISTRYINDEX );
 
@@ -52,7 +56,7 @@ void queueEventThunk( lua_State *L, EventPtr event )
 
     if( scriptingSystem )
     {
-        scriptingSystem->queueEvent( event );
+        scriptingSystem->queueEvent( EventPtr( new Event(event) ) );
     }
     else
     {
@@ -64,7 +68,7 @@ int luaLibraryLoader( lua_State *L )
 {
     if( ! lua_isstring( L, 1 ) )
     {
-        luaL_typerror( L, 1, "string" );
+        luaL_error( L, "luaLibraryLoader: Expected string for first parameter" );
     }
 
     std::string libraryFile = lua_tostring( L, 1 );
@@ -119,10 +123,9 @@ void ScriptingSystem::shutdown()
 
 void ScriptingSystem::initialise()
 {
-    mL = lua_open();
+    mL = luaL_newstate();
 
     luaL_openlibs( mL );
-    luabind::open( mL );
 
     lua_pushlightuserdata( mL, (void *)&GUID );
     lua_pushlightuserdata( mL, this );
@@ -153,62 +156,59 @@ void ScriptingSystem::initialise()
 
 void ScriptingSystem::bind()
 {
-    using namespace luabind;
+    using namespace luabridge;
 
-    bind_class_info(mL);
     installLibraryLoader( mL );
 
-    module(mL)
-    [
-        class_<Event, EventPtr>( "Event" )
-            .def( constructor<>() )
-            .def( constructor<const char*>() )
-            .def( constructor<std::size_t>() )
-            .def_readwrite( "type", &Event::type )
-            .def_readwrite( "data", &Event::data )
-            .scope
-            [
-                def( "hash", &Event::hash )
-            ]
-        ,
-        def( "queueEvent", &queueEventThunk )
-        ,
-        class_<EventData, EventDataPtr >( "EventData" ),
-        class_<InputEventData, EventData, EventDataPtr >( "InputEventData" )
-            .def( constructor<>() )
-            .def_readwrite( "x", &InputEventData::x )
-            .def_readwrite( "y", &InputEventData::y )
-            .def_readwrite( "buttons", &InputEventData::parm )
-            .def_readwrite( "text", &InputEventData::parm ) // 2nd name
-            .def_readwrite( "key", &InputEventData::key ),
-        class_<WindowEventData, EventData, EventDataPtr >( "WindowEventData" )
-            .def_readwrite( "width", &WindowEventData::width )
-            .def_readwrite( "height", &WindowEventData::height ),
-        class_<AnimationEventData, EventData, EventDataPtr >( "AnimationEventData" )
-            .def_readwrite( "animation", &AnimationEventData::animation )
-        ,
-        def( "versionString", versionString )
-    ];
+    getGlobalNamespace( mL )
+        .beginNamespace( "Engine" )
+        .beginClass<Event>( "Event" )
+            .addConstructor<void (*) (const char*)>()
+            .addData( "type", &Event::type )
+            .addData( "data", &Event::data )
+            .addStaticFunction( "hash", &Event::hash )
+        .endClass()
+        .addFunction( "queueEvent", &queueEventThunk )
+        .beginClass<EventData>( "EventData" )
+        .endClass()
+        .deriveClass<InputEventData, EventData>( "InputEventData" )
+            .addConstructor<void (*) (void)>()
+            .addStaticFunction( "downcast", &downcast<InputEventData, EventData> )
+            .addData( "x", &InputEventData::x )
+            .addData( "y", &InputEventData::y )
+            .addData( "buttons", &InputEventData::parm )
+            .addData( "text", &InputEventData::parm )
+            .addData( "key", &InputEventData::key )
+        .endClass()
+        .deriveClass<WindowEventData, EventData>( "WindowEventData" )
+            .addData( "width", &WindowEventData::width )
+            .addData( "height", &WindowEventData::height )
+        .endClass()
+        /*
+        .deriveClass<AnimationEventData, EventData>( "AnimationEventData" )
+            .addData( "animation", &AnimationEventData::animation )
+        .endClass()
+        */
+        .addFunction( "versionString", versionString )
+    .endNamespace();
 }
 
 bool ScriptingSystem::EventNotification( EventPtr event )
 {
-    luabind::object notify = luabind::globals( mL )["EventNotification"];
-    luabind::object ret;
+    luabridge::LuaRef notify = luabridge::getGlobal( mL, "EventNotification");
+    luabridge::LuaRef ret( mL );
 
     if( notify )
     {
         try
         {
-            ret = notify( event );
-            if( luabind::object_cast<bool>(ret) == true )
+            ret = notify( *event );
+            if( ret == true )
                 return true;
         }
-        catch( luabind::error& e )
+        catch( luabridge::LuaException& e )
         {
-            luabind::object error_msg(luabind::from_stack(e.state(), -1));
-            Ogre::LogManager::getSingleton().stream() << error_msg;
-            lua_pop( e.state(), 1 );
+            Ogre::LogManager::getSingleton().stream() << e.what();
         }
     }
 
@@ -217,7 +217,7 @@ bool ScriptingSystem::EventNotification( EventPtr event )
 
 bool ScriptingSystem::frameStarted(const Ogre::FrameEvent& evt)
 {
-    luabind::object func = luabind::globals( mL )["FrameStarted"];
+    luabridge::LuaRef func = luabridge::getGlobal( mL, "FrameStarted" );
 
     try
     {
@@ -225,11 +225,9 @@ bool ScriptingSystem::frameStarted(const Ogre::FrameEvent& evt)
         if( func )
             func( evt.timeSinceLastFrame );
     }
-    catch( luabind::error& e )
+    catch( luabridge::LuaException& e )
     {
-        luabind::object error_msg(luabind::from_stack(e.state(), -1));
-        Ogre::LogManager::getSingleton().stream() << error_msg;
-        lua_pop( e.state(), 1 );
+        Ogre::LogManager::getSingleton().stream() << e.what();
     }
 
     return true;
@@ -237,7 +235,7 @@ bool ScriptingSystem::frameStarted(const Ogre::FrameEvent& evt)
 
 bool ScriptingSystem::frameEnded(const Ogre::FrameEvent& evt)
 {
-    luabind::object func = luabind::globals( mL )["FrameEnded"];
+    luabridge::LuaRef func = luabridge::getGlobal( mL, "FrameEnded" );
 
     try
     {
@@ -245,11 +243,9 @@ bool ScriptingSystem::frameEnded(const Ogre::FrameEvent& evt)
         if( func )
             func( evt.timeSinceLastFrame );
     }
-    catch( luabind::error& e )
+    catch( luabridge::LuaException& e )
     {
-        luabind::object error_msg(luabind::from_stack(e.state(), -1));
-        Ogre::LogManager::getSingleton().stream() << error_msg;
-        lua_pop( e.state(), 1 );
+        Ogre::LogManager::getSingleton().stream() << e.what();
     }
 
     // Do a Lua garbage collection.

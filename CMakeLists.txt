@@ -15,21 +15,22 @@ set(OGRE_STATIC false)
 FIND_PACKAGE(OpenGL)
 FIND_PACKAGE(OGRE)
 FIND_PACKAGE(OIS)
-FIND_PACKAGE(Lua51)
-FIND_PACKAGE(Luabind)
 SET(Boost_USE_STATIC_LIBS    OFF)
 SET(Boost_USE_MULTITHREADED  ON)
 SET(Boost_USE_STATIC_RUNTIME OFF)
 FIND_PACKAGE(Boost 1.40.0 COMPONENTS thread date_time)
+SET(Lua_LIBRARIES ${PROJECT_SOURCE_DIR}/lua/liblua.a)
+
+# For LuaBridge
+SET(LuaBridge_FLAGS "-Wno-deprecated")
 
 INCLUDE_DIRECTORIES(
+	${PROJECT_SOURCE_DIR}/lua
+	${PROJECT_SOURCE_DIR}/include
 	${OpenGL_INCLUDE_DIR}
 	${OGRE_INCLUDE_DIRS}
 	${OIS_INCLUDE_DIRS}
 	${Boost_INCLUDE_DIR}
-	${LUA_INCLUDE_DIR}
-	${LUABIND_INCLUDE_DIR}
-	${PROJECT_SOURCE_DIR}/include
 	)
 
 FILE(GLOB SRCS src/*.cpp)
@@ -39,7 +40,7 @@ FILE(GLOB SCRIPTS scripts/*.lua scripts/gui/*.lua)
 #INCLUDE( UnityBuild.cmake )
 #enable_unity_build( engine SRCS )
 
-ADD_DEFINITIONS(-DGORILLA_USES_EXCEPTIONS=1)
+ADD_DEFINITIONS(-DGORILLA_USES_EXCEPTIONS=1 ${LuaBridge_FLAGS})
 
 ADD_EXECUTABLE(engine
 	${SRCS}
@@ -51,8 +52,8 @@ TARGET_LINK_LIBRARIES(engine
 	${OIS_LIBRARIES}
 	${OGRE_LIBRARIES}
 	${Boost_LIBRARIES}
-	${LUA_LIBRARIES}
-    ${LUABIND_LIBRARIES}
+    ${Lua_LIBRARIES}
+    dl
 	)
 
 INCLUDE( GitVersioning )
@@ -61,5 +62,4 @@ enable_git_versioning( engine )
 MESSAGE(STATUS "Boost libraries:   " ${Boost_LIBRARIES} )
 MESSAGE(STATUS "OIS libraries:     " ${OIS_LIBRARIES} )
 MESSAGE(STATUS "OGRE libraries:    " ${OGRE_LIBRARIES} )
-MESSAGE(STATUS "LUA libraries:     " ${LUA_LIBRARIES} )
-MESSAGE(STATUS "LUABIND libraries: " ${LUABIND_LIBRARIES} )
+MESSAGE(STATUS "Lua librarry:      " ${Lua_LIBRARIES} )

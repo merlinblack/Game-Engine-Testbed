@@ -45,7 +45,7 @@ int LuaConsole_setVisible( lua_State *L )
 {
     if( ! lua_isboolean( L, 1 ) )
     {
-        luaL_typerror( L, 1, "boolean" );
+        luaL_error( L, "console.setVisible: expected boolean" );
     }
 
     LuaConsole::getSingleton().setVisible( lua_toboolean( L, 1 ) );
@@ -70,7 +70,7 @@ int LuaConsole_setLogging( lua_State *L )
 {
     if( ! lua_isboolean( L, 1 ) )
     {
-        luaL_typerror( L, 1, "boolean" );
+        luaL_error( L, "console.setlogging: expected boolean" );
     }
 
     LuaConsole::getSingleton().setLogging( lua_toboolean( L, 1 ) );
@@ -139,14 +139,14 @@ int LuaConsole_log( lua_State *L )
 {
     if( ! lua_isstring( L, 1 ) )
     {
-        luaL_typerror( L, 1, "string" );
+        luaL_error( L, "console.log: expected string" );
     }
 
     Ogre::LogManager::getSingletonPtr()->logMessage(lua_tostring( L, 1 ));
     return 0;
 }
 
-luaL_reg consoleBindings[] =
+luaL_Reg consoleBindings[] =
 {
     { "isVisible", LuaConsole_isVisible },
     { "setVisible", LuaConsole_setVisible },
@@ -162,8 +162,8 @@ luaL_reg consoleBindings[] =
 // Load bindings into Lua
 void bindLuaConsole( lua_State *L )
 {
-    luaL_register( L, "console", consoleBindings );
-    lua_pop( L, 1 );
+    luaL_newlib( L, consoleBindings );
+    lua_setglobal( L, "console" );
 }
 
 // Change console functions so that any remaining Lua code

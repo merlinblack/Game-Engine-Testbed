@@ -304,7 +304,7 @@ void AnimationManager::update()
 
         if( (*i)->isFinished() )
         {
-            boost::shared_ptr<AnimationEventData> data( new AnimationEventData );
+            RefCountedObjectPtr<AnimationEventData> data( new AnimationEventData );
             EventPtr event = newEvent( finishEvent );
 
             data->animation = *i;
