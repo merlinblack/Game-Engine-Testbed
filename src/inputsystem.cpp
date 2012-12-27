@@ -110,7 +110,8 @@ bool InputSystem::EventNotification( EventPtr event )
     if( event->type == Event::hash( "EVT_WINDOW_RESIZE" ) )
     {
         const OIS::MouseState &ms = mMouse->getMouseState();
-        boost::shared_ptr<WindowEventData> data = boost::dynamic_pointer_cast<WindowEventData>( event->data );
+        RefCountedObjectPtr<WindowEventData> data =
+            static_cast<RefCountedObjectPtr<WindowEventData> >( event->data );
         ms.width = data->width;
         ms.height = data->height;
     }
@@ -121,7 +122,7 @@ bool InputSystem::keyPressed( const OIS::KeyEvent &arg )
 {
     EventPtr event = newEvent( event_keydown );
 
-    boost::shared_ptr<InputEventData> data( new InputEventData );
+    RefCountedObjectPtr<InputEventData> data( new InputEventData );
 
     data->key = arg.key;
     data->parm = arg.text;
@@ -137,7 +138,7 @@ bool InputSystem::keyReleased( const OIS::KeyEvent &arg )
 {
     EventPtr event = newEvent( event_keyup );
 
-    boost::shared_ptr<InputEventData> data( new InputEventData );
+    RefCountedObjectPtr<InputEventData> data( new InputEventData );
 
     data->key = arg.key;
 
@@ -152,7 +153,7 @@ bool InputSystem::mouseMoved( const OIS::MouseEvent &arg )
 {
     EventPtr event = newEvent( event_mousemove );
 
-    boost::shared_ptr<InputEventData> data( new InputEventData );
+    RefCountedObjectPtr<InputEventData> data( new InputEventData );
 
     data->x = arg.state.X.abs;
     data->y = arg.state.Y.abs;
@@ -169,7 +170,7 @@ bool InputSystem::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID i
 {
     EventPtr event = newEvent( event_mousedown );
 
-    boost::shared_ptr<InputEventData> data( new InputEventData );
+    RefCountedObjectPtr<InputEventData> data( new InputEventData );
 
     data->x = arg.state.X.abs;
     data->y = arg.state.Y.abs;
@@ -186,7 +187,7 @@ bool InputSystem::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID 
 {
     EventPtr event = newEvent( event_mouseup );
 
-    boost::shared_ptr<InputEventData> data( new InputEventData );
+    RefCountedObjectPtr<InputEventData> data( new InputEventData );
 
     data->x = arg.state.X.abs;
     data->y = arg.state.Y.abs;

@@ -74,7 +74,7 @@ LuaInterpreter::State LuaInterpreter::insertLine( std::string& line, bool fInser
 
         // If the error is not a syntax error caused by not enough of the
         // statement been yet entered...
-        if( error.substr( error.length()-6, 5 ) != "<eof>" )
+        if( error.substr( error.length()-5, 5 ) != "<eof>" )
         {
             mOutput += error;
             mOutput += "\n";
@@ -114,7 +114,7 @@ LuaInterpreter::State LuaInterpreter::insertLine( std::string& line, bool fInser
     lua_xmove( mL, thread, 1 );
 
     // Run!
-    int ret = lua_resume( thread, 0 );
+    int ret = lua_resume( thread, mL, 0 );
 
     switch( ret )
     {
@@ -164,7 +164,7 @@ LuaInterpreter::State LuaInterpreter::resume()
         lua_State* thread = lua_tothread( mL, -1 );
         lua_pop( mL, 1 );
 
-        int ret = lua_resume( thread, 0 );
+        int ret = lua_resume( thread, mL, 0 );
 
         switch( ret )
         {

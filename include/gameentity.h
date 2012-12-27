@@ -31,9 +31,9 @@ THE SOFTWARE.
 #include <OgreSceneNode.h>
 #include <OgreSingleton.h>
 #include <OgreLogManager.h>
-#include <luabind/luabind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/functional/hash.hpp>
+#include <lua.hpp>
 
 class GameEntity;
 class GameEntityManager;
@@ -108,6 +108,7 @@ public:
 // to retain thier Lua parts.  In other words, not get sliced.
 // Also Lua can derive from GameEntity and override the update
 // method.
+/*
 class GameEntityWrapper : public GameEntity, public luabind::wrap_base
 {
     public:
@@ -128,6 +129,7 @@ class GameEntityWrapper : public GameEntity, public luabind::wrap_base
         ptr->GameEntity::update();
     }
 };
+*/
 
 class GameEntityManager : public Ogre::Singleton<GameEntityManager>
 {
