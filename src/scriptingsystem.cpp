@@ -106,7 +106,7 @@ void installLibraryLoader( lua_State *L )
     lua_getfield( L, -1, "insert" );
     lua_remove( L, -2 );    // table
     lua_getglobal( L, "package" );
-    lua_getfield( L, -1, "loaders" );
+    lua_getfield( L, -1, "searchers" );
     lua_remove( L, -2 );    // package
     lua_pushnumber( L, 1 ); // index where to insert into loaders table
     lua_pushcfunction( L, luaLibraryLoader );
