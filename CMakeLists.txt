@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-PROJECT(engine)
+project (engine)
 
 if (WIN32)
     set(CMAKE_MODULE_PATH_ADD $ENV{PROGRAMFILES}/OGRE/CMake )
@@ -19,28 +19,27 @@ SET(Boost_USE_STATIC_LIBS    OFF)
 SET(Boost_USE_MULTITHREADED  ON)
 SET(Boost_USE_STATIC_RUNTIME OFF)
 FIND_PACKAGE(Boost 1.40.0 COMPONENTS thread date_time)
-SET(Lua_LIBRARIES ${PROJECT_SOURCE_DIR}/lua/liblua.a)
+
+add_subdirectory( Lua )
 
 # For LuaBridge
 SET(LuaBridge_FLAGS "-Wno-deprecated")
 
 INCLUDE_DIRECTORIES(
-	${PROJECT_SOURCE_DIR}/lua
 	${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/LuaBridge
 	${OpenGL_INCLUDE_DIR}
 	${OGRE_INCLUDE_DIRS}
 	${OIS_INCLUDE_DIRS}
 	${Boost_INCLUDE_DIR}
+    ${Lua_INCLUDE_DIRS}
 	)
 
 FILE(GLOB SRCS src/*.cpp)
 FILE(GLOB HDRS include/*.h)
 FILE(GLOB SCRIPTS scripts/*.lua scripts/gui/*.lua)
 
-#INCLUDE( UnityBuild.cmake )
-#enable_unity_build( engine SRCS )
-
-ADD_DEFINITIONS(-DGORILLA_USES_EXCEPTIONS=1 ${LuaBridge_FLAGS})
+add_definitions (-DGORILLA_USES_EXCEPTIONS=1 ${LuaBridge_FLAGS})
 
 ADD_EXECUTABLE(engine
 	${SRCS}
@@ -53,13 +52,14 @@ TARGET_LINK_LIBRARIES(engine
 	${OGRE_LIBRARIES}
 	${Boost_LIBRARIES}
     ${Lua_LIBRARIES}
-    dl
+    ${nix_LIBRARIES}
 	)
 
 INCLUDE( GitVersioning )
 enable_git_versioning( engine )
 
-MESSAGE(STATUS "Boost libraries:   " ${Boost_LIBRARIES} )
-MESSAGE(STATUS "OIS libraries:     " ${OIS_LIBRARIES} )
-MESSAGE(STATUS "OGRE libraries:    " ${OGRE_LIBRARIES} )
-MESSAGE(STATUS "Lua librarry:      " ${Lua_LIBRARIES} )
+MESSAGE(STATUS "Boost libraries:    ${Boost_LIBRARIES} ")
+MESSAGE(STATUS "OIS libraries:      ${OIS_LIBRARIES} ")
+MESSAGE(STATUS "OGRE libraries:     ${OGRE_LIBRARIES} ")
+MESSAGE(STATUS "Lua libraries:      ${Lua_LIBRARIES} ")
+MESSAGE(STATUS "Lua headers:        ${Lua_INCLUDE_DIRS} ")
