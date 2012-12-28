@@ -29,11 +29,9 @@ THE SOFTWARE.
 #include <list>
 #include <OIS.h>
 #include <boost/shared_ptr.hpp>
-#include <lua.hpp>
-#include <LuaBridge.h>
-#include <detail/RefCountedObject.h>
+#include <RefCountedObject.h>
 
-struct EventData : public RefCountedObjectType<int>
+struct EventData : public RefCountedObjectType<size_t>
 {
     virtual ~EventData() {}
 };
