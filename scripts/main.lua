@@ -1,11 +1,12 @@
 require 'scheduler'
 require 'keys'
 --require 'gui/gui'
---require 'autocomplete'
+require 'autocomplete'
 require 'events'
 
 function version()
 --    message( '%@14%' .. versionString()..'\n\n' )
+    print( Engine.versionString() )
 end
 
 local old_dofile = dofile
@@ -113,7 +114,6 @@ function quitKeyListener( event )
 end
 
 function resizeListener( event )
-    print( 'resizeListener' )
     --setViewportSize( event.data.width, event.data.height )
 end
 

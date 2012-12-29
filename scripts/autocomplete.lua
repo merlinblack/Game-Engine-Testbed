@@ -12,7 +12,7 @@ function autoComplete( str )
 
     str, posibles = complete(str)
 
-    if #posibles > 1 then 
+    if #posibles > 1 then
         if doubleTab.str == str then
             print( unpack( posibles ) )
         else
@@ -54,9 +54,9 @@ function getCompletions( str )
         return {}
     end
 
-    if type(g) == 'userdata' then
-        g = infotable( g )
-    end
+    --if type(g) == 'userdata' then
+    --   g = infotable( g )
+    --end
 
     for k,v in pairs(g) do
         if string.find( k, str ) == 1 then

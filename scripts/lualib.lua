@@ -2,6 +2,14 @@
 -- Some are mine, others are collected from the internet.
 --
 
+if table.foreach == nil then
+    function table.foreach( tbl, func )
+        for k,v in pairs( tbl ) do
+            func( k, v )
+        end
+    end
+end
+
 function table.set(t) -- set of list
     local u = { }
     for _, v in ipairs(t) do u[v] = true end
@@ -62,7 +70,7 @@ function searchTableHier( ref, visited, t )
 			return k
 		end
 	end
-	
+
 	-- Not found, try each table (if any) within t recursively
 	for k,v in pairs(t) do
 		if type(v) == 'table' and visited[v] ~= true then
@@ -72,6 +80,6 @@ function searchTableHier( ref, visited, t )
 			end
 		end
 	end
-			
+
 	return nil
 end
