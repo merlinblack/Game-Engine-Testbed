@@ -14,7 +14,7 @@ function autoComplete( str )
 
     if #posibles > 1 then
         if doubleTab.str == str then
-            print( unpack( posibles ) )
+            print( table.unpack( posibles ) )
         else
             doubleTab.str = str
         end
