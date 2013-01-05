@@ -166,9 +166,28 @@ private:
     //--------------------------------------------------------------------------
     /**
         Assign a new value to this table key.
+
+        This may invoke metamethods.
     */
     template <class T>
     Proxy& operator= (T v)
+    {
+      StackPop p (m_L, 1);
+      lua_rawgeti (m_L, LUA_REGISTRYINDEX, m_tableRef);
+      lua_rawgeti (m_L, LUA_REGISTRYINDEX, m_keyRef);
+      Stack <T>::push (m_L, v);
+      lua_rawset (m_L, -3);
+      return *this;
+    }
+
+    //--------------------------------------------------------------------------
+    /**
+        Assign a new value to this table key.
+
+        The assignment is raw, no metamethods are invoked.
+    */
+    template <class T>
+    Proxy& rawset (T v)
     {
       StackPop p (m_L, 1);
       lua_rawgeti (m_L, LUA_REGISTRYINDEX, m_tableRef);
@@ -341,6 +360,23 @@ private:
 
     //--------------------------------------------------------------------------
     /**
+        Access a table value using a key.
+
+        The operation is raw, metamethods are not invoked. The result is
+        passed by value and may not be modified.
+    */
+    template <class T>
+    LuaRef rawget (T key) const
+    {
+      StackPop (m_L, 1);
+      push (m_L);
+      Stack <T>::push (m_L, key);
+      lua_rawget (m_L, -2);
+      return LuaRef (m_L, FromStack ());
+    }
+
+    //--------------------------------------------------------------------------
+    /**
         Append a value to the table.
 
         If the table is a sequence this will add another element to it.
@@ -489,14 +525,12 @@ private:
 
 private:
   friend struct Stack <LuaRef>;
-  
+
   //----------------------------------------------------------------------------
   /**
       Type tag for stack construction.
   */
-  struct FromStack
-  {
-  };
+  struct FromStack { };
 
   //----------------------------------------------------------------------------
   /**
@@ -522,10 +556,10 @@ private:
 
       @note The object is not popped.
   */
-  LuaRef (lua_State* L, int idx, FromStack)
+  LuaRef (lua_State* L, int index, FromStack)
     : m_L (L)
   {
-    lua_pushvalue (m_L, idx);
+    lua_pushvalue (m_L, index);
     m_ref = luaL_ref (m_L, LUA_REGISTRYINDEX);
   }
 
@@ -537,8 +571,15 @@ private:
   */
   int createRef () const
   {
-    push (m_L);
-    return luaL_ref (m_L, LUA_REGISTRYINDEX);
+    if (m_ref != LUA_REFNIL)
+    {
+      push (m_L);
+      return luaL_ref (m_L, LUA_REGISTRYINDEX);
+    }
+    else
+    {
+      return LUA_REFNIL;
+    }
   }
 
 public:
@@ -546,13 +587,9 @@ public:
   /**
       Create a nil reference.
 
-      The LuaRef can be assigned a value later.
-
-      @note If the state refers to a thread, it is the responsibility of the
-            caller to ensure that the thread is not collected while the LuaRef
-            object exists.
+      The LuaRef may be assigned later.
   */
-  explicit LuaRef (lua_State* L)
+  LuaRef (lua_State* L)
     : m_L (L)
     , m_ref (LUA_REFNIL)
   {
@@ -603,6 +640,18 @@ public:
   ~LuaRef ()
   {
     luaL_unref (m_L, LUA_REGISTRYINDEX, m_ref);
+  }
+
+  //----------------------------------------------------------------------------
+  /**
+      Return a LuaRef from a stack item.
+
+      The stack item is not popped.
+  */
+  static LuaRef fromStack (lua_State* L, int index)
+  {
+    lua_pushvalue (L, index);
+    return LuaRef (L, FromStack ());
   }
 
   //----------------------------------------------------------------------------
@@ -682,7 +731,7 @@ public:
       break;
 
     case LUA_TSTRING:
-      os << cast <std::string> ();
+      os << '"' << cast <std::string> () << '"';
       break;
 
     case LUA_TTABLE:
@@ -742,14 +791,24 @@ public:
   /** @{ */
   int type () const
   {
-    int ret;
-    push (m_L);
-    ret = lua_type (m_L, -1);
-    lua_pop (m_L, 1);
-    return ret;
+    int result;
+    if (m_ref != LUA_REFNIL)
+    {
+      push (m_L);
+      result = lua_type (m_L, -1);
+      lua_pop (m_L, 1);
+    }
+    else
+    {
+      result = LUA_TNIL;
+    }
+
+    return result;
   }
 
-  inline bool isNone () const { return m_ref == LUA_NOREF; }
+  // should never happen
+  //inline bool isNone () const { return m_ref == LUA_NOREF; }
+
   inline bool isNil () const { return type () == LUA_TNIL; }
   inline bool isNumber () const { return type () == LUA_TNUMBER; }
   inline bool isString () const { return type () == LUA_TSTRING; }
@@ -1105,7 +1164,7 @@ inline LuaRef getGlobal (lua_State *L, char const* name)
 
     This allows LuaRef and table proxies to work with streams.
 */
-inline std::ostream& operator<< (std::ostream &os, LuaRef& ref)
+inline std::ostream& operator<< (std::ostream& os, LuaRef& ref)
 {
   ref.print (os);
   return os;
