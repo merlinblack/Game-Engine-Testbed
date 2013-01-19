@@ -35,7 +35,7 @@ class ScriptingSystem : public EventListenerSender, public Ogre::FrameListener
     static int GUID;
 
 public:
-    friend void queueEventThunk( Event, lua_State * );
+    friend void queueEventThunk( Event&, lua_State * );
 
     ScriptingSystem() : mL(0)
     {

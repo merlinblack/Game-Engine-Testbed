@@ -50,7 +50,7 @@
     6. Our metatables have "__metatable" set to a boolean = false.
     7. Our lightuserdata is unique.
 */
-static inline void* getIdentityKey ()
+inline void* getIdentityKey ()
 {
   static char value;
   return &value;
@@ -233,17 +233,27 @@ private:
           {
             // Replace current metatable with it's base class.
             rawgetfield (L, -1, "__parent");
-            lua_remove (L, -2);
+/*
+ud
+class metatable
+ud metatable
+ud __parent (nil)
+*/
 
             if (lua_isnil (L, -1))
             {
+              lua_remove (L, -1);
               // Mismatch, but its one of ours so get a type name.
-              rawgetfield (L, -2, "__type");
-              lua_insert (L, -4);
-              lua_pop (L, 2);
+              rawgetfield (L, -1, "__type");
+              lua_insert (L, -3);
+              lua_pop (L, 1);
               got = lua_tostring (L, -2);
               mismatch = true;
               break;
+            }
+            else
+            {
+              lua_remove (L, -2);
             }
           }
         }
@@ -261,6 +271,7 @@ private:
 
     if (mismatch)
     {
+      assert (lua_type (L, -1) == LUA_TTABLE);
       rawgetfield (L, -1, "__type");
       assert (lua_type (L, -1) == LUA_TSTRING);
       char const* const expected = lua_tostring (L, -1);
@@ -747,20 +758,60 @@ struct Stack <T&>
   }
 };
 
+template <class C, bool byContainer>
+struct RefStackHelper
+{
+  typedef C return_type;  
+	
+  static inline void push (lua_State* L, C const& t)
+  {
+    UserdataSharedHelper <C,
+      TypeTraits::isConst <typename ContainerTraits <C>::Type>::value>::push (L, t);
+  }
+
+  typedef typename TypeTraits::removeConst <
+    typename ContainerTraits <C>::Type>::Type T;
+
+  static return_type get (lua_State* L, int index)
+  {
+    return Userdata::get <T> (L, index, true);
+  }
+};
+
+template <class T>
+struct RefStackHelper <T, false>
+{
+  typedef T const& return_type;  
+	
+	static inline void push (lua_State* L, T const& t)
+	{
+	  UserdataPtr::push (L, &t);
+	}
+
+  static return_type get (lua_State* L, int index)
+  {
+    T const* const t = Userdata::get <T> (L, index, true);
+
+    if (!t)
+      luaL_error (L, "nil passed to reference");
+    return *t;
+  }
+    
+};
+
 // reference to const
 template <class T>
 struct Stack <T const&>
 {
+  typedef RefStackHelper <T, TypeTraits::isContainer <T>::value> helper_t;
+  
   static inline void push (lua_State* L, T const& t)
   {
-    UserdataPtr::push (L, &t);
+    helper_t::push (L, t);
   }
 
-  static T const& get (lua_State* L, int index)
+  static typename helper_t::return_type get (lua_State* L, int index)
   {
-    T const* const t = Userdata::get <T> (L, index, true);
-    if (!t)
-      luaL_error (L, "nil passed to reference");
-    return *t;
+    return helper_t::get (L, index);
   }
 };

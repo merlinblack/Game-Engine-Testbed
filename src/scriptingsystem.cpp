@@ -47,7 +47,7 @@ D* downcast( B* ptr )
 
 int ScriptingSystem::GUID = 0;
 
-void queueEventThunk( Event event, lua_State *L )
+void queueEventThunk( Event& event, lua_State *L )
 {
     lua_pushlightuserdata( L, (void *)&ScriptingSystem::GUID );
     lua_gettable( L, LUA_REGISTRYINDEX );
@@ -140,12 +140,13 @@ void ScriptingSystem::initialise()
     bindGorilla( mL );
     */
 
+    using namespace luabridge;
+
     LuaResourcePtr mainlua = LuaResourceManager::getSingleton().load( "main.lua" );
 
     if( luaL_loadbuffer( mL,
                 mainlua->getScriptSource().c_str(),
-                mainlua->calculateSize(), "main.lua" )
-            || lua_pcall( mL, 0, LUA_MULTRET, 0) )
+                mainlua->calculateSize(), "main.lua" ) || lua_pcall( mL, 0, LUA_MULTRET, 0) )
     {
         Ogre::LogManager::getSingleton().stream() << " ****************************** ";
         Ogre::LogManager::getSingleton().stream() << " *** main.lua failed to run     ";

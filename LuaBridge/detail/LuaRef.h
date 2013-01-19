@@ -564,6 +564,15 @@ private:
   }
 
   //----------------------------------------------------------------------------
+
+  // This type of construction is disallowed, since we don't have a `lua_State`.
+  //
+  template <class T>
+  LuaRef (T)
+  {
+  }
+
+  //----------------------------------------------------------------------------
   /**
       Create a reference to this ref.
 
@@ -710,11 +719,25 @@ public:
 
   //----------------------------------------------------------------------------
   /**
+      converts to a string using luas tostring function
+  */
+  std::string tostring() const
+  {
+    lua_getglobal (m_L, "tostring");
+    push (m_L);
+    lua_call (m_L, 1, 1);
+    const char* str = lua_tostring(m_L, 1);
+    lua_pop(m_L, 1);
+    return std::string(str);
+  }
+
+  //----------------------------------------------------------------------------
+  /**
       Print a text description of the value to a stream.
 
       This is used for diagnostics.
   */
-  void print (std::ostream& os)
+  void print (std::ostream& os) const
   {
     switch (type ())
     {
@@ -735,23 +758,23 @@ public:
       break;
 
     case LUA_TTABLE:
-      os << "table";
+      os << "table: " << tostring();
       break;
 
     case LUA_TFUNCTION:
-      os << "function";
+      os << "function: " << tostring();
       break;
 
     case LUA_TUSERDATA:
-      os << "userdata";
+      os << "userdata: " << tostring();
       break;
 
     case LUA_TTHREAD:
-      os << "thread";
+      os << "thread: " << tostring();
       break;
 
     case LUA_TLIGHTUSERDATA:
-      os << "lightuserdata";
+      os << "lightuserdata: " << tostring();
       break;
 
     default:
@@ -776,7 +799,7 @@ public:
   /**
       Place the object onto the Lua stack.
   */
-  void push (lua_State* L) const										
+  void push (lua_State* L) const
   {
     assert (equalstates (L, m_L));
     lua_rawgeti (L, LUA_REGISTRYINDEX, m_ref);
@@ -1164,8 +1187,18 @@ inline LuaRef getGlobal (lua_State *L, char const* name)
 
     This allows LuaRef and table proxies to work with streams.
 */
-inline std::ostream& operator<< (std::ostream& os, LuaRef& ref)
+inline std::ostream& operator<< (std::ostream& os, LuaRef const& ref)
 {
   ref.print (os);
   return os;
+}
+
+//------------------------------------------------------------------------------
+
+// more C++-like cast syntax
+//
+template<class T>
+inline T LuaRef_cast(LuaRef const& lr)
+{
+  return lr.cast<T>();
 }
