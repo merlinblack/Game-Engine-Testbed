@@ -13,9 +13,6 @@
 
 #include <OgreRoot.h>
 #include <OgreFrameListener.h>
-#include <OgreOverlayContainer.h>
-#include <OgreOverlayElement.h>
-#include <OgreOverlayManager.h>
 #include <OIS.h>
 #include <list>
 #include <string>

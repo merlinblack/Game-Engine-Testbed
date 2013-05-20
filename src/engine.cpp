@@ -28,9 +28,6 @@ THE SOFTWARE.
 #include <OgreLogManager.h>
 #include <luaresource.h>
 
-//For testing
-#include <navigationmesh.h>
-
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 #include <time.h>
 void Sleep(int ms)

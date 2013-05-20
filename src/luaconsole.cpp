@@ -62,8 +62,6 @@ LuaConsole::~LuaConsole()
 
 void LuaConsole::init(Gorilla::Screen *screen, lua_State *L)
 {
-    OverlayManager &overlayManager = OverlayManager::getSingleton();
-
     Root::getSingletonPtr()->addFrameListener(this);
 
     visible = false;
