@@ -19,6 +19,7 @@ SET(Boost_USE_STATIC_LIBS    OFF)
 SET(Boost_USE_MULTITHREADED  ON)
 SET(Boost_USE_STATIC_RUNTIME OFF)
 FIND_PACKAGE(Boost 1.40.0 COMPONENTS thread date_time)
+FIND_PACKAGE(Threads)
 
 add_subdirectory( Lua )
 
@@ -52,7 +53,7 @@ TARGET_LINK_LIBRARIES(engine
 	${OGRE_LIBRARIES}
 	${Boost_LIBRARIES}
     ${Lua_LIBRARIES}
-    ${nix_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
 	)
 
 INCLUDE( GitVersioning )
