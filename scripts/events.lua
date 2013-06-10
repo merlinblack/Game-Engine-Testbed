@@ -49,5 +49,6 @@ function events.route( event )
 end
 
 function EventNotification( event )
+    LastEvent = event
     return events.route( event )
 end

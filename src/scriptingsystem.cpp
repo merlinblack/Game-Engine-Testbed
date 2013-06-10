@@ -36,8 +36,8 @@ THE SOFTWARE.
 void bindOgre( lua_State* L ); // From ogrebind.cpp
 void bindAnimation( lua_State* L ); // From animationbind.cpp
 void bindNavigationMesh( lua_State* L); // From navmeshbind.cpp
-void bindGorilla( lua_State *L ); // From gorillabind.cpp
 */
+void bindGorilla( lua_State *L ); // From gorillabind.cpp
 
 template<class D, class B>
 D* downcast( B* ptr )
@@ -137,8 +137,8 @@ void ScriptingSystem::initialise()
     bindGameEntityClasses( mL );
     bindAnimation( mL );
     bindNavigationMesh( mL );
-    bindGorilla( mL );
     */
+    bindGorilla( mL );
 
     using namespace luabridge;
 
@@ -178,10 +178,11 @@ void ScriptingSystem::bind()
             .addData( "x", &InputEventData::x )
             .addData( "y", &InputEventData::y )
             .addData( "buttons", &InputEventData::parm )
-            .addData( "text", &InputEventData::parm )
-            .addData( "key", &InputEventData::key )
+            .addProperty( "text", &InputEventDataBindingHelper::getText, &InputEventDataBindingHelper::setText )
+            .addProperty( "key",  &InputEventDataBindingHelper::getKey,  &InputEventDataBindingHelper::setKey  )
         .endClass()
         .deriveClass<WindowEventData, EventData>( "WindowEventData" )
+            .addStaticFunction( "downcast", &downcast<WindowEventData, EventData> )
             .addData( "width", &WindowEventData::width )
             .addData( "height", &WindowEventData::height )
         .endClass()

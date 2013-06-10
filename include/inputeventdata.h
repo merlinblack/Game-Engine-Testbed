@@ -32,4 +32,28 @@ struct InputEventData : public EventData
     unsigned int parm;
 };
 
+struct InputEventDataBindingHelper
+{
+    static int getKey( InputEventData const* d )
+    {
+        return (int)d->key;
+    }
+    static void setKey( InputEventData* d, int key )
+    {
+        d->key = (OIS::KeyCode)key;
+    }
+
+    static char getText( InputEventData const* d )
+    {
+        static char text;
+        text = (char)d->parm;
+        return text;
+    }
+
+    static void setText( InputEventData* d, const char text )
+    {
+        d->parm = (unsigned int)text;
+    }
+};
+
 #endif // INPUTEVENTDATA_H_INCLUDED
