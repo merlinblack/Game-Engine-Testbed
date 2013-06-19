@@ -212,12 +212,19 @@ struct CFunc
     typedef typename FuncTraits <FnPtr>::Params Params;
     static int f (lua_State* L)
     {
-      assert (isfulluserdata (L, lua_upvalueindex (1)));
-      FnPtr const& fnptr = *static_cast <FnPtr const*> (lua_touserdata (L, lua_upvalueindex (1)));
-      assert (fnptr != 0);
-      ArgList <Params> args (L);
-      Stack <typename FuncTraits <FnPtr>::ReturnType>::push (L, FuncTraits <FnPtr>::call (fnptr, args));
-      return 1;
+        try
+        {
+            assert (isfulluserdata (L, lua_upvalueindex (1)));
+            FnPtr const& fnptr = *static_cast <FnPtr const*> (lua_touserdata (L, lua_upvalueindex (1)));
+            assert (fnptr != 0);
+            ArgList <Params> args (L);
+            Stack <typename FuncTraits <FnPtr>::ReturnType>::push (L, FuncTraits <FnPtr>::call (fnptr, args));
+        }
+        catch( std::exception& e )
+        {
+            luaL_error( L, e.what() );
+        }
+        return 1;
     }
   };
 
@@ -236,12 +243,20 @@ struct CFunc
     typedef typename FuncTraits <FnPtr>::Params Params;
     static int f (lua_State* L)
     {
-      assert (isfulluserdata (L, lua_upvalueindex (1)));
-      FnPtr const& fnptr = *static_cast <FnPtr const*> (lua_touserdata (L, lua_upvalueindex (1)));
-      assert (fnptr != 0);
-      ArgList <Params> args (L);
-      FuncTraits <FnPtr>::call (fnptr, args);
-      return 0;
+        try
+        {
+            assert (isfulluserdata (L, lua_upvalueindex (1)));
+            FnPtr const& fnptr = *static_cast <FnPtr const*> (lua_touserdata (L, lua_upvalueindex (1)));
+            assert (fnptr != 0);
+            ArgList <Params> args (L);
+            FuncTraits <FnPtr>::call (fnptr, args);
+        }
+        catch( std::exception& e )
+        {
+            luaL_error( L, e.what() );
+        }
+
+        return 0;
     }
   };
 
@@ -262,11 +277,18 @@ struct CFunc
     static int f (lua_State* L)
     {
       assert (isfulluserdata (L, lua_upvalueindex (1)));
-      T* const t = Userdata::get <T> (L, 1, false);
-      MemFnPtr const& fnptr = *static_cast <MemFnPtr const*> (lua_touserdata (L, lua_upvalueindex (1)));
-      assert (fnptr != 0);
-      ArgList <Params, 2> args (L);
-      Stack <ReturnType>::push (L, FuncTraits <MemFnPtr>::call (t, fnptr, args));
+      try
+      {
+          T* const t = Userdata::get <T> (L, 1, false);
+          MemFnPtr const& fnptr = *static_cast <MemFnPtr const*> (lua_touserdata (L, lua_upvalueindex (1)));
+          assert (fnptr != 0);
+          ArgList <Params, 2> args (L);
+          Stack <ReturnType>::push (L, FuncTraits <MemFnPtr>::call (t, fnptr, args));
+      }
+      catch( std::exception& e )
+      {
+          luaL_error( L, e.what() );
+      }
       return 1;
     }
   };
@@ -281,11 +303,18 @@ struct CFunc
     static int f (lua_State* L)
     {
       assert (isfulluserdata (L, lua_upvalueindex (1)));
-      T const* const t = Userdata::get <T> (L, 1, true);
-      MemFnPtr const& fnptr = *static_cast <MemFnPtr const*> (lua_touserdata (L, lua_upvalueindex (1)));
-      assert (fnptr != 0);
-      ArgList <Params, 2> args(L);
-      Stack <ReturnType>::push (L, FuncTraits <MemFnPtr>::call (t, fnptr, args));
+      try
+      {
+          T const* const t = Userdata::get <T> (L, 1, true);
+          MemFnPtr const& fnptr = *static_cast <MemFnPtr const*> (lua_touserdata (L, lua_upvalueindex (1)));
+          assert (fnptr != 0);
+          ArgList <Params, 2> args(L);
+          Stack <ReturnType>::push (L, FuncTraits <MemFnPtr>::call (t, fnptr, args));
+      }
+      catch( std::exception& e )
+      {
+          luaL_error( L, e.what() );
+      }
       return 1;
     }
   };
@@ -305,13 +334,20 @@ struct CFunc
 
     static int f (lua_State* L)
     {
-      assert (isfulluserdata (L, lua_upvalueindex (1)));
-      T* const t = Userdata::get <T> (L, 1, false);
-      MemFnPtr const& fnptr = *static_cast <MemFnPtr const*> (lua_touserdata (L, lua_upvalueindex (1)));
-      assert (fnptr != 0);
-      ArgList <Params, 2> args (L);
-      FuncTraits <MemFnPtr>::call (t, fnptr, args);
-      return 0;
+        try
+        {
+            assert (isfulluserdata (L, lua_upvalueindex (1)));
+            T* const t = Userdata::get <T> (L, 1, false);
+            MemFnPtr const& fnptr = *static_cast <MemFnPtr const*> (lua_touserdata (L, lua_upvalueindex (1)));
+            assert (fnptr != 0);
+            ArgList <Params, 2> args (L);
+            FuncTraits <MemFnPtr>::call (t, fnptr, args);
+        }
+        catch( std::exception& e )
+        {
+            luaL_error( L, e.what() );
+        }
+        return 0;
     }
   };
 
@@ -323,13 +359,20 @@ struct CFunc
 
     static int f (lua_State* L)
     {
-      assert (isfulluserdata (L, lua_upvalueindex (1)));
-      T const* const t = Userdata::get <T> (L, 1, true);
-      MemFnPtr const& fnptr = *static_cast <MemFnPtr const*> (lua_touserdata (L, lua_upvalueindex (1)));
-      assert (fnptr != 0);
-      ArgList <Params, 2> args (L);
-      FuncTraits <MemFnPtr>::call (t, fnptr, args);
-      return 0;
+        try
+        {
+            assert (isfulluserdata (L, lua_upvalueindex (1)));
+            T const* const t = Userdata::get <T> (L, 1, true);
+            MemFnPtr const& fnptr = *static_cast <MemFnPtr const*> (lua_touserdata (L, lua_upvalueindex (1)));
+            assert (fnptr != 0);
+            ArgList <Params, 2> args (L);
+            FuncTraits <MemFnPtr>::call (t, fnptr, args);
+        }
+        catch( std::exception& e )
+        {
+            luaL_error( L, e.what() );
+        }
+        return 0;
     }
   };
 
@@ -343,15 +386,23 @@ struct CFunc
   template <class T>
   struct CallMemberCFunction
   {
-    static int f (lua_State* L)
-    {
-      assert (isfulluserdata (L, lua_upvalueindex (1)));
-      typedef int (T::*MFP)(lua_State* L);
-      T* const t = Userdata::get <T> (L, 1, false);
-      MFP const& fnptr = *static_cast <MFP const*> (lua_touserdata (L, lua_upvalueindex (1)));
-      assert (fnptr != 0);
-      return (t->*fnptr) (L);
-    }
+      static int f (lua_State* L)
+      {
+          try
+          {
+              assert (isfulluserdata (L, lua_upvalueindex (1)));
+              typedef int (T::*MFP)(lua_State* L);
+              T* const t = Userdata::get <T> (L, 1, false);
+              MFP const& fnptr = *static_cast <MFP const*> (lua_touserdata (L, lua_upvalueindex (1)));
+              assert (fnptr != 0);
+              return (t->*fnptr) (L);
+          }
+          catch( std::exception& e )
+          {
+              luaL_error( L, e.what() );
+              return 0;
+          }
+      }
   };
 
   template <class T>
@@ -359,12 +410,20 @@ struct CFunc
   {
     static int f (lua_State* L)
     {
-      assert (isfulluserdata (L, lua_upvalueindex (1)));
-      typedef int (T::*MFP)(lua_State* L);
-      T const* const t = Userdata::get <T> (L, 1, true);
-      MFP const& fnptr = *static_cast <MFP const*> (lua_touserdata (L, lua_upvalueindex (1)));
-      assert (fnptr != 0);
-      return (t->*fnptr) (L);
+        try
+        {
+            assert (isfulluserdata (L, lua_upvalueindex (1)));
+            typedef int (T::*MFP)(lua_State* L);
+            T const* const t = Userdata::get <T> (L, 1, true);
+            MFP const& fnptr = *static_cast <MFP const*> (lua_touserdata (L, lua_upvalueindex (1)));
+            assert (fnptr != 0);
+            return (t->*fnptr) (L);
+        }
+        catch( std::exception& e )
+        {
+            luaL_error( L, e.what() );
+            return 0;
+        }
     }
   };
 
