@@ -68,7 +68,7 @@ protected:
   /**
     Get an untyped pointer to the contained class.
   */
-  inline void* const getPointer ()
+  virtual void* const getPointer ()
   {
     return m_p;
   }
@@ -513,6 +513,13 @@ public:
   {
     m_p = const_cast <void*> (reinterpret_cast <void const*> (
         (ContainerTraits <C>::get (m_c))));
+  }
+
+  virtual void* const getPointer ()
+  {
+    //return m_p;
+    return const_cast <void*> (reinterpret_cast <void const*> (
+                (ContainerTraits<C>::get (m_c ))));
   }
 };
 
