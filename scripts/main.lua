@@ -107,14 +107,23 @@ end
 --]]
 
 function quitKeyListener( event )
-    if event.data.key == KeyCodes.KC_ESCAPE and #gui.modal == 0 then
-        quit()
+    inputdata = Engine.InputEventData.downcast( event.data )
+
+    if inputdata and inputdata.key == KeyCodes.KC_ESCAPE then --and #gui.modal == 0 then
+        quitProgram()
         return true
     end
 end
 
 function resizeListener( event )
-    --setViewportSize( event.data.width, event.data.height )
+    windowdata = Engine.WindowEventData.downcast( event.data )
+
+    if windowdata then
+        setViewportSize( windowdata.width, windowdata.height )
+    end
+end
+
+function setViewportSize() -- Place holder
 end
 
 function setup()
@@ -134,7 +143,7 @@ function setup()
     --events.subscribe( 'EVT_MOUSEMOVE',     mouseMovedEventListener )
     --events.subscribe( 'EVT_MOUSEDOWN',     mouseMovedEventListener )
     --events.subscribe( 'EVT_MOUSEUP',       mouseMovedEventListener )
-    --events.subscribe( 'EVT_KEYUP',         quitKeyListener )
+    events.subscribe( 'EVT_KEYUP',         quitKeyListener )
     --events.subscribe( 'EVT_KEYDOWN',       keyPressedEventListener )
     --events.subscribe( 'EVT_KEYUP',         keyReleasedEventListener )
     events.subscribe( 'EVT_WINDOW_RESIZE', resizeListener )
