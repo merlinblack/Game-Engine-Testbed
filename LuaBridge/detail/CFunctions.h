@@ -222,6 +222,8 @@ struct CFunc
         }
         catch( std::exception& e )
         {
+            lua_pushnil( L );
+            lua_insert( L, 1 );
             luaL_error( L, e.what() );
         }
         return 1;
@@ -253,6 +255,8 @@ struct CFunc
         }
         catch( std::exception& e )
         {
+            lua_pushnil( L );
+            lua_insert( L, 1 );
             luaL_error( L, e.what() );
         }
 
@@ -287,6 +291,8 @@ struct CFunc
       }
       catch( std::exception& e )
       {
+          lua_pushnil( L );
+          lua_insert( L, 1 );
           luaL_error( L, e.what() );
       }
       return 1;
@@ -313,6 +319,8 @@ struct CFunc
       }
       catch( std::exception& e )
       {
+          lua_pushnil( L );
+          lua_insert( L, 1 );
           luaL_error( L, e.what() );
       }
       return 1;
@@ -345,6 +353,8 @@ struct CFunc
         }
         catch( std::exception& e )
         {
+            lua_pushnil( L );
+            lua_insert( L, 1 );
             luaL_error( L, e.what() );
         }
         return 0;
@@ -370,6 +380,8 @@ struct CFunc
         }
         catch( std::exception& e )
         {
+            lua_pushnil( L );
+            lua_insert( L, 1 );
             luaL_error( L, e.what() );
         }
         return 0;
@@ -399,6 +411,8 @@ struct CFunc
           }
           catch( std::exception& e )
           {
+              lua_pushnil( L );
+              lua_insert( L, 1 );
               luaL_error( L, e.what() );
               return 0;
           }
@@ -421,6 +435,8 @@ struct CFunc
         }
         catch( std::exception& e )
         {
+            lua_pushnil( L );
+            lua_insert( L, 1 );
             luaL_error( L, e.what() );
             return 0;
         }

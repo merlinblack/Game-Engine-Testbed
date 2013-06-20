@@ -10,8 +10,10 @@
 
 
 #include "luainterpreter.h"
+#include <sstream>
 
 using std::string;
+using std::stringstream;
 
 // The address of this int in memory is used as a guaranteed unique id
 // in the Lua registry
@@ -122,6 +124,16 @@ LuaInterpreter::State LuaInterpreter::insertLine( std::string& line, bool fInser
             // The error message (if any) will be added to the output as part
             // of the stack reporting.
             luaL_unref( mL, LUA_REGISTRYINDEX, mCoroutineRef );
+            // Zap nil return value and replace with message.
+            if( lua_isnil( thread, 1 ) )
+            {
+                lua_pushstring( thread, "Error: " );
+                lua_replace( thread, 1 );
+                // Adjust the 'extra' error info off the stack.
+                lua_settop( thread, 3 );
+            }
+            // else leave it alone.
+
             mState = LI_ERROR;
             break;
         case LUA_YIELD:
@@ -141,9 +153,6 @@ LuaInterpreter::State LuaInterpreter::insertLine( std::string& line, bool fInser
     reportStack( thread );
 
     mPrompt = LI_PROMPT;
-
-    // Clear stack
-    lua_settop( mL, 0 );
 
     return mState;
 }
@@ -189,17 +198,22 @@ LuaInterpreter::State LuaInterpreter::resume()
 
         reportStack( thread );
     }
+
+    return mState;
 }
 
-void LuaInterpreter::reportStack( lua_State* thread)
+void LuaInterpreter::reportStack( lua_State* thread )
 {
     // Report stack contents
     // In the case of a yielded chunk these are the parameters to yield.
     if ( lua_gettop(thread) > 0)
     {
-      lua_getglobal(thread, "print");
-      lua_insert(thread, 1);
-      lua_pcall(thread, lua_gettop(thread)-1, 0, 0);
+      dumpstack( thread, "reportStack" );
+      string stack = dumpstack_str( thread );
+      lua_settop( thread, 0 );
+      lua_getglobal( thread, "print" );
+      lua_pushstring( thread, stack.c_str() );
+      lua_pcall(thread, 1, 0, 0);
     }
 }
 
@@ -219,3 +233,44 @@ int LuaInterpreter::insertOutputFromLua( lua_State *L )
     lua_settop( L, 0 );
     return 0;
 }
+
+static const string dumpstack_str(lua_State* L )
+{
+    static stringstream ss;
+    int i;
+    int top = lua_gettop(L);
+
+    ss.str("");
+
+    for (i = 1; i <= top; i++)
+    {
+        ss << i << " " << luaL_typename(L,i) << " - ";
+        switch (lua_type(L, i))
+        {
+            case LUA_TNUMBER:
+                ss << lua_tonumber(L,i) << "\n";
+            break;
+            case LUA_TSTRING:
+                ss << lua_tostring(L,i) << "\n";
+                break;
+            case LUA_TBOOLEAN:
+                ss << (lua_toboolean(L, i) ? "true" : "false") << "\n";
+                break;
+            case LUA_TNIL:
+                ss << "nil\n";
+                break;
+            default:
+                ss << std::hex << "0x" << lua_topointer(L,i) << "\n";
+                break;
+        }
+    }
+    return ss.str();
+}
+
+static void dumpstack (lua_State *L, const char *message)
+{
+    printf("dumpstack -- %s\n",message);
+    printf("%s\n", dumpstack_str( L ).c_str() );
+    printf("dumpstack -- END\n");
+}
+
