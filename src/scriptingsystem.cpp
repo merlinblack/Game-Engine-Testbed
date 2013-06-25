@@ -32,8 +32,8 @@ THE SOFTWARE.
 #include <version.h>
 #include <LuaBridge.h>
 
-/*
 void bindOgre( lua_State* L ); // From ogrebind.cpp
+/*
 void bindAnimation( lua_State* L ); // From animationbind.cpp
 void bindNavigationMesh( lua_State* L); // From navmeshbind.cpp
 */
@@ -132,8 +132,8 @@ void ScriptingSystem::initialise()
     lua_settable( mL, LUA_REGISTRYINDEX );
 
     bind();
-    /*
     bindOgre( mL );
+    /*
     bindGameEntityClasses( mL );
     bindAnimation( mL );
     bindNavigationMesh( mL );
