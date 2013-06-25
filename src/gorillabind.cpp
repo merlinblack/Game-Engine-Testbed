@@ -63,33 +63,33 @@ void bindGorilla( lua_State* L )
     gradient["NorthSouth"] = (int)Gradient_NorthSouth;
     gradient["WestEast"]   = (int)Gradient_WestEast;
     gradient["Diagonal"]   = (int)Gradient_Diagonal;
-    gorillaEnum["Gradient"] = makeReadonlyProxy( L, gradient );
+    gorillaEnum["Gradient"] = makeReadonlyProxy( gradient );
 
     LuaRef border = newTable( L );
     border["North"] = (int)Border_North;
     border["East"]  = (int)Border_East;
     border["South"] = (int)Border_South;
     border["West"]  = (int)Border_West;
-    gorillaEnum["Border"] = makeReadonlyProxy( L, border);
+    gorillaEnum["Border"] = makeReadonlyProxy( border);
 
     LuaRef corner = newTable( L );
     corner["TopLeft"]     = (int)TopLeft;
     corner["TopRight"]    = (int)TopRight;
     corner["BottomRight"] = (int)BottomRight;
     corner["BottomLeft"]  = (int)BottomLeft;
-    gorillaEnum["Corner"] = makeReadonlyProxy( L, corner );
+    gorillaEnum["Corner"] = makeReadonlyProxy( corner );
 
     LuaRef textalign = newTable( L );
     textalign["Left"]   = (int)TextAlign_Left;
     textalign["Centre"] = (int)TextAlign_Centre;
     textalign["Right"]  = (int)TextAlign_Right;
-    gorillaEnum["TextAlign"] = makeReadonlyProxy( L, textalign );
+    gorillaEnum["TextAlign"] = makeReadonlyProxy( textalign );
 
     LuaRef vertalign = newTable( L );
     vertalign["Top"]    = (int)VerticalAlign_Top;
     vertalign["Middle"] = (int)VerticalAlign_Middle;
     vertalign["Bottom"] = (int)VerticalAlign_Bottom;
-    gorillaEnum["VerticalAlign"] = makeReadonlyProxy( L, vertalign );
+    gorillaEnum["VerticalAlign"] = makeReadonlyProxy( vertalign );
 
     getGlobalNamespace( L )
         .beginNamespace( "Gorilla" )
@@ -99,6 +99,6 @@ void bindGorilla( lua_State* L )
 
     LuaRef gorillaNS = getGlobal( L, "Gorilla" );
 
-    gorillaNS["Enum"] = makeReadonlyProxy( L, gorillaEnum );
+    gorillaNS["Enum"] = makeReadonlyProxy( gorillaEnum );
 
 }

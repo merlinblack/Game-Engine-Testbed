@@ -6,4 +6,4 @@
 // access.
 // The proxy table supports iteration via pairs()
 //
-luabridge::LuaRef makeReadonlyProxy( lua_State* L, luabridge::LuaRef table );
+luabridge::LuaRef makeReadonlyProxy( luabridge::LuaRef table );

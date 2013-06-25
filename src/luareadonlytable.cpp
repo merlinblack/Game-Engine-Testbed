@@ -14,6 +14,8 @@ int readonlyTableNext( lua_State* L )
     lua_pushvalue( L, 2 );
     if( lua_next( L, 4 ) )
     {
+        // Is there a better way?
+        //
         lua_remove( L, 3 ); // Meta table
         lua_remove( L, 3 ); // Real table
         lua_remove( L, 2 ); // Input index
@@ -35,10 +37,12 @@ int getReadonlyTableNext( lua_State* L )
     return 3;
 }
 
-LuaRef makeReadonlyProxy( lua_State* L, LuaRef table )
+LuaRef makeReadonlyProxy( LuaRef table )
 {
     if( table.isTable() == false )
         throw std::invalid_argument( "makeTableReadOnly not given table" );
+
+    lua_State* L = table.state();
 
     LuaRef metatable = newTable( L );
     metatable["__index"] = table;
