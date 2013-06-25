@@ -17,17 +17,17 @@ using Ogre::MovableObject;
 // is caught when calling back into C++, so if a Lua script accesses a Gorilla element
 // after destroying it, all you get is an Lua error rather than a crash.
 //
-ward_ptr<Gorilla::Rectangle> createRectangle( Layer *layer, Real x, Real y, Real width, Real height )
+ward_ptr<Rectangle> createRectangle( Layer *layer, Real x, Real y, Real width, Real height )
 {
     return ward_ptr<Gorilla::Rectangle>( layer->createRectangle( x, y, width, height ) );
 }
 
-ward_ptr<Gorilla::Rectangle> createRectangle( Layer *layer, const Vector2& a, const Vector2& b )
+ward_ptr<Rectangle> createRectangle( Layer *layer, const Vector2& a, const Vector2& b )
 {
     return layer->createRectangle( a, b );
 }
 
-void destroyRectangle( Layer *layer, ward_ptr<Gorilla::Rectangle> ptr )
+void destroyRectangle( Layer *layer, ward_ptr<Rectangle> ptr )
 {
     layer->destroyRectangle( ptr.get() );
     ptr.invalidate();
@@ -94,6 +94,13 @@ void bindGorilla( lua_State* L )
     getGlobalNamespace( L )
         .beginNamespace( "Gorilla" )
         .beginClass<Silverback>( "Silverback" )
+        .addStaticFunction( "getSingleton", &Silverback::getSingletonPtr )
+        .addFunction( "loadAtlas",    &Silverback::loadAtlas )
+        .addFunction( "createScreen", &Silverback::createScreen )
+        .addFunction( "createScreenRenderable",  &Silverback::createScreenRenderable )
+        .addFunction( "destroyScreenRenderable", &Silverback::destroyScreenRenderable )
+        .endClass()
+        .beginClass<Rectangle>( "Rectangle" )
         .endClass()
         .endNamespace();
 
