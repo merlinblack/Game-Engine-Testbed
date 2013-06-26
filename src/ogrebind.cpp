@@ -556,9 +556,12 @@ void bindFrameStats( lua_State* L )
     */
 }
 
-String ViewportToString( const Viewport* )
+String ViewportToString( const Viewport* ptr )
 {
-    return "Viewport";
+    std::stringstream ss;
+
+    ss << "Viewport - " << std::hex << ptr;
+    return ss.str();
 }
 
 void bindViewport( lua_State *L )
@@ -566,7 +569,7 @@ void bindViewport( lua_State *L )
     getGlobalNamespace( L )
         .beginNamespace( "Ogre" )
         .beginClass<Viewport>( "Viewport" )
-        .addStaticFunction( "__tostring", &ViewportToString )
+        .addFunction( "__tostring", &ViewportToString )
         .endClass()
         .endNamespace();
     /*
