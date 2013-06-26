@@ -103,7 +103,8 @@ void bindVector3( lua_State* L )
     enums["UNIT_SCALE"] = Vector3::UNIT_SCALE;
 
     LuaRef ogre = getGlobal( L, "Ogre" );
-    ogre["Vector3"] = makeReadonlyProxy( enums );
+    LuaRef vector3 = ogre["Vector3"];
+    vector3["Enum"] = makeReadonlyProxy( enums );
 
     /*
     module(L)
@@ -540,20 +541,19 @@ Viewport* getViewport( unsigned short index )
 
 void bindFrameStats( lua_State* L )
 {
-    /*
-    module(L)
-    [
-        class_<RenderWindow::FrameStats>( "FrameStats" )
-        .def_readonly( "lastFPS", &RenderWindow::FrameStats::lastFPS )
-        .def_readonly( "avgFPS", &RenderWindow::FrameStats::avgFPS )
-        .def_readonly( "bestFPS", &RenderWindow::FrameStats::bestFPS )
-        .def_readonly( "worstFPS", &RenderWindow::FrameStats::worstFPS )
-        .def_readonly( "bestFrameTime", &RenderWindow::FrameStats::bestFrameTime )
-        .def_readonly( "worstFrameTime", &RenderWindow::FrameStats::worstFrameTime )
-        .def_readonly( "triangleCount", &RenderWindow::FrameStats::triangleCount )
-        .def_readonly( "batchCount", &RenderWindow::FrameStats::batchCount )
-    ];
-    */
+    getGlobalNamespace( L )
+        .beginNamespace("Ogre")
+        .beginClass<RenderWindow::FrameStats>("FrameStats")
+        .addData( "lastFPS", &RenderWindow::FrameStats::lastFPS )
+        .addData( "avgFPS", &RenderWindow::FrameStats::avgFPS )
+        .addData( "bestFPS", &RenderWindow::FrameStats::bestFPS )
+        .addData( "worstFPS", &RenderWindow::FrameStats::worstFPS )
+        .addData( "bestFrameTime", &RenderWindow::FrameStats::bestFrameTime )
+        .addData( "worstFrameTime", &RenderWindow::FrameStats::worstFrameTime )
+        .addData( "triangleCount", &RenderWindow::FrameStats::triangleCount )
+        .addData( "batchCount", &RenderWindow::FrameStats::batchCount )
+        .endClass()
+        .endNamespace();
 }
 
 String ViewportToString( const Viewport* ptr )
@@ -572,13 +572,6 @@ void bindViewport( lua_State *L )
         .addFunction( "__tostring", &ViewportToString )
         .endClass()
         .endNamespace();
-    /*
-    module(L)
-    [
-        class_<Viewport>("Viewport")
-        .def("__tostring", &ViewportToString)
-    ];
-    */
 }
 
 // Keep this at the bottom so we don't need prototypes for other bind functions.
@@ -604,16 +597,4 @@ void bindOgre( lua_State* L )
         .addFunction( "getNumViewports", &getNumViewports )
         .addFunction( "getViewport", &getViewport )
         .endNamespace();
-    /*
-    module(L)
-    [
-        namespace_("Ogre")
-        [
-            def("getStats", &getFrameStats ),
-            def("getSceneManager", &getSceneManager ),
-            def("getNumViewports", &getNumViewports ),
-            def("getViewport", &getViewport )
-        ]
-    ];
-    */
 }
