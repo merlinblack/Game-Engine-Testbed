@@ -44,12 +44,10 @@ void bindQuaternion( lua_State* L )
         .endClass()
         .endNamespace();
 
-    LuaRef enums = newTable(L);
-    enums["ZERO"]     = Quaternion::ZERO;
-    enums["IDENTITY"] = Quaternion::IDENTITY;
-
     LuaRef ogre = getGlobal( L, "Ogre" );
-    ogre["Quaternion"] = makeReadonlyProxy( enums );
+    LuaRef quaternion = ogre["Quaternion"];
+    quaternion["ZERO"]     = Quaternion::ZERO;
+    quaternion["IDENTITY"] = Quaternion::IDENTITY;
 
     /*
     module(L)
@@ -80,6 +78,55 @@ void bindQuaternion( lua_State* L )
     */
 }
 
+Vector3* Vector3Constructor( lua_State* L )
+{
+    const char* arg_error = "Expecting %s for argument %d when given %d arguments";
+
+    switch( lua_gettop( L ) ) // Note that the class table is always index 1 on the stack.
+    {
+        case 1:
+            {
+                return new Vector3();
+            }
+            break;
+        case 2:
+            {
+                LuaRef p1 = LuaRef::fromStack( L, 2 );
+                if( p1.is<Vector3>() == true )
+                {
+                    return new Vector3( LuaRef_cast<Vector3>(p1) );
+                }
+                luaL_error( L, arg_error, "Vector3", 1, 1 ); // returns
+            }
+            break;
+        case 4:
+            {
+                LuaRef p1 = LuaRef::fromStack( L, 2 );
+                LuaRef p2 = LuaRef::fromStack( L, 3 );
+                LuaRef p3 = LuaRef::fromStack( L, 4 );
+
+                if( p1.isNumber() != true )
+                    luaL_error( L, arg_error, "number", 1, 3 ); // returns
+                if( p2.isNumber() != true )
+                    luaL_error( L, arg_error, "number", 2, 3 ); // returns
+                if( p2.isNumber() != true )
+                    luaL_error( L, arg_error, "number", 3, 3 ); // returns
+
+                return new Vector3(
+                        LuaRef_cast<Real>( p1 ),
+                        LuaRef_cast<Real>( p2 ),
+                        LuaRef_cast<Real>( p3 ) );
+            }
+            break;
+        default:
+            luaL_error( L, "Incorrect number of arguments given (%d)", lua_gettop( L ) ); // returns
+            break;
+    }
+
+    // Should not get here.
+    return NULL;
+}
+
 void bindVector3( lua_State* L )
 {
     getGlobalNamespace( L )
@@ -88,23 +135,21 @@ void bindVector3( lua_State* L )
         .addData( "x", &Vector3::x )
         .addData( "y", &Vector3::y )
         .addData( "z", &Vector3::z )
-        .addConstructor<void (*) (Real,Real,Real)>()
+        .addStaticFunction( "__call", &Vector3Constructor )
         .endClass()
         .endNamespace();
 
-    LuaRef enums = newTable(L);
-    enums["ZERO"] = Vector3::ZERO;
-    enums["UNIT_X"] = Vector3::UNIT_X;
-    enums["UNIT_Y"] = Vector3::UNIT_Y;
-    enums["UNIT_Z"] = Vector3::UNIT_Z;
-    enums["NEGATIVE_UNIT_X"] = Vector3::NEGATIVE_UNIT_X;
-    enums["NEGATIVE_UNIT_Y"] = Vector3::NEGATIVE_UNIT_Y;
-    enums["NEGATIVE_UNIT_Z"] = Vector3::NEGATIVE_UNIT_Z;
-    enums["UNIT_SCALE"] = Vector3::UNIT_SCALE;
-
     LuaRef ogre = getGlobal( L, "Ogre" );
     LuaRef vector3 = ogre["Vector3"];
-    vector3["Enum"] = makeReadonlyProxy( enums );
+
+    vector3["ZERO"] = Vector3::ZERO;
+    vector3["UNIT_X"] = Vector3::UNIT_X;
+    vector3["UNIT_Y"] = Vector3::UNIT_Y;
+    vector3["UNIT_Z"] = Vector3::UNIT_Z;
+    vector3["NEGATIVE_UNIT_X"] = Vector3::NEGATIVE_UNIT_X;
+    vector3["NEGATIVE_UNIT_Y"] = Vector3::NEGATIVE_UNIT_Y;
+    vector3["NEGATIVE_UNIT_Z"] = Vector3::NEGATIVE_UNIT_Z;
+    vector3["UNIT_SCALE"] = Vector3::UNIT_SCALE;
 
     /*
     module(L)
