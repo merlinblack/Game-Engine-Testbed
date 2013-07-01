@@ -63,7 +63,7 @@ function getCompletions( str )
 
     if type( g ) == 'table' then
         for k,v in pairs(g) do
-            if string.find( k, str ) == 1 then
+            if string.find( k, str ) == 1 and string.sub(k,1,1) ~= '_' then
                 table.insert( ret, prefix .. dottype .. k )
             end
         end
