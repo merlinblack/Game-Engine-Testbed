@@ -41,6 +41,10 @@ void bindQuaternion( lua_State* L )
         .addData( "w", &Quaternion::w )
         .addFunction( "dot", &Quaternion::Dot )
         .addConstructor<void (*) (Real,Real,Real,Real)>()
+        .addFunction( "__add", (Quaternion (Quaternion::*)(const Quaternion&) const)&Quaternion::operator+ )
+        .addFunction( "__sub", (Quaternion (Quaternion::*)(const Quaternion&) const)&Quaternion::operator- )
+        .addFunction( "__mul", (Quaternion (Quaternion::*)(const Quaternion&) const)&Quaternion::operator* )
+        // May have to write an overide handler for __mul. See luabind operator binding below...
         .endClass()
         .endNamespace();
 
@@ -50,31 +54,12 @@ void bindQuaternion( lua_State* L )
     quaternion["IDENTITY"] = Quaternion::IDENTITY;
 
     /*
-    module(L)
-    [
-        class_<Quaternion>( "Quaternion" )
-        .def(tostring(self))
-        .def_readwrite( "x", &Quaternion::x )
-        .def_readwrite( "y", &Quaternion::y )
-        .def_readwrite( "z", &Quaternion::z )
-        .def_readwrite( "w", &Quaternion::w )
-        .def(constructor<>())
-        .def(constructor<Real,Real,Real,Real>())
-        .def(constructor<const Radian&, const Vector3& >())
-        .def("dot", &Quaternion::Dot )
-
         // Operators
         .def( self + other<Quaternion>() )
         .def( self - other<Quaternion>() )
         .def( self * other<Quaternion>() )
         .def( self * Real() )
         .def( self * other<Vector3>() )
-    ];
-
-    LUA_STATIC_START( Quaternion )
-        LUA_STATIC( Quaternion, ZERO );
-        LUA_STATIC( Quaternion, IDENTITY );
-    LUA_STATIC_END;
     */
 }
 
@@ -136,6 +121,32 @@ void bindVector3( lua_State* L )
         .addData( "y", &Vector3::y )
         .addData( "z", &Vector3::z )
         .addStaticFunction( "__call", &Vector3Constructor )
+        .addFunction( "__add", (Vector3  (Vector3::*) (const Vector3&) const )&Vector3::operator+ )
+        .addFunction( "__sub", (Vector3  (Vector3::*) (const Vector3&) const )&Vector3::operator- )
+        .addFunction( "__mul", (Vector3  (Vector3::*) (const Vector3&) const )&Vector3::operator* )
+        .addFunction( "__div", (Vector3  (Vector3::*) (const Real)     const )&Vector3::operator/ )
+        .addFunction( "__eq",  (Vector3& (Vector3::*) (const Vector3&)       )&Vector3::operator= )
+        .addFunction("absDotProduct", &Vector3::absDotProduct)
+        .addFunction("crossProduct", &Vector3::crossProduct )
+        .addFunction("directionEquals", &Vector3::directionEquals )
+        .addFunction("distance", &Vector3::distance )
+        .addFunction("dotProduct", &Vector3::dotProduct )
+        .addFunction("getRotationTo", &Vector3::getRotationTo )
+        .addFunction("isZeroLength", &Vector3::isZeroLength )
+        .addFunction("length", &Vector3::length )
+        .addFunction("makeCeil", &Vector3::makeCeil )
+        .addFunction("makeFloor", &Vector3::makeFloor )
+        .addFunction("midPoint", &Vector3::midPoint )
+        .addFunction("normalise", &Vector3::normalise )
+        .addFunction("normalisedCopy", &Vector3::normalisedCopy )
+        .addFunction("perpendicular", &Vector3::perpendicular )
+        .addFunction("positionCloses", &Vector3::positionCloses )
+        .addFunction("positionEquals", &Vector3::positionEquals )
+        .addFunction("randomDeviant", &Vector3::randomDeviant )
+        .addFunction("reflect", &Vector3::reflect )
+        .addFunction("squaredDistance", &Vector3::squaredDistance )
+        .addFunction("squaredLength", &Vector3::squaredLength )
+        .addFunction("angleBetween", &Vector3::angleBetween )
         .endClass()
         .endNamespace();
 
@@ -150,109 +161,46 @@ void bindVector3( lua_State* L )
     vector3["NEGATIVE_UNIT_Y"] = Vector3::NEGATIVE_UNIT_Y;
     vector3["NEGATIVE_UNIT_Z"] = Vector3::NEGATIVE_UNIT_Z;
     vector3["UNIT_SCALE"] = Vector3::UNIT_SCALE;
-
-    /*
-    module(L)
-    [
-        class_<Vector3>( "Vector3" )
-        .def(tostring(self))
-        .def_readwrite( "x", &Vector3::x )
-        .def_readwrite( "y", &Vector3::y )
-        .def_readwrite( "z", &Vector3::z )
-        .def(constructor<>())
-        .def(constructor<Vector3&>())
-        .def(constructor<Real, Real, Real>())
-        .def("absDotProduct", &Vector3::absDotProduct)
-        .def("crossProduct", &Vector3::crossProduct )
-        .def("directionEquals", &Vector3::directionEquals )
-        .def("distance", &Vector3::distance )
-        .def("dotProduct", &Vector3::dotProduct )
-        .def("getRotationTo", &Vector3::getRotationTo )
-        .def("isZeroLength", &Vector3::isZeroLength )
-        .def("length", &Vector3::length )
-        .def("makeCeil", &Vector3::makeCeil )
-        .def("makeFloor", &Vector3::makeFloor )
-        .def("midPoint", &Vector3::midPoint )
-        .def("normalise", &Vector3::normalise )
-        .def("normalisedCopy", &Vector3::normalisedCopy )
-        .def("perpendicular", &Vector3::perpendicular )
-        .def("positionCloses", &Vector3::positionCloses )
-        .def("positionEquals", &Vector3::positionEquals )
-        //.def("ptr", &Vector3::ptr )
-        .def("randomDeviant", &Vector3::randomDeviant )
-        .def("reflect", &Vector3::reflect )
-        .def("squaredDistance", &Vector3::squaredDistance )
-        .def("squaredLength", &Vector3::squaredLength )
-        .def("angleBetween", &Vector3::angleBetween )
-
-        // Operators
-
-        .def( self + other<Vector3>() )
-        .def( self - other<Vector3>() )
-        .def( self * other<Vector3>() )
-        .def( self * Real() )
-        .def( self / Real() )
-        .def( self == other<Vector3>() )
-    ];
-
-    LUA_STATIC_START( Vector3 )
-        LUA_STATIC( Vector3, ZERO);
-        LUA_STATIC( Vector3, UNIT_X);
-        LUA_STATIC( Vector3, UNIT_Y);
-        LUA_STATIC( Vector3, UNIT_Z);
-        LUA_STATIC( Vector3, NEGATIVE_UNIT_X);
-        LUA_STATIC( Vector3, NEGATIVE_UNIT_Y);
-        LUA_STATIC( Vector3, NEGATIVE_UNIT_Z);
-        LUA_STATIC( Vector3, UNIT_SCALE);
-    LUA_STATIC_END;
-    */
 }
 
 void bindVector2( lua_State* L )
 {
-    /*
-    module(L)
-    [
-        class_<Vector2>( "Vector2" )
-        .def(tostring(self))
-        .def_readwrite( "x", &Vector2::x )
-        .def_readwrite( "y", &Vector2::y )
-        .def(constructor<>())
-        .def(constructor<Vector2&>())
-        .def(constructor<Real, Real>())
-        .def("crossProduct", &Vector2::crossProduct )
-        .def("dotProduct", &Vector2::dotProduct )
-        .def("isZeroLength", &Vector2::isZeroLength )
-        .def("length", &Vector2::length )
-        .def("makeCeil", &Vector2::makeCeil )
-        .def("makeFloor", &Vector2::makeFloor )
-        .def("midPoint", &Vector2::midPoint )
-        .def("normalise", &Vector2::normalise )
-        .def("normalisedCopy", &Vector2::normalisedCopy )
-        .def("perpendicular", &Vector2::perpendicular )
-        .def("randomDeviant", &Vector2::randomDeviant )
-        .def("reflect", &Vector2::reflect )
-        .def("squaredLength", &Vector2::squaredLength )
+    getGlobalNamespace( L )
+        .beginNamespace( "Ogre" )
+        .beginClass<Vector2>( "Vector2" )
+        .addData( "x", &Vector2::x )
+        .addData( "y", &Vector2::y )
+        .addConstructor<void (*) (Real,Real)>()
+        .addFunction( "__add", (Vector2  (Vector2::*) (const Vector2&) const )&Vector2::operator+ )
+        .addFunction( "__sub", (Vector2  (Vector2::*) (const Vector2&) const )&Vector2::operator- )
+        .addFunction( "__mul", (Vector2  (Vector2::*) (const Vector2&) const )&Vector2::operator* )
+        .addFunction( "__div", (Vector2  (Vector2::*) (const Real)     const )&Vector2::operator/ )
+        .addFunction( "__eq",  (Vector2& (Vector2::*) (const Vector2&)       )&Vector2::operator= )
+        .addFunction("crossProduct", &Vector2::crossProduct )
+        .addFunction("dotProduct", &Vector2::dotProduct )
+        .addFunction("isZeroLength", &Vector2::isZeroLength )
+        .addFunction("length", &Vector2::length )
+        .addFunction("makeCeil", &Vector2::makeCeil )
+        .addFunction("makeFloor", &Vector2::makeFloor )
+        .addFunction("midPoint", &Vector2::midPoint )
+        .addFunction("normalise", &Vector2::normalise )
+        .addFunction("normalisedCopy", &Vector2::normalisedCopy )
+        .addFunction("perpendicular", &Vector2::perpendicular )
+        .addFunction("randomDeviant", &Vector2::randomDeviant )
+        .addFunction("reflect", &Vector2::reflect )
+        .addFunction("squaredLength", &Vector2::squaredLength )
+        .endClass()
+        .endNamespace();
 
-        // Operators
+    LuaRef ogre = getGlobal( L, "Ogre" );
+    LuaRef vector2 = ogre["Vector2"];
 
-        .def( self + other<Vector2>() )
-        .def( self - other<Vector2>() )
-        .def( self * other<Vector2>() )
-        .def( self * Real() )
-        .def( self / Real() )
-        .def( self == other<Vector2>() )
-    ];
-
-    LUA_STATIC_START( Vector2 )
-        LUA_STATIC( Vector2, ZERO);
-        LUA_STATIC( Vector2, UNIT_X);
-        LUA_STATIC( Vector2, UNIT_Y);
-        LUA_STATIC( Vector2, NEGATIVE_UNIT_X);
-        LUA_STATIC( Vector2, NEGATIVE_UNIT_Y);
-        LUA_STATIC( Vector2, UNIT_SCALE);
-    LUA_STATIC_END;
-    */
+    vector2["ZERO"] = Vector2::ZERO;
+    vector2["UNIT_X"] = Vector2::UNIT_X;
+    vector2["UNIT_Y"] = Vector2::UNIT_Y;
+    vector2["NEGATIVE_UNIT_X"] = Vector2::NEGATIVE_UNIT_X;
+    vector2["NEGATIVE_UNIT_Y"] = Vector2::NEGATIVE_UNIT_Y;
+    vector2["UNIT_SCALE"] = Vector2::UNIT_SCALE;
 }
 
 void bindColourValue( lua_State* L )
