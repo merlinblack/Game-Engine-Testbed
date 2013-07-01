@@ -24,6 +24,7 @@ THE SOFTWARE.
 */
 #include <exception>
 #include <map>
+#include <LuaBridge.h>
 
 /*
  * ward_ptr
@@ -153,3 +154,18 @@ T* get_pointer( ward_ptr<T> p )
 {
     return p.get();
 }
+
+namespace luabridge
+{
+    template<class T>
+        struct ContainerTraits<ward_ptr<T> >
+        {
+            typedef T Type;
+
+            static T* get( ward_ptr<T> const& c )
+            {
+                return c.get();
+            }
+        };
+};
+

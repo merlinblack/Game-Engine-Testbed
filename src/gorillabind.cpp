@@ -100,7 +100,68 @@ void bindGorilla( lua_State* L )
         .addFunction( "createScreenRenderable",  &Silverback::createScreenRenderable )
         .addFunction( "destroyScreenRenderable", &Silverback::destroyScreenRenderable )
         .endClass()
+        .beginClass<LayerContainer>("LayerContainer")
+        .endClass()
+        .deriveClass<Screen,LayerContainer>("Screen")
+        .addFunction( "createLayer", &Screen::createLayer )
+        .addFunction( "destroy", &Screen::destroy )
+        .addProperty( "width", &Screen::getWidth )
+        .addProperty( "height", &Screen::getHeight )
+        .endClass()
+        // TODO - ScreenRenderable once Ogre::MovableObject is done
+        .beginClass<Layer>("Layer")
+        .addProperty( "visible", &Layer::isVisible, &Layer::setVisible )
+        .addFunction( "show", &Layer::show )
+        .addFunction( "hide", &Layer::hide )
+        .addProperty( "alphaModifier", &Layer::getAlphaModifier, &Layer::setAlphaModifier )
+        .addFunction( "createRectangle", (ward_ptr<Rectangle>(*)(Layer*,Real,Real,Real,Real))&createRectangle )
+        // May need other one that takes two Vector2?
+        .addFunction( "destroyRectangle", &destroyRectangle )
+        // TODO create and destroy for Captions and Markup Text
+        .endClass()
         .beginClass<Rectangle>( "Rectangle" )
+        .addFunction( "intersects", &Rectangle::intersects )
+        .addFunction( "position", (Vector2 (Rectangle::*)() const )&Rectangle::position )
+        .addFunction( "position", (void (Rectangle::*)( const Real&, const Real& ))&Rectangle::position )
+        .addFunction( "position", (void (Rectangle::*)( const Vector2& ))&Rectangle::position )
+        .addProperty( "left",
+                (Real (Rectangle::*)() const )&Rectangle::left,
+                (void (Rectangle::*)( const Real& ))&Rectangle::left )
+        .addProperty( "top",
+                (Real (Rectangle::*)() const )&Rectangle::top,
+                (void (Rectangle::*)( const Real& ))&Rectangle::top )
+        .addProperty( "width",
+                (Real (Rectangle::*)() const )&Rectangle::width,
+                (void (Rectangle::*)( const Real& ))&Rectangle::width )
+        .addProperty( "height",
+                (Real (Rectangle::*)() const )&Rectangle::height,
+                (void (Rectangle::*)( const Real& ))&Rectangle::height )
+        .addFunction( "noBackground", &Rectangle::no_background )
+        .addFunction( "noBorder", &Rectangle::no_border )
+        .addFunction( "backgroundColour",
+                (ColourValue (Rectangle::*)( QuadCorner ) const )&Gorilla::Rectangle::background_colour )
+        .addFunction( "backgroundColour",
+                (void (Rectangle::*)( const ColourValue& ))&Rectangle::background_colour )
+        .addFunction( "backgroundColour",
+                (void (Rectangle::*)( QuadCorner, const ColourValue& ))&Rectangle::background_colour )
+        .addFunction( "backgroundGradient", &Rectangle::background_gradient )
+        .addFunction( "backgroundImage",
+                (void (Rectangle::*)( const String& ))&Rectangle::background_image )
+        .addFunction( "borderColour",
+                (ColourValue (Rectangle::*)( Border ) const )&Rectangle::border_colour )
+        .addFunction( "borderColour",
+                (void (Rectangle::*)( const ColourValue& ))&Rectangle::border_colour )
+        .addFunction( "borderColour",
+                (void (Rectangle::*)( Border, const ColourValue& ))&Rectangle::border_colour )
+        .addProperty( "borderWidth",
+                (Real (Rectangle::*)() const )&Rectangle::border_width,
+                (void (Rectangle::*)( Real ))&Rectangle::border_width )
+        .addFunction( "border",
+                (void (Rectangle::*)( Real, const ColourValue& ))&Rectangle::border )
+        .addFunction( "border",
+                (void (Rectangle::*)( Real, const ColourValue&, const ColourValue&,
+                                      const ColourValue&, const ColourValue& ))
+                &Rectangle::border )
         .endClass()
         .endNamespace();
 
