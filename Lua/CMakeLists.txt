@@ -1,8 +1,8 @@
 set (Lua_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}" PARENT_SCOPE )
-set (${PROJECT_NAME}_LUA_C_FLAGS "-O3" CACHE STRING "${PROJECT_NAME} Lua C Flags" )
+set (${PROJECT_NAME}_LUA_C_FLAGS "-O3" CACHE STRING "${PROJECT_NAME} Extra C Flags for Lua" )
 
-# Override C flags for Lua
-set( CMAKE_C_FLAGS "${${PROJECT_NAME}_LUA_C_FLAGS}")
+# Extra C flags for Lua
+set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${${PROJECT_NAME}_LUA_C_FLAGS}")
 # Remove debug if it is there.
 string(REPLACE "-g" "" CMAKE_C_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
 
