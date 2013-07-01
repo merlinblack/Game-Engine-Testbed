@@ -54,13 +54,18 @@ function getCompletions( str )
         return {}
     end
 
-    --if type(g) == 'userdata' then
-    --   g = infotable( g )
-    --end
+    -- Retrieve class info if any
+    for k,v in pairs( getClassInfo( g ) ) do
+        if string.find( v, str ) == 1 then
+            table.insert( ret, prefix .. dottype .. v )
+        end
+    end
 
-    for k,v in pairs(g) do
-        if string.find( k, str ) == 1 then
-            table.insert( ret, prefix .. dottype .. k )
+    if type( g ) == 'table' then
+        for k,v in pairs(g) do
+            if string.find( k, str ) == 1 then
+                table.insert( ret, prefix .. dottype .. k )
+            end
         end
     end
 

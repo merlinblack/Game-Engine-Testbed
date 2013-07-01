@@ -114,6 +114,80 @@ void installLibraryLoader( lua_State *L )
         Ogre::LogManager::getSingleton().stream() << lua_tostring( L, 1);
 }
 
+void getClassMembers( lua_State* L, luabridge::LuaRef ret )
+{
+
+    // List keys where they don't start with underscore.
+    lua_pushnil( L );
+    while( lua_next( L, -2 ) )
+    {
+        lua_pushvalue( L, -2 ); // Push copy of key.
+        const char *key = lua_tostring( L, -1 );
+
+        if( key )
+        {
+            if( key[0] != '_' )
+            {
+                ret.append( key );
+            }
+        }
+
+        lua_pop( L, 2 ); // Key copy and value
+    }
+    // List properties
+    lua_pushstring( L, "__propget" );
+    lua_rawget( L, -2 );
+    if( lua_istable( L, -1 ) )
+    {
+        lua_pushnil( L );
+        while( lua_next( L, -2 ) )
+        {
+            lua_pushvalue( L, -2 ); // Push copy of key.
+            const char *key = lua_tostring( L, -1 );
+
+            if( key )
+            {
+                ret.append( key );
+            }
+
+            lua_pop( L, 2 ); // Key copy and value
+        }
+    }
+    lua_pop( L, 1 ); // __propget table
+
+    return;
+}
+
+int getClassInfo( lua_State* L )
+{
+    luabridge::LuaRef ret = luabridge::newTable( L );
+
+    if( lua_istable( L, 1 ) )
+    {
+        // Class Type
+        lua_getmetatable( L, 1 );
+        lua_pushstring( L, "__class" );
+        lua_rawget( L, -2 );
+
+        if( lua_istable( L, -1 ) )
+        {
+            getClassMembers( L, ret );
+        }
+    }
+    else if( lua_isuserdata( L, 1 ) )
+    {
+        // Class instance
+        lua_getmetatable( L, 1 );
+
+        getClassMembers( L, ret );
+    }
+
+    // Just return an empty table if not a class.
+    ret.push( L );
+
+    return 1;
+}
+
 void ScriptingSystem::shutdown()
 {
     if( mL )
@@ -162,6 +236,7 @@ void ScriptingSystem::bind()
     installLibraryLoader( mL );
 
     getGlobalNamespace( mL )
+        .addCFunction( "getClassInfo", &getClassInfo )
         .beginNamespace( "Engine" )
         .beginClass<Event>( "Event" )
             .addConstructor<void (*) (const char*)>()
