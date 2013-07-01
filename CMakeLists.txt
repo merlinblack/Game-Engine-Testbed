@@ -40,7 +40,8 @@ FILE(GLOB SRCS src/*.cpp)
 FILE(GLOB HDRS include/*.h)
 FILE(GLOB SCRIPTS scripts/*.lua scripts/gui/*.lua)
 
-add_definitions (-DGORILLA_USES_EXCEPTIONS=1 ${LuaBridge_FLAGS})
+add_definitions (-DGORILLA_USES_EXCEPTIONS=1)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LuaBridge_FLAGS}" )
 
 ADD_EXECUTABLE(engine
 	${SRCS}
