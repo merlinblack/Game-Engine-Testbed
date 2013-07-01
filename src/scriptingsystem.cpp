@@ -166,6 +166,11 @@ int getClassInfo( lua_State* L )
     {
         // Class Type
         lua_getmetatable( L, 1 );
+
+        // Static members.
+        getClassMembers( L, ret );
+
+        // Regular members.
         lua_pushstring( L, "__class" );
         lua_rawget( L, -2 );
 
