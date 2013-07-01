@@ -95,7 +95,7 @@ bool ::RenderSystem::initialise()
     unsigned int width, height, depth;
     int top, left;
     EventPtr event = newEvent( "EVT_WINDOW_RESIZE" );
-    boost::shared_ptr<WindowEventData> data( new WindowEventData );
+    RefCountedObjectPtr<WindowEventData> data( new WindowEventData );
     mWindow->getMetrics(width, height, depth, left, top);
     event->data = data;
     data->height = height;
@@ -127,7 +127,8 @@ bool ::RenderSystem::EventNotification( EventPtr event )
 {
     if( event->type == Event::hash( "EVT_WINDOW_RESIZE" ) )
     {
-        boost::shared_ptr<WindowEventData> data = boost::dynamic_pointer_cast<WindowEventData>( event->data );
+        RefCountedObjectPtr<WindowEventData> data =
+            static_cast<RefCountedObjectPtr<WindowEventData> >( event->data );
 
         // Alter the camera aspect ratio
         mCamera->setAspectRatio(Real(data->width) / Real(data->height));

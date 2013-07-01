@@ -19,6 +19,9 @@
 #define LI_PROMPT2 ">>"
 #define LI_MESSAGE "Nigels wizzbang Lua Interpreting Class. Version 0.1. 2009\n"
 
+static const std::string dumpstack_str(lua_State* L );
+static void dumpstack (lua_State *L, const char *message);
+
 typedef std::vector<int> CoroutineList;
 
 class LuaInterpreter

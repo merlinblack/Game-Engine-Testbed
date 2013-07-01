@@ -28,9 +28,6 @@ THE SOFTWARE.
 #include <OgreLogManager.h>
 #include <luaresource.h>
 
-//For testing
-#include <navigationmesh.h>
-
 #if OGRE_PLATFORM == OGRE_PLATFORM_LINUX
 #include <time.h>
 void Sleep(int ms)
@@ -130,7 +127,8 @@ bool Engine::EventNotification( EventPtr event )
 
     if( event->type == Event::hash( "EVT_KEYDOWN" ) )
     {
-        boost::shared_ptr<InputEventData> data = boost::dynamic_pointer_cast<InputEventData>( event->data );
+        RefCountedObjectPtr<InputEventData> data =
+            static_cast<RefCountedObjectPtr<InputEventData> >( event->data );
 
         if( data->key == OIS::KC_F12 )   // Emergency stop.
         {
@@ -165,7 +163,8 @@ bool Engine::EventNotification( EventPtr event )
     }
     if( event->type == Event::hash( "EVT_KEYUP" ) )
     {
-        boost::shared_ptr<InputEventData> data = boost::dynamic_pointer_cast<InputEventData>( event->data );
+        RefCountedObjectPtr<InputEventData> data =
+            static_cast<RefCountedObjectPtr<InputEventData> >( event->data );
 
         if( data->key == OIS::KC_NUMPADENTER )
         {
@@ -205,7 +204,7 @@ void Engine::windowResized( Ogre::RenderWindow* rw)
     int top, left;
 
     EventPtr event = newEvent( "EVT_WINDOW_RESIZE" );
-    boost::shared_ptr<WindowEventData> data( new WindowEventData );
+    RefCountedObjectPtr<WindowEventData> data( new WindowEventData );
 
     rw->getMetrics(width, height, depth, left, top);
 

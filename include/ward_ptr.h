@@ -23,6 +23,7 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 #include <exception>
+#include <map>
 
 /*
  * ward_ptr
@@ -33,64 +34,121 @@ THE SOFTWARE.
  *
  */
 
-template<class T>
+template<typename T>
+class ward_ptr;
+
+struct ward_ptr_data
+{
+    int ref_count;
+    bool valid;
+};
+
+template<typename T>
+struct ward_ptr_map
+{
+    typedef std::map<const T*, ward_ptr_data* > type;
+};
+
+template<typename T>
 class ward_ptr
 {
 private:
-    T** ptr;
-    int *ref_count;
+    T* ptr;
+    ward_ptr_data* data;
+    static typename ward_ptr_map<T>::type backref;
 
 public:
-    ward_ptr() : ptr(NULL)
+    static void debug()
+    {
+        typename ward_ptr_map<T>::type::iterator it;
+        for( it = backref.begin(); it != backref.end(); it++ )
+        {
+            const ward_ptr_data* wp = it->second;
+        }
+    }
+
+    ward_ptr() : ptr(NULL), data(NULL)
     {
     }
     ward_ptr( const ward_ptr<T>& p )
     {
+        debug();
         ptr = p.ptr;
-        ref_count = p.ref_count;
-        (*ref_count)++;
+        data = p.data;
+        data->ref_count++;
+    }
+    ward_ptr<T>& operator = ( ward_ptr<T>& p )
+    {
+        debug();
+        decref();
+        ptr = p.ptr;
+        data = p.data;
+        data->ref_count++;
+        return this;
     }
     ward_ptr( T* p )
     {
-        ptr = new T*;
-        ref_count = new int;
-        *ptr = p;
-        *ref_count = 1;
+        debug();
+        ptr = p;
+
+        typename ward_ptr_map<T>::type::iterator it = backref.find( p );
+
+        if( it != backref.end() )
+        {
+            data = it->second;
+        }
+        else
+        {
+            data = new ward_ptr_data;
+            data->ref_count = 0;
+            data->valid = true;
+            backref[ptr] = data;
+        }
+        data->ref_count++;
     }
     T* get() const
     {
-        if( ! ptr || ! *ptr )
-            throw std::logic_error( "ward_ptr: exception - instance pointer not set." );
-        return *ptr;
+        debug();
+        if( ! data->valid )
+            throw std::logic_error( "ward_ptr: exception - instance pointer no longer valid." );
+        return ptr;
     }
     T* operator->() const
     {
-        if( ! ptr || ! *ptr )
-            throw std::logic_error( "ward_ptr: exception - instance pointer not set." );
-        return *ptr;
+        if( ! data->valid )
+            throw std::logic_error( "ward_ptr: exception - instance pointer no longer valid." );
+        return ptr;
     }
     operator T*() const
     {
-        if( ! ptr || ! *ptr )
-            throw std::logic_error( "ward_ptr: exception - instance pointer not set." );
-        return *ptr;
+        if( ! data->valid )
+            throw std::logic_error( "ward_ptr: exception - instance pointer no longer valid." );
+        return ptr;
     }
     void invalidate()
     {
-        *ptr = NULL;
+        data->valid = false;
     }
     virtual ~ward_ptr()
     {
-        (*ref_count)--;
-        if( *ref_count == 0 )
+        decref();
+    }
+    void decref()
+    {
+        data->ref_count--;
+        if( data->ref_count == 0 )
         {
-            delete ref_count;
-            delete ptr;
+            typename ward_ptr_map<T>::type::iterator it = backref.find( ptr );
+            backref.erase(it);
+            delete data;
         }
     }
 };
 
-template<class T>
+template<typename T>
+typename ward_ptr_map<T>::type ward_ptr<T>::backref;
+
+template<typename T>
 T* get_pointer( ward_ptr<T> p )
 {
     return p.get();

@@ -28,10 +28,6 @@ THE SOFTWARE.
 //For debugDrawClassification
 #include <Ogre.h>
 
-//For Lua glue.
-#include <luabind/luabind.hpp>
-#include <luabind/object.hpp>
-
 // The speration tolerance that vertices in a navmesh are considered in the same place.
 #define VERTEX_SNAP_TOLERANCE 2.0f
 
@@ -161,6 +157,7 @@ void NavigationCell::debugDrawCellAndNeigbours()
 
 void NavigationCell::getDebugInfoLua( lua_State *L )
 {
+    /*
     luabind::object info = luabind::newtable(L);
     luabind::object verts = luabind::newtable(L);
     luabind::object links = luabind::newtable(L);
@@ -190,6 +187,7 @@ void NavigationCell::getDebugInfoLua( lua_State *L )
     info["centre"] = mCentre;
 
     info.push( L );
+    */
 
     return;
 }
@@ -471,6 +469,7 @@ void NavigationMesh::findNavigationPathLua( lua_State* L, Ogre::Vector3 position
     }
 
     // Create a table and populate with the path points.
+    /*
     luabind::object table = luabind::newtable( L );
 
     NavigationPath::iterator i;
@@ -485,6 +484,7 @@ void NavigationMesh::findNavigationPathLua( lua_State* L, Ogre::Vector3 position
     delete straightendPath;
 
     table.push( L );
+    */
 
     return;
 }

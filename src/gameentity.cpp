@@ -33,8 +33,6 @@ THE SOFTWARE.
 std::ostream& operator<<( std::ostream& stream, const GameEntity& ge );
 std::ostream& operator<<( std::ostream& stream, const GameEntityManager& gm );
 
-#include <luabind/operator.hpp>
-
 boost::hash<std::string> GameEntity::hasher;
 
 GameEntity::GameEntity() : hashId(0), sceneNode(0), mesh(0), originalMaterial(0), highlightMaterial(0)
@@ -363,8 +361,10 @@ std::list<GameEntityPtr> GameEntityManager::mousePick( float x, float y )
 
 void GameEntityManager::mousePickLua( lua_State* L, float x, float y )
 {
+    /*
     using namespace Ogre;
 
+    //TODO convert to LuaBridge
     luabind::object geTable = luabind::newtable( L );
     luabind::object distTable = luabind::newtable( L );
     size_t index = 1;
@@ -399,12 +399,13 @@ void GameEntityManager::mousePickLua( lua_State* L, float x, float y )
 
     geTable.push( L );
     distTable.push( L );
-
+*/
     return;
 }
 
 void GameEntityManager::getGameEntityList( lua_State *L )
 {
+    /*
     luabind::object geTable = luabind::newtable( L );
     size_t index = 0;
 
@@ -416,6 +417,7 @@ void GameEntityManager::getGameEntityList( lua_State *L )
     }
 
     geTable.push( L );
+    */
 }
 
 std::ostream& operator<<( std::ostream& stream, const GameEntity& ge )
@@ -430,6 +432,7 @@ std::ostream& operator<<( std::ostream& stream, const GameEntityManager& gm )
 
 void bindGameEntityClasses( lua_State* L )
 {
+    /*
     using namespace luabind;
 
     module(L)
@@ -468,4 +471,5 @@ void bindGameEntityClasses( lua_State* L )
             .def(tostring(self))
             //.def( "update", &GameEntityManager::update ) // Usually done every game loop.
     ];
+    */
 }

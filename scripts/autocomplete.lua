@@ -12,9 +12,9 @@ function autoComplete( str )
 
     str, posibles = complete(str)
 
-    if #posibles > 1 then 
+    if #posibles > 1 then
         if doubleTab.str == str then
-            print( unpack( posibles ) )
+            print( table.unpack( posibles ) )
         else
             doubleTab.str = str
         end
@@ -54,13 +54,18 @@ function getCompletions( str )
         return {}
     end
 
-    if type(g) == 'userdata' then
-        g = infotable( g )
+    -- Retrieve class info if any
+    for k,v in pairs( getClassInfo( g ) ) do
+        if string.find( v, str ) == 1 then
+            table.insert( ret, prefix .. dottype .. v )
+        end
     end
 
-    for k,v in pairs(g) do
-        if string.find( k, str ) == 1 then
-            table.insert( ret, prefix .. dottype .. k )
+    if type( g ) == 'table' then
+        for k,v in pairs(g) do
+            if string.find( k, str ) == 1 and string.sub(k,1,1) ~= '_' then
+                table.insert( ret, prefix .. dottype .. k )
+            end
         end
     end
 

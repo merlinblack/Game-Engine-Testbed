@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-PROJECT(engine)
+project (engine)
 
 if (WIN32)
     set(CMAKE_MODULE_PATH_ADD $ENV{PROGRAMFILES}/OGRE/CMake )
@@ -15,31 +15,33 @@ set(OGRE_STATIC false)
 FIND_PACKAGE(OpenGL)
 FIND_PACKAGE(OGRE)
 FIND_PACKAGE(OIS)
-FIND_PACKAGE(Lua51)
-FIND_PACKAGE(Luabind)
 SET(Boost_USE_STATIC_LIBS    OFF)
 SET(Boost_USE_MULTITHREADED  ON)
 SET(Boost_USE_STATIC_RUNTIME OFF)
 FIND_PACKAGE(Boost 1.40.0 COMPONENTS thread date_time)
+FIND_PACKAGE(Threads)
+
+add_subdirectory( Lua )
+
+# For LuaBridge
+SET(LuaBridge_FLAGS "-Wno-deprecated")
 
 INCLUDE_DIRECTORIES(
+	${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/LuaBridge
 	${OpenGL_INCLUDE_DIR}
 	${OGRE_INCLUDE_DIRS}
 	${OIS_INCLUDE_DIRS}
 	${Boost_INCLUDE_DIR}
-	${LUA_INCLUDE_DIR}
-	${LUABIND_INCLUDE_DIR}
-	${PROJECT_SOURCE_DIR}/include
+    ${Lua_INCLUDE_DIRS}
 	)
 
 FILE(GLOB SRCS src/*.cpp)
 FILE(GLOB HDRS include/*.h)
 FILE(GLOB SCRIPTS scripts/*.lua scripts/gui/*.lua)
 
-#INCLUDE( UnityBuild.cmake )
-#enable_unity_build( engine SRCS )
-
-ADD_DEFINITIONS(-DGORILLA_USES_EXCEPTIONS=1)
+add_definitions (-DGORILLA_USES_EXCEPTIONS=1)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LuaBridge_FLAGS}" )
 
 ADD_EXECUTABLE(engine
 	${SRCS}
@@ -51,15 +53,15 @@ TARGET_LINK_LIBRARIES(engine
 	${OIS_LIBRARIES}
 	${OGRE_LIBRARIES}
 	${Boost_LIBRARIES}
-	${LUA_LIBRARIES}
-    ${LUABIND_LIBRARIES}
+    ${Lua_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
 	)
 
 INCLUDE( GitVersioning )
 enable_git_versioning( engine )
 
-MESSAGE(STATUS "Boost libraries:   " ${Boost_LIBRARIES} )
-MESSAGE(STATUS "OIS libraries:     " ${OIS_LIBRARIES} )
-MESSAGE(STATUS "OGRE libraries:    " ${OGRE_LIBRARIES} )
-MESSAGE(STATUS "LUA libraries:     " ${LUA_LIBRARIES} )
-MESSAGE(STATUS "LUABIND libraries: " ${LUABIND_LIBRARIES} )
+MESSAGE(STATUS "Boost libraries:    ${Boost_LIBRARIES} ")
+MESSAGE(STATUS "OIS libraries:      ${OIS_LIBRARIES} ")
+MESSAGE(STATUS "OGRE libraries:     ${OGRE_LIBRARIES} ")
+MESSAGE(STATUS "Lua libraries:      ${Lua_LIBRARIES} ")
+MESSAGE(STATUS "Lua headers:        ${Lua_INCLUDE_DIRS} ")

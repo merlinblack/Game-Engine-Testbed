@@ -22,12 +22,12 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 
-#include <lua.h>
-#include <luabind/version.hpp>
+#include <lua.hpp>
 #include <OgrePrerequisites.h>
 #include <OgreString.h>
 #include <OgreStringConverter.h>
 #include <git_versioning.h>
+#include <LuaBridge.h>
 
 Ogre::String versionString()
 {
@@ -52,12 +52,10 @@ Ogre::String versionString()
     version += LUA_RELEASE;
     version += "\n";
 
-    version += "Luabind ";
-    version += Ogre::StringConverter::toString(LUABIND_VERSION / 10000);
+    version += "LuaBridge ";
+    version += Ogre::StringConverter::toString( LUABRIDGE_MAJOR_VERSION );
     version += ".";
-    version += Ogre::StringConverter::toString(LUABIND_VERSION / 100 % 100); 
-    version += ".";
-    version += Ogre::StringConverter::toString(LUABIND_VERSION % 100); 
+    version += Ogre::StringConverter::toString( LUABRIDGE_MINOR_VERSION );
     version += "\n";
 
     return version;

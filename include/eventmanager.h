@@ -29,8 +29,9 @@ THE SOFTWARE.
 #include <list>
 #include <OIS.h>
 #include <boost/shared_ptr.hpp>
+#include <RefCountedObject.h>
 
-struct EventData
+struct EventData : public RefCountedObjectType<size_t>
 {
     virtual ~EventData() {}
 };
@@ -45,13 +46,13 @@ struct Event
 
     static std::size_t hash( std::string hashstr );
 
-    boost::shared_ptr<EventData> data;
+    RefCountedObjectPtr<EventData> data;
 };
 
 class EventListenerSender;
 
 typedef boost::shared_ptr<Event> EventPtr;
-typedef boost::shared_ptr<EventData> EventDataPtr;
+typedef RefCountedObjectPtr<EventData> EventDataPtr;
 
 class EventManager
 {

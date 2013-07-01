@@ -1,11 +1,12 @@
 -- Cache hash values.
-Event.keydown = Event.hash "EVT_KEYDOWN"
-Event.mousemove = Event.hash "EVT_MOUSEMOVE"
-Event.mousedown = Event.hash "EVT_MOUSEDOWN"
-Event.mouseup = Event.hash "EVT_MOUSEUP"
-Event.windowresize = Event.hash "EVT_WINDOW_RESIZE"
-
 events = events or {}
+
+events.keydown      = Engine.Event.hash "EVT_KEYDOWN"
+events.mousemove    = Engine.Event.hash "EVT_MOUSEMOVE"
+events.mousedown    = Engine.Event.hash "EVT_MOUSEDOWN"
+events.mouseup      = Engine.Event.hash "EVT_MOUSEUP"
+events.windowresize = Engine.Event.hash "EVT_WINDOW_RESIZE"
+
 events.subscribers = events.subscribers or {}
 
 function events.subscribe( eventType, listener )
@@ -14,7 +15,7 @@ function events.subscribe( eventType, listener )
     end
 
     if type(eventType) == 'string' then
-        eventType = Event.hash( eventType )
+        eventType = Engine.Event.hash( eventType )
     end
 
     events.subscribers[eventType] = events.subscribers[eventType] or {}
@@ -25,7 +26,7 @@ end
 function events.unsubscribe( eventType, listener )
 
     if type(eventType) == 'string' then
-        eventType = Event.hash( eventType )
+        eventType = Engine.Event.hash( eventType )
     end
 
     index = table.indexOf( events.subscribers[eventType], listener )
@@ -48,5 +49,6 @@ function events.route( event )
 end
 
 function EventNotification( event )
+    LastEvent = event
     return events.route( event )
 end

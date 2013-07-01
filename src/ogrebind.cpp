@@ -23,29 +23,33 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 #include <Ogre.h>
-#include <luabind/luabind.hpp>
+#include <lua.hpp>
+#include <LuaBridge.h>
+#include <luareadonlytable.h>
 
-// Prototype these before operator.hpp so it can be found for tostring() operator.
-std::ostream& operator<<( std::ostream& stream, const Ogre::Entity& ent );
-std::ostream& operator<<( std::ostream& stream, const Ogre::SceneNode& node );
-std::ostream& operator<<( std::ostream& stream, const Ogre::SceneManager& mgr );
-
-#include <luabind/operator.hpp>
-
-using namespace luabind;
+using namespace luabridge;
 using namespace Ogre;
-
-// Some helpful macros for defining constants (sort of) in Lua.  Similar to this code:
-// object g = globals(L);
-// object table = g["class"];
-// table["constant"] = class::constant;
-
-#define LUA_STATIC_START( class ) { object g = globals(L); object table = g[#class];
-#define LUA_STATIC( class, name ) table[#name] = class::name
-#define LUA_STATIC_END }
 
 void bindQuaternion( lua_State* L )
 {
+    getGlobalNamespace( L )
+        .beginNamespace( "Ogre" )
+        .beginClass<Quaternion>( "Quaternion" )
+        .addData( "x", &Quaternion::x )
+        .addData( "y", &Quaternion::y )
+        .addData( "z", &Quaternion::z )
+        .addData( "w", &Quaternion::w )
+        .addFunction( "dot", &Quaternion::Dot )
+        .addConstructor<void (*) (Real,Real,Real,Real)>()
+        .endClass()
+        .endNamespace();
+
+    LuaRef ogre = getGlobal( L, "Ogre" );
+    LuaRef quaternion = ogre["Quaternion"];
+    quaternion["ZERO"]     = Quaternion::ZERO;
+    quaternion["IDENTITY"] = Quaternion::IDENTITY;
+
+    /*
     module(L)
     [
         class_<Quaternion>( "Quaternion" )
@@ -71,10 +75,83 @@ void bindQuaternion( lua_State* L )
         LUA_STATIC( Quaternion, ZERO );
         LUA_STATIC( Quaternion, IDENTITY );
     LUA_STATIC_END;
+    */
+}
+
+Vector3* Vector3Constructor( lua_State* L )
+{
+    const char* arg_error = "Expecting %s for argument %d when given %d arguments";
+
+    switch( lua_gettop( L ) ) // Note that the class table is always index 1 on the stack.
+    {
+        case 1:
+            {
+                return new Vector3();
+            }
+            break;
+        case 2:
+            {
+                LuaRef p1 = LuaRef::fromStack( L, 2 );
+                if( p1.is<Vector3>() == true )
+                {
+                    return new Vector3( LuaRef_cast<Vector3>(p1) );
+                }
+                luaL_error( L, arg_error, "Vector3", 1, 1 ); // returns
+            }
+            break;
+        case 4:
+            {
+                LuaRef p1 = LuaRef::fromStack( L, 2 );
+                LuaRef p2 = LuaRef::fromStack( L, 3 );
+                LuaRef p3 = LuaRef::fromStack( L, 4 );
+
+                if( p1.isNumber() != true )
+                    luaL_error( L, arg_error, "number", 1, 3 ); // returns
+                if( p2.isNumber() != true )
+                    luaL_error( L, arg_error, "number", 2, 3 ); // returns
+                if( p2.isNumber() != true )
+                    luaL_error( L, arg_error, "number", 3, 3 ); // returns
+
+                return new Vector3(
+                        LuaRef_cast<Real>( p1 ),
+                        LuaRef_cast<Real>( p2 ),
+                        LuaRef_cast<Real>( p3 ) );
+            }
+            break;
+        default:
+            luaL_error( L, "Incorrect number of arguments given (%d)", lua_gettop( L ) ); // returns
+            break;
+    }
+
+    // Should not get here.
+    return NULL;
 }
 
 void bindVector3( lua_State* L )
 {
+    getGlobalNamespace( L )
+        .beginNamespace( "Ogre" )
+        .beginClass<Vector3>( "Vector3" )
+        .addData( "x", &Vector3::x )
+        .addData( "y", &Vector3::y )
+        .addData( "z", &Vector3::z )
+        .addStaticFunction( "__call", &Vector3Constructor )
+        .endClass()
+        .endNamespace();
+
+    LuaRef ogre = getGlobal( L, "Ogre" );
+    LuaRef vector3 = ogre["Vector3"];
+
+    vector3["ZERO"] = Vector3::ZERO;
+    vector3["UNIT_X"] = Vector3::UNIT_X;
+    vector3["UNIT_Y"] = Vector3::UNIT_Y;
+    vector3["UNIT_Z"] = Vector3::UNIT_Z;
+    vector3["NEGATIVE_UNIT_X"] = Vector3::NEGATIVE_UNIT_X;
+    vector3["NEGATIVE_UNIT_Y"] = Vector3::NEGATIVE_UNIT_Y;
+    vector3["NEGATIVE_UNIT_Z"] = Vector3::NEGATIVE_UNIT_Z;
+    vector3["UNIT_SCALE"] = Vector3::UNIT_SCALE;
+
+    /*
     module(L)
     [
         class_<Vector3>( "Vector3" )
@@ -128,10 +205,12 @@ void bindVector3( lua_State* L )
         LUA_STATIC( Vector3, NEGATIVE_UNIT_Z);
         LUA_STATIC( Vector3, UNIT_SCALE);
     LUA_STATIC_END;
+    */
 }
 
 void bindVector2( lua_State* L )
 {
+    /*
     module(L)
     [
         class_<Vector2>( "Vector2" )
@@ -173,10 +252,12 @@ void bindVector2( lua_State* L )
         LUA_STATIC( Vector2, NEGATIVE_UNIT_Y);
         LUA_STATIC( Vector2, UNIT_SCALE);
     LUA_STATIC_END;
+    */
 }
 
 void bindColourValue( lua_State* L )
 {
+    /*
     module(L)
     [
         class_<ColourValue>("ColourValue")
@@ -208,6 +289,7 @@ void bindColourValue( lua_State* L )
         LUA_STATIC( ColourValue, Green);
         LUA_STATIC( ColourValue, Blue);
     LUA_STATIC_END;
+    */
 }
 
 std::ostream& operator<<( std::ostream& stream, const Entity& ent )
@@ -222,6 +304,7 @@ void ManualObject_finish( ManualObject* self )
 
 void bindEntity( lua_State* L ) // And Movable Object for now.
 {
+    /*
     module(L)
     [
         class_<MovableObject>("MovableObject")
@@ -249,6 +332,7 @@ void bindEntity( lua_State* L ) // And Movable Object for now.
         .def("index",  &ManualObject::index )
         .def("finish", &ManualObject_finish )
     ];
+    */
 }
 
 // Fake member function for simplifying binding, as the real functions
@@ -314,6 +398,7 @@ std::ostream& operator<<( std::ostream& stream, const SceneNode& node )
 
 void bindSceneNode( lua_State* L )
 {
+    /*
     module(L)
     [
         class_<SceneNode>("SceneNode")
@@ -344,10 +429,12 @@ void bindSceneNode( lua_State* L )
         LUA_STATIC( SceneNode, TS_PARENT );
         LUA_STATIC( SceneNode, TS_WORLD );
     LUA_STATIC_END;
+    */
 }
 
 void bindLight( lua_State* L )
 {
+    /*
     module(L)
     [
         class_<Light, MovableObject>("Light")
@@ -368,10 +455,12 @@ void bindLight( lua_State* L )
         LUA_STATIC( Light, LT_DIRECTIONAL );
         LUA_STATIC( Light, LT_SPOTLIGHT );
     LUA_STATIC_END;
+    */
 }
 
 void bindCamera( lua_State* L )
 {
+    /*
     module(L)
     [
         class_<Camera, MovableObject>("Camera")
@@ -383,6 +472,7 @@ void bindCamera( lua_State* L )
         .def("setFarClipDistance", &Camera::setFarClipDistance )
         .def(tostring(self))
     ];
+    */
 }
 
 void Scene_setSkyBox( SceneManager* mgr, const String& materialName )
@@ -397,6 +487,7 @@ void Scene_disableSkyBox( SceneManager* mgr )
 
 void bindSceneManager( lua_State* L )
 {
+    /*
     module(L)
     [
         class_<SceneManager>("SceneManager")
@@ -435,6 +526,7 @@ void bindSceneManager( lua_State* L )
         table["SHADOWTYPE_TEXTURE_MODULATIVE"] = SHADOWTYPE_TEXTURE_MODULATIVE;
         table["SHADOWTYPE_TEXTURE_MODULATIVE_INTEGRATED"] = SHADOWTYPE_TEXTURE_MODULATIVE_INTEGRATED;
     LUA_STATIC_END;
+    */
 }
 
 std::ostream& operator<<( std::ostream& stream, const Ogre::SceneManager& mgr )
@@ -450,6 +542,7 @@ SceneManager* getSceneManager()
 
 void bindRadian( lua_State* L )
 {
+    /*
     module(L)
     [
         class_<Radian>("Radian")
@@ -466,6 +559,7 @@ void bindRadian( lua_State* L )
         .def_readonly( "rad", (float (Degree::*)())&Degree::valueRadians )
         .def_readonly( "deg", (float (Degree::*)())&Degree::valueDegrees )
     ];
+    */
 }
 
 RenderWindow::FrameStats getFrameStats()
@@ -492,32 +586,37 @@ Viewport* getViewport( unsigned short index )
 
 void bindFrameStats( lua_State* L )
 {
-    module(L)
-    [
-        class_<RenderWindow::FrameStats>( "FrameStats" )
-        .def_readonly( "lastFPS", &RenderWindow::FrameStats::lastFPS )
-        .def_readonly( "avgFPS", &RenderWindow::FrameStats::avgFPS )
-        .def_readonly( "bestFPS", &RenderWindow::FrameStats::bestFPS )
-        .def_readonly( "worstFPS", &RenderWindow::FrameStats::worstFPS )
-        .def_readonly( "bestFrameTime", &RenderWindow::FrameStats::bestFrameTime )
-        .def_readonly( "worstFrameTime", &RenderWindow::FrameStats::worstFrameTime )
-        .def_readonly( "triangleCount", &RenderWindow::FrameStats::triangleCount )
-        .def_readonly( "batchCount", &RenderWindow::FrameStats::batchCount )
-    ];
+    getGlobalNamespace( L )
+        .beginNamespace("Ogre")
+        .beginClass<RenderWindow::FrameStats>("FrameStats")
+        .addData( "lastFPS", &RenderWindow::FrameStats::lastFPS )
+        .addData( "avgFPS", &RenderWindow::FrameStats::avgFPS )
+        .addData( "bestFPS", &RenderWindow::FrameStats::bestFPS )
+        .addData( "worstFPS", &RenderWindow::FrameStats::worstFPS )
+        .addData( "bestFrameTime", &RenderWindow::FrameStats::bestFrameTime )
+        .addData( "worstFrameTime", &RenderWindow::FrameStats::worstFrameTime )
+        .addData( "triangleCount", &RenderWindow::FrameStats::triangleCount )
+        .addData( "batchCount", &RenderWindow::FrameStats::batchCount )
+        .endClass()
+        .endNamespace();
 }
 
-String ViewportToString( Viewport* )
+String ViewportToString( const Viewport* ptr )
 {
-    return "Viewport";
+    std::stringstream ss;
+
+    ss << "Viewport - " << std::hex << ptr;
+    return ss.str();
 }
 
 void bindViewport( lua_State *L )
 {
-    module(L)
-    [
-        class_<Viewport>("Viewport")
-        .def("__tostring", &ViewportToString)
-    ];
+    getGlobalNamespace( L )
+        .beginNamespace( "Ogre" )
+        .beginClass<Viewport>( "Viewport" )
+        .addFunction( "__tostring", &ViewportToString )
+        .endClass()
+        .endNamespace();
 }
 
 // Keep this at the bottom so we don't need prototypes for other bind functions.
@@ -536,14 +635,11 @@ void bindOgre( lua_State* L )
     bindFrameStats( L );
     bindViewport( L );
 
-    module(L)
-    [
-        namespace_("Ogre")
-        [
-            def("getStats", &getFrameStats ),
-            def("getSceneManager", &getSceneManager ),
-            def("getNumViewports", &getNumViewports ),
-            def("getViewport", &getViewport )
-        ]
-    ];
+    getGlobalNamespace( L )
+        .beginNamespace( "Ogre" )
+        .addFunction( "getStats", &getFrameStats )
+        .addFunction( "getSceneManager", &getSceneManager )
+        .addFunction( "getNumViewports", &getNumViewports )
+        .addFunction( "getViewport", &getViewport )
+        .endNamespace();
 }
