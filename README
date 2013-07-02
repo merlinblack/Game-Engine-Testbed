@@ -50,8 +50,9 @@ The console while active eats all key presses except "~".
 
 ** Quick Start Compiling:
 
-First make sure you have Ogre3d 1.7 or 1.8, OIS 1.2, Lua 5.1,
-and Luabind 0.9, along with their development files.
+First make sure you have Ogre3d 1.7+, OIS 1.2+ along with their
+development files. A copy of Lua 5.2 and Luabridge 2.0 are in the
+source tree.
 Also needed is CMake 2.6 or above.
 
 LINUX:
