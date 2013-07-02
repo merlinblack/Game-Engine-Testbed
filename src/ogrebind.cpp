@@ -205,39 +205,28 @@ void bindVector2( lua_State* L )
 
 void bindColourValue( lua_State* L )
 {
-    /*
-    module(L)
-    [
-        class_<ColourValue>("ColourValue")
-        .def(constructor<>())
-        .def(constructor<Real, Real, Real, Real>())
-        .def(constructor<Real, Real, Real>())
-        .def(tostring(self))
-        .def_readwrite( "r", &ColourValue::r)
-        .def_readwrite( "g", &ColourValue::g )
-        .def_readwrite( "b", &ColourValue::b )
-        .def_readwrite( "a", &ColourValue::a )
-        .def( "saturate", &ColourValue::saturate )
+    getGlobalNamespace( L )
+        .beginNamespace( "Ogre" )
+        .beginClass<ColourValue>( "ColourValue" )
+        .addConstructor<void (*) (Real,Real,Real,Real)>()
+        .addData( "r", &ColourValue::r )
+        .addData( "g", &ColourValue::g )
+        .addData( "b", &ColourValue::b )
+        .addData( "a", &ColourValue::a )
+        .addFunction( "saturate", &ColourValue::saturate )
+        .endClass()
+        .endNamespace();
+    // Not bothering with operators - do them when needed.
 
-        // Operators
+    LuaRef ogre = getGlobal( L, "Ogre" );
+    LuaRef colourvalue = ogre["ColourValue"];
 
-        .def( self + other<ColourValue>() )
-        .def( self - other<ColourValue>() )
-        .def( self * other<ColourValue>() )
-        .def( self * Real() )
-        .def( self / Real() )
-        .def(tostring(self))
-    ];
-
-    LUA_STATIC_START( ColourValue )
-        LUA_STATIC( ColourValue, ZERO);
-        LUA_STATIC( ColourValue, Black);
-        LUA_STATIC( ColourValue, White);
-        LUA_STATIC( ColourValue, Red);
-        LUA_STATIC( ColourValue, Green);
-        LUA_STATIC( ColourValue, Blue);
-    LUA_STATIC_END;
-    */
+    colourvalue["ZERO"]  = ColourValue::ZERO;
+    colourvalue["Black"] = ColourValue::Black;
+    colourvalue["White"] = ColourValue::White;
+    colourvalue["Red"]   = ColourValue::Red;
+    colourvalue["Green"] = ColourValue::Green;
+    colourvalue["Blue"]  = ColourValue::Blue;
 }
 
 std::ostream& operator<<( std::ostream& stream, const Entity& ent )
@@ -252,6 +241,18 @@ void ManualObject_finish( ManualObject* self )
 
 void bindEntity( lua_State* L ) // And Movable Object for now.
 {
+    getGlobalNamespace( L )
+        .beginNamespace( "Ogre" )
+        .beginClass<MovableObject>("MovableObject")
+        .addFunction( "getVisible", &MovableObject::getVisible )
+        .addFunction( "setVisible", &MovableObject::setVisible )
+        .endClass()
+        .deriveClass<Entity,MovableObject>("Entity")
+        .addFunction("setMaterialName", &Entity::setMaterialName )
+        .addFunction("setDisplaySkeleton", &Entity::setDisplaySkeleton )
+        .endClass()
+        .endNamespace();
+
     /*
     module(L)
     [
