@@ -4,6 +4,8 @@ require 'keys'
 require 'autocomplete'
 require 'events'
 
+gui = gui or {}
+
 function version()
 --    message( '%@14%' .. versionString()..'\n\n' )
     print( Engine.versionString() )
@@ -35,6 +37,9 @@ function FrameEnded( timeSinceLastFrame )
     currentTaskId = runNextTask( currentTaskId )
 end
 
+function exit()
+    quitProgram()
+end
 function quitProgram()
     Engine.queueEvent( Engine.Event( "MSG_QUIT" ) )
 end
@@ -69,43 +74,6 @@ function dump(t)
     end
 end
 
---[[
-function info( classInstance )
-    local ci = class_info( classInstance )
-    local str=''
-
-    print( 'Name: '..ci.name )
-
-    for k,v in pairs( ci.methods ) do
-        str = str..' '..k
-    end
-
-    print( 'Methods:'..str )
-    str=''
-
-    for k,v in pairs( ci.attributes ) do
-        str = str..' '..v
-    end
-
-    print( 'Attributes:'..str )
-end
-
-function infotable( classInstance )
-    local t={}
-    local ci = class_info( classInstance )
-
-    for k,v in pairs( ci.methods ) do
-        t[k]=v
-    end
-
-    for k,v in pairs( ci.attributes ) do
-        t[v]=classInstance[v]
-    end
-
-    return t
-end
---]]
-
 function quitKeyListener( event )
     inputdata = Engine.InputEventData.downcast( event.data )
 
@@ -132,9 +100,9 @@ function setup()
     log = console.log
     clear = console.clear
 
-    --local sb = Gorilla.Silverback.getSingleton()
-    --gui.screen = sb:createScreen( Ogre.getViewport( 0 ), 'atlas' )
-    --gui.mainLayer = gui.screen:createLayer(0)
+    local sb = Gorilla.Silverback.getSingleton()
+    gui.screen = sb:createScreen( Ogre.getViewport( 0 ), 'atlas' )
+    gui.mainLayer = gui.screen:createLayer(0)
     --gui.dialogBackground = ColourValue( .999, .999, .878, .6 )
     --gui.dialogBackground = ColourValue( 11/255, 34/255, 35/255, .9 )
 
