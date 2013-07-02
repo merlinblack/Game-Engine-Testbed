@@ -17,6 +17,10 @@
 --   self.abc = 'Hello World'
 -- end
 --
+-- d=derived()
+-- d:something()
+-- print( d.xyz, d.abc )
+--
 
 
 function class( name )
