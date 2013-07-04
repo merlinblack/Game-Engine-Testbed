@@ -324,14 +324,18 @@ bool ScriptingSystem::frameEnded(const Ogre::FrameEvent& evt)
         // If the function is not defined, don't worry about it.
         if( func )
             func( evt.timeSinceLastFrame );
+
+        // Do a Lua garbage collection.
+        // We do it like this - as LuaRef translates any errors in finalizers
+        // to exceptions, which we then catch.
+        luabridge::LuaRef gc = luabridge::getGlobal( mL, "collectgarbage" );
+        gc( "step" );
     }
     catch( luabridge::LuaException& e )
     {
         Ogre::LogManager::getSingleton().stream() << e.what();
     }
 
-    // Do a Lua garbage collection.
-    lua_gc( mL, LUA_GCSTEP, 1 );
 
     return true;
 }
