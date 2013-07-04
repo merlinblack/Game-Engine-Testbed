@@ -36,7 +36,15 @@ function class( name )
         __call = function(...)
             local obj = {}
 
-            setmetatable( obj, { __index = newclass } )
+            setmetatable( obj,
+            {
+                __index = newclass,
+                __gc = function( self )
+                    if self.destroy then
+                        self:destroy()
+                    end
+                end
+            } )
 
             if obj.__init ~= nil then
                 obj:__init( select(2, ...) )
@@ -48,5 +56,5 @@ function class( name )
 
     setmetatable( newclass, metatable )
 
-    return function( base ) metatable['__index'] = base end
+    return function( base ) metatable['__index'] = base newclass['__base'] = base end
 end

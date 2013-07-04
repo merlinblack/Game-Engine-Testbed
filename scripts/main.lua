@@ -1,10 +1,8 @@
 require 'scheduler'
 require 'keys'
---require 'gui/gui'
+require 'gui/gui'
 require 'autocomplete'
 require 'events'
-
-gui = gui or {}
 
 function version()
 --    message( '%@14%' .. versionString()..'\n\n' )
@@ -77,7 +75,7 @@ end
 function quitKeyListener( event )
     inputdata = Engine.InputEventData.downcast( event.data )
 
-    if inputdata and inputdata.key == KeyCodes.KC_ESCAPE then --and #gui.modal == 0 then
+    if inputdata and inputdata.key == KeyCodes.KC_ESCAPE and #gui.modal == 0 then
         quitProgram()
         return true
     end
@@ -91,7 +89,9 @@ function resizeListener( event )
     end
 end
 
-function setViewportSize() -- Place holder
+function setViewportSize(width, height)
+    mouse.width = width
+    mouse.height = height
 end
 
 function setup()
@@ -103,17 +103,17 @@ function setup()
     local sb = Gorilla.Silverback.getSingleton()
     gui.screen = sb:createScreen( Ogre.getViewport( 0 ), 'atlas' )
     gui.mainLayer = gui.screen:createLayer(0)
-    --gui.dialogBackground = ColourValue( .999, .999, .878, .6 )
-    --gui.dialogBackground = ColourValue( 11/255, 34/255, 35/255, .9 )
+    gui.dialogBackground = Ogre.ColourValue( .999, .999, .878, .6 )
+    gui.dialogBackground = Ogre.ColourValue( 11/255, 34/255, 35/255, .9 )
 
-    --setupMouse()
+    setupMouse()
 
-    --events.subscribe( 'EVT_MOUSEMOVE',     mouseMovedEventListener )
-    --events.subscribe( 'EVT_MOUSEDOWN',     mouseMovedEventListener )
-    --events.subscribe( 'EVT_MOUSEUP',       mouseMovedEventListener )
+    events.subscribe( 'EVT_MOUSEMOVE',     mouseMovedEventListener )
+    events.subscribe( 'EVT_MOUSEDOWN',     mouseMovedEventListener )
+    events.subscribe( 'EVT_MOUSEUP',       mouseMovedEventListener )
     events.subscribe( 'EVT_KEYUP',         quitKeyListener )
-    --events.subscribe( 'EVT_KEYDOWN',       keyPressedEventListener )
-    --events.subscribe( 'EVT_KEYUP',         keyReleasedEventListener )
+    events.subscribe( 'EVT_KEYDOWN',       keyPressedEventListener )
+    events.subscribe( 'EVT_KEYUP',         keyReleasedEventListener )
     events.subscribe( 'EVT_WINDOW_RESIZE', resizeListener )
 
     --Something to look at...

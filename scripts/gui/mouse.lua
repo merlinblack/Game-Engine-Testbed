@@ -16,14 +16,14 @@ end
 
 function mouse.hide()
     mouse.i = (mouse.i or 1) - 1
-    if mouse.i < 0 then 
+    if mouse.i < 0 then
         mouse.i = 0
     end
-    if mouse.i == 0 then 
+    if mouse.i == 0 then
         mouse.layer:hide()
     end
 end
-    
+
 function setMouseViewportSize( w, h )
     mouse.width = w
     mouse.height = h
