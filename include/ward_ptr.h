@@ -59,28 +59,17 @@ private:
     static typename ward_ptr_map<T>::type backref;
 
 public:
-    static void debug()
-    {
-        typename ward_ptr_map<T>::type::iterator it;
-        for( it = backref.begin(); it != backref.end(); it++ )
-        {
-            const ward_ptr_data* wp = it->second;
-        }
-    }
-
     ward_ptr() : ptr(NULL), data(NULL)
     {
     }
     ward_ptr( const ward_ptr<T>& p )
     {
-        debug();
         ptr = p.ptr;
         data = p.data;
         data->ref_count++;
     }
     ward_ptr<T>& operator = ( ward_ptr<T>& p )
     {
-        debug();
         decref();
         ptr = p.ptr;
         data = p.data;
@@ -89,7 +78,6 @@ public:
     }
     ward_ptr( T* p )
     {
-        debug();
         ptr = p;
 
         typename ward_ptr_map<T>::type::iterator it = backref.find( p );
@@ -109,7 +97,6 @@ public:
     }
     T* get() const
     {
-        debug();
         if( ! data->valid )
             throw std::logic_error( "ward_ptr: exception - instance pointer no longer valid." );
         return ptr;
