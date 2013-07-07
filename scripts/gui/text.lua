@@ -1,22 +1,27 @@
+require 'gui/widget'
+
 class 'Text'
 
 function Text:__init( layer, x, y, text, font, size, alignment )
-    if alignment == nil then alignment = Gorilla.TextAlignment.Centre end
+    if alignment == nil then alignment = Gorilla.Enum.TextAlign.Centre end
     if font == nil then font = 10 end
     self.layer = layer
     self.caption = layer:createCaption( font, x, y, text )
-    self.caption . align = alignment
-    self.caption . verticalAlign = Gorilla.VerticalAlignment.Middle
-    self.caption . colour = ColourValue.White
+    self.caption : setAlign( alignment )
+    self.caption : setVerticalAlign( Gorilla.Enum.VerticalAlign.Middle )
+    self.caption . colour = Ogre.ColourValue.White
     if size ~= nil then
         self.caption : size( size.x, size.y )
     end
-    self.left = property( function(self) return self.caption.left end )
-    self.top = property( function(self) return self.caption.top end )
+    self.left = function(self) return self.caption.left end
+    self.top = function(self) return self.caption.top end
 end
 
 function Text:destroy()
-    self.layer:destroyCaption( self.caption )
+    if self.caption then
+        self.layer:destroyCaption( self.caption )
+        self.caption = nil
+    end
 end
 
 function Text:move( x, y )

@@ -44,6 +44,26 @@ void destroyCaption( Layer *layer, ward_ptr<Caption> ptr )
     ptr.invalidate();
 }
 
+void Caption_align_set( Caption* ptr, int alignment ) // LuaBridge does not handle enums
+{
+    ptr->align( (TextAlignment) alignment );
+}
+
+int Caption_align_get( const Caption* ptr )
+{
+    return (int)ptr->align();
+}
+
+void Caption_valign_set( Caption* ptr, int valignment )
+{
+    ptr->vertical_align( (VerticalAlignment) valignment );
+}
+
+int Caption_valign_get( const Caption* ptr )
+{
+    return (int)ptr->vertical_align();
+}
+
 ward_ptr<MarkupText> createMarkupText( Layer *layer, Ogre::uint index, Real x, Real y, const String& text )
 {
     return layer->createMarkupText( index, x, y, text );
@@ -155,8 +175,10 @@ void bindGorilla( lua_State* L )
         .addProperty( "height", (Real (Caption::*)() const)&Caption::height, (void (Caption::*)( const Real& ))&Caption::height )
         .addFunction( "size", &Caption::size )
         .addProperty( "text", (String (Caption::*)() const)&Caption::text, (void (Caption::*)( const String& ))&Caption::text )
-        .addProperty( "align", (TextAlignment (Caption::*)() const )&Caption::align, (void (Caption::*)( const TextAlignment& ))&Caption::align )
-        .addProperty( "verticalAlign", (VerticalAlignment (Caption::*)() const )&Caption::vertical_align, (void (Caption::*)( const VerticalAlignment& ))&Caption::vertical_align )
+        .addFunction( "getAlign", &Caption_align_get )
+        .addFunction( "setAlign", &Caption_align_set )
+        .addFunction( "getVerticalAlign", &Caption_valign_get )
+        .addFunction( "setVerticalAlign", &Caption_valign_set )
         .addProperty( "colour", (ColourValue (Caption::*)() const )&Caption::colour, (void (Caption::*)( const ColourValue& ))&Caption::colour )
         .addProperty( "background", (ColourValue (Caption::*)() const )&Caption::background, (void (Caption::*)( const ColourValue& ))&Caption::background )
         .addFunction( "noBackground", &Caption::no_background )

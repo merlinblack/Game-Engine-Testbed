@@ -1,9 +1,9 @@
 -- Basic GUI parts.
-require 'gui/widget'
 require 'gui/panel'
---require 'gui/text'
---require 'gui/markup'
---require 'gui/button'
+require 'gui/dialogpanel'
+require 'gui/text'
+require 'gui/markup'
+require 'gui/button'
 --require 'gui/dragbutton'
 --require 'gui/checkbox'
 require 'gui/control'
@@ -11,8 +11,8 @@ require 'gui/mouse'
 require 'gui/keybinding'
 
 -- Higher level parts.
---require 'gui/quit'
---require 'gui/message'
+require 'gui/quit'
+require 'gui/message'
 
 -- Testing
 --require 'gui/guitest'
@@ -58,5 +58,5 @@ function keyReleasedEventListener( event )
 end
 
 function guiLog( str )
---    log( str )
+    log( str )
 end

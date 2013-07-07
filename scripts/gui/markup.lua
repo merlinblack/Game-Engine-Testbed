@@ -1,4 +1,6 @@
-class 'MarkupText'
+require 'gui/widget'
+
+class 'MarkupText' (Widget)
 
 function MarkupText:__init( layer, x, y, text, font, size )
     if font == nil then font = 10 end
@@ -7,10 +9,14 @@ function MarkupText:__init( layer, x, y, text, font, size )
     if size ~= nil then
         self.markup : size( size.x, size.y )
     end
+    children={}
 end
 
 function MarkupText:destroy()
-    self.layer:destroyMarkupText( self.markup )
+    if self.markup then
+        self.layer:destroyMarkupText( self.markup )
+        self.markup = nil
+    end
 end
 
 function MarkupText:move( x, y )

@@ -4,6 +4,7 @@ class 'Widget'
 
 function Widget:__init( layer, x, y, w, h )
     guiLog "Creating Widget"
+    print( 'Layer:', layer)
     self.layer = layer
     self.rect = layer:createRectangle( x, y, w, h )
     self.children={}

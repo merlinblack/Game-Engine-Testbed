@@ -1,15 +1,17 @@
-class 'Button' (Panel)
+require 'gui/widget'
+
+class 'Button' (Widget)
 
 function Button:__init( layer, x, y, caption )
     guiLog 'creating Button'
 
-    Panel.__init( self, layer, x, y, 80, 24 )
+    Widget.__init( self, layer, x, y, 80, 24 )
 
     self:background( 'button.normal' )
 
     self.text = layer:createCaption( 10, x, y, caption )
-    self.text . align = Gorilla.TextAlignment.Centre
-    self.text . verticalAlign = Gorilla.VerticalAlignment.Middle
+    self.text : setAlign( Gorilla.Enum.TextAlign.Centre )
+    self.text : setVerticalAlign( Gorilla.Enum.VerticalAlign.Middle )
     self.text : size( 80, 24 )
 
     self.state = "normal"
@@ -21,8 +23,11 @@ end
 
 function Button:destroy()
     guiLog 'Destroying Button.'
-    Panel.destroy(self)
-    self.layer:destroyCaption(self.text)
+    Widget.destroy(self)
+    if self.text then
+        self.layer:destroyCaption(self.text)
+        self.text = nil
+    end
 end
 
 function Button:changeCaption( caption )
@@ -62,7 +67,7 @@ function Button:onClick()
 end
 
 function Button:mouseMoved( x, y, button )
-    if self.rect:intersects( Vector2(x, y) ) then
+    if self.rect:intersects( Ogre.Vector2(x, y) ) then
         if button == 0 and self.state == "click" then -- click release
             self:onClick()
         end
@@ -91,7 +96,7 @@ function Button:updateVisualState()
 end
 
 function Button:move( x, y )
-    if Panel.move( self, x, y ) then return end
+    if Widget.move( self, x, y ) then return end
     self.text.left = self.text.left + x
     self.text.top = self.text.top + y
     for _,child in pairs( self.children ) do
