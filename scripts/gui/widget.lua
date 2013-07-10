@@ -4,7 +4,6 @@ class 'Widget'
 
 function Widget:__init( layer, x, y, w, h )
     guiLog "Creating Widget"
-    print( 'Layer:', layer)
     self.layer = layer
     self.rect = layer:createRectangle( x, y, w, h )
     self.children={}
@@ -31,6 +30,10 @@ function Widget:destroy()
 end
 
 function Widget:mouseMoved( x, y, button )
+    if not self.rect then
+        print( 'No rect!', self.__type )
+        return
+    end
     if self.rect:intersects( Ogre.Vector2( x, y ) ) then
         for _,child in pairs(self.children) do
             if child.mouseMoved then child:mouseMoved( x, y, button ) end

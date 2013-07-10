@@ -50,7 +50,7 @@ end
 
 -- Return true to cancel move, when it would move off view
 function DialogPanel:move( x, y )
-    if Widget.move( x, y ) ~= true then
+    if Widget.move( self, x, y ) ~= true then
         for i = 1,7 do
             self.rects[i].left = self.rects[i].left + x
             self.rects[i].top = self.rects[i].top + y

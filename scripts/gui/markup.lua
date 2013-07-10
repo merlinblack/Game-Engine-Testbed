@@ -9,7 +9,7 @@ function MarkupText:__init( layer, x, y, text, font, size )
     if size ~= nil then
         self.markup : size( size.x, size.y )
     end
-    children={}
+    self.children={}
 end
 
 function MarkupText:destroy()
@@ -17,6 +17,14 @@ function MarkupText:destroy()
         self.layer:destroyMarkupText( self.markup )
         self.markup = nil
     end
+end
+
+function MarkupText:mouseMoved()
+    return
+end
+
+function MarkupText:lostMouse()
+    return
 end
 
 function MarkupText:move( x, y )
