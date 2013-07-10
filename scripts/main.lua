@@ -76,7 +76,7 @@ function quitKeyListener( event )
     inputdata = Engine.InputEventData.downcast( event.data )
 
     if inputdata and inputdata.key == KeyCodes.KC_ESCAPE and #gui.modal == 0 then
-        quitProgram()
+        quit()
         return true
     end
 end

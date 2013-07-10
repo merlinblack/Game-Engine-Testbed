@@ -3,7 +3,7 @@ require 'class'
 class 'Widget'
 
 function Widget:__init( layer, x, y, w, h )
-    guiLog "Creating Widget"
+    guiLog( 'Creating Widget: ' .. self.__type )
     self.layer = layer
     self.rect = layer:createRectangle( x, y, w, h )
     self.children={}
@@ -11,13 +11,13 @@ function Widget:__init( layer, x, y, w, h )
     self.top =    function( self ) return self.rect.top end
     self.width =  function( self ) return self.rect.width end
     self.height = function( self ) return self.rect.height end
-    guiLog "Widget Created"
+    guiLog 'Widget Created'
 end
 
 -- Can be called, directly or by garbage collection
 -- if garbage collection runs it, it must not error!!
 function Widget:destroy()
-    guiLog 'Destroying Widget.'
+    guiLog( 'Destroying Widget: ' .. self.__type )
     if self.rect then
         self.layer:destroyRectangle( self.rect )
     end

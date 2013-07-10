@@ -16,6 +16,7 @@ function DialogPanel:__init( layer, x, y, w, h )
     guiLog ( "Creating DialogPanel" )
     self.layer = layer
     Widget.__init( self, layer, x, y, w, h ) -- use invisible rect for checking intersection
+    self.rect:noBackground()
     self.rects = {}
     self.rects[1] = layer:createRectangle( x,        y+8,    w,      h-16 )
     self.rects[2] = layer:createRectangle( x+8,      y,      w-16,   8    )
@@ -41,6 +42,7 @@ function DialogPanel:destroy()
             self.layer:destroyRectangle( self.rects[i] )
         end
     end
+    self.rects = {}
     Widget.destroy( self )
 end
 
