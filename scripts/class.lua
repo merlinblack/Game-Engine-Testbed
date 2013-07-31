@@ -40,13 +40,13 @@ function class( name )
             {
                 __index = newclass,
                 __gc = function( self )
-                    if self.destroy then
+                    if type(self.destroy) == 'function' then
                         self:destroy()
                     end
                 end
             } )
 
-            if obj.__init ~= nil then
+            if type(obj.__init) == 'function' then
                 obj:__init( select(2, ...) )
             end
 
