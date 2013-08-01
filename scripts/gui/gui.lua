@@ -58,5 +58,5 @@ function keyReleasedEventListener( event )
 end
 
 function guiLog( str )
-    log( os.date() .. ' - ' .. str )
+    --log( os.date() .. ' - ' .. str )
 end

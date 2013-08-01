@@ -5,8 +5,8 @@ require 'autocomplete'
 require 'events'
 
 function version()
---    message( '%@14%' .. versionString()..'\n\n' )
-    print( Engine.versionString() )
+    message( '%@14%' .. Engine.versionString()..'\n\n' )
+--    print( Engine.versionString() )
 end
 
 local old_dofile = dofile
