@@ -1,4 +1,4 @@
-class 'DragButton' (Panel)
+class 'DragButton' (Widget)
 
 function DragButton:__init( layer, x, y, parentToDrag )
     guiLog 'creating DragButton'
@@ -7,7 +7,7 @@ function DragButton:__init( layer, x, y, parentToDrag )
         error( 'You must give a gui object to drag.' )
     end
 
-    Panel.__init( self, layer, x, y, 16, 16 )
+    Widget.__init( self, layer, x, y, 16, 16 )
 
     self.parent = parentToDrag
 
@@ -19,16 +19,8 @@ function DragButton:__init( layer, x, y, parentToDrag )
     guiLog 'DragButton created'
 end
 
-function DragButton:destroy()
-    guiLog 'Destroying DragButton.'
-    Panel.destroy(self)
-end
-
-function DragButton:keypressed( key )
-end
-
 function DragButton:mouseMoved( x, y, button )
-    if self.rect:intersects( Vector2(x, y) ) then
+    if self.rect:intersects( Ogre.Vector2(x, y) ) then
         if button == 0 and self.state == "click" then -- click release
             stopMouseDrag()
         end
@@ -55,13 +47,6 @@ function DragButton:updateVisualState()
             self.rect:backgroundImage("drag.pressed")
         end
         self.oldstate = self.state
-    end
-end
-
-function DragButton:move( x, y )
-    if Panel.move( self, x, y ) then return end
-    for _,child in pairs( self.children ) do
-        if child.move then child:move( x, y ) end
     end
 end
 

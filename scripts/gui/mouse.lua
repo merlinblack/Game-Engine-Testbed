@@ -4,6 +4,7 @@ function setupMouse()
     mouse.layer = gui.screen:createLayer(15)
     mouse.pointer = mouse.layer:createRectangle( 0, 0, 64, 48 )
     mouse.pointer : backgroundImage( 'yellow.arrow' )
+    mouse.i = 1
 end
 
 function mouse.show()

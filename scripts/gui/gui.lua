@@ -4,7 +4,7 @@ require 'gui/dialogpanel'
 require 'gui/text'
 require 'gui/markup'
 require 'gui/button'
---require 'gui/dragbutton'
+require 'gui/dragbutton'
 --require 'gui/checkbox'
 require 'gui/control'
 require 'gui/mouse'
@@ -17,8 +17,6 @@ require 'gui/message'
 -- Testing
 --require 'gui/guitest'
 
-
--- High level switching and misc.
 function setViewportSize( w, h )
     setMouseViewportSize( w, h )
 end
@@ -58,5 +56,5 @@ function keyReleasedEventListener( event )
 end
 
 function guiLog( str )
-    --log( os.date() .. ' - ' .. str )
+    log( os.date() .. ' - ' .. str )
 end

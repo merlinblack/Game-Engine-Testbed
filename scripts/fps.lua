@@ -23,7 +23,7 @@ function fps.update()
         str = str .. round(stats.bestFPS,1) .. "\n"
         str = str .. round(stats.worstFPS,1) .. "\n"
         str = str .. stats.triangleCount .. "\n"
-        str = str .. stats.batchCount 
+        str = str .. stats.batchCount
         fps.text2.markup.text = str
         wait(1)
     end

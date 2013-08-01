@@ -6,7 +6,6 @@ require 'events'
 
 function version()
     message( '%@14%' .. Engine.versionString()..'\n\n' )
---    print( Engine.versionString() )
 end
 
 local old_dofile = dofile
@@ -103,7 +102,6 @@ function setup()
     local sb = Gorilla.Silverback.getSingleton()
     gui.screen = sb:createScreen( Ogre.getViewport( 0 ), 'atlas' )
     gui.mainLayer = gui.screen:createLayer(0)
-    gui.dialogBackground = Ogre.ColourValue( .999, .999, .878, .6 )
     gui.dialogBackground = Ogre.ColourValue( 11/255, 34/255, 35/255, .9 )
 
     setupMouse()
@@ -117,8 +115,8 @@ function setup()
     events.subscribe( 'EVT_WINDOW_RESIZE', resizeListener )
 
     --Something to look at...
-    --require 'fps'
-    --require 'clock'
+    require 'fps'
+    require 'clock'
     --require 'cameracontrol'
     --require 'walk'
     --require 'test'
