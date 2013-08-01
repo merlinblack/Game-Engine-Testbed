@@ -2,7 +2,6 @@
 #include <LuaBridge.h>
 #include <luareadonlytable.h>
 #include <Gorilla.h>
-#include <ward_ptr.h>
 
 using namespace Gorilla;
 using namespace luabridge;
@@ -11,38 +10,6 @@ using Ogre::Vector2;
 using Ogre::ColourValue;
 using Ogre::String;
 using Ogre::MovableObject;
-
-// Glue functions to create and destroy Gorilla elements.
-// LuaBridge has been customised slightly to call luaL_error when a std::exception
-// is caught when calling back into C++, so if a Lua script accesses a Gorilla element
-// after destroying it, all you get is an Lua error rather than a crash.
-//
-ward_ptr<Rectangle> createRectangle( Layer *layer, Real x, Real y, Real width, Real height )
-{
-    return ward_ptr<Gorilla::Rectangle>( layer->createRectangle( x, y, width, height ) );
-}
-
-ward_ptr<Rectangle> createRectangle( Layer *layer, const Vector2& a, const Vector2& b )
-{
-    return layer->createRectangle( a, b );
-}
-
-void destroyRectangle( Layer *layer, ward_ptr<Rectangle> ptr )
-{
-    layer->destroyRectangle( ptr.get() );
-    ptr.invalidate();
-}
-
-ward_ptr<Caption> createCaption( Layer* layer, Ogre::uint index, Real x, Real y, const String& text )
-{
-    return layer->createCaption( index, x, y, text );
-}
-
-void destroyCaption( Layer *layer, ward_ptr<Caption> ptr )
-{
-    layer->destroyCaption( ptr.get() );
-    ptr.invalidate();
-}
 
 void Caption_align_set( Caption* ptr, int alignment ) // LuaBridge does not handle enums
 {
@@ -62,17 +29,6 @@ void Caption_valign_set( Caption* ptr, int valignment )
 int Caption_valign_get( const Caption* ptr )
 {
     return (int)ptr->vertical_align();
-}
-
-ward_ptr<MarkupText> createMarkupText( Layer *layer, Ogre::uint index, Real x, Real y, const String& text )
-{
-    return layer->createMarkupText( index, x, y, text );
-}
-
-void destroyMarkupText( Layer *layer, ward_ptr<MarkupText> ptr )
-{
-    layer->destroyMarkupText( ptr.get() );
-    ptr.invalidate();
 }
 
 void bindGorilla( lua_State* L )
@@ -134,13 +90,13 @@ void bindGorilla( lua_State* L )
         .addFunction( "show", &Layer::show )
         .addFunction( "hide", &Layer::hide )
         .addProperty( "alphaModifier", &Layer::getAlphaModifier, &Layer::setAlphaModifier )
-        .addFunction( "createRectangle", (ward_ptr<Rectangle>(*)(Layer*,Real,Real,Real,Real))&createRectangle )
-        .addFunction( "createRectangleV2", (ward_ptr<Rectangle>(*)(Layer*, const Vector2&, const Vector2& ))&createRectangle )
-        .addFunction( "destroyRectangle", &destroyRectangle )
-        .addFunction( "createCaption", &createCaption )
-        .addFunction( "destroyCaption", &destroyCaption )
-        .addFunction( "createMarkupText", &createMarkupText )
-        .addFunction( "destroyMarkupText", &destroyMarkupText )
+        .addFunction( "createRectangle", (Rectangle* (Layer::*)(Real,Real,Real,Real))&Layer::createRectangle )
+        .addFunction( "createRectangleV2", (Rectangle* (Layer::*)(const Vector2&, const Vector2& ))&Layer::createRectangle )
+        .addFunction( "destroyRectangle", &Layer::destroyRectangle )
+        .addFunction( "createCaption", &Layer::createCaption )
+        .addFunction( "destroyCaption", &Layer::destroyCaption )
+        .addFunction( "createMarkupText", &Layer::createMarkupText )
+        .addFunction( "destroyMarkupText", &Layer::destroyMarkupText )
         .endClass()
         .beginClass<Rectangle>( "Rectangle" )
         .addFunction( "intersects", &Rectangle::intersects )
