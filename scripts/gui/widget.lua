@@ -6,7 +6,7 @@ function Widget:__init( layer, x, y, w, h )
     guiLog( 'Creating Widget: ' .. self.__type )
     self.layer = layer
     self.rect = layer:createRectangle( x, y, w, h )
-    self.children={}
+    self.children = {}
     self.left =   function( self ) return self.rect.left end
     self.top =    function( self ) return self.rect.top end
     self.width =  function( self ) return self.rect.width end
@@ -21,6 +21,7 @@ function Widget:destroy()
     if self.rect then
         self.layer:destroyRectangle( self.rect )
     end
+    -- Importaint so we don't try to destroy this rect again.
     self.rect = nil
     if type(self.children) == 'table' then
         for _,child in pairs(self.children) do
