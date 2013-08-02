@@ -1,7 +1,7 @@
 require "lualib"
 cell={}
 local x = gui.screen.width-300
-cell.panel = Panel( gui.mainLayer, x, gui.screen.height-145, 300, 145 )
+cell.panel = Widget( gui.mainLayer, x, gui.screen.height-145, 300, 145 )
 cell.panel:background( gui.dialogBackground )
 cell.text = MarkupText( gui.mainLayer, x+25, gui.screen.height-140, "" )
 cell.text2 = MarkupText( gui.mainLayer, x+135, gui.screen.height-140, "" )

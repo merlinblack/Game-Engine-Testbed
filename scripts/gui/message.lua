@@ -18,7 +18,7 @@ function messageDialog(task)
 
     local window = DialogPanel( l, x, y, w, h )
 
-    local icon = Panel( l, x + 8, y + 8, 32, 32 )
+    local icon = Widget( l, x + 8, y + 8, 32, 32 )
     icon:background( "icon.info" )
 
     local btnOK = Button( l, x + w/2 - 40, y + h * 0.70, "ok" )

@@ -1,5 +1,4 @@
 -- Basic GUI parts.
-require 'gui/panel'
 require 'gui/dialogpanel'
 require 'gui/text'
 require 'gui/markup'

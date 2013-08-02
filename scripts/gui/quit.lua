@@ -14,7 +14,7 @@ function quitDialogTask()
     local window = DialogPanel( layer, x, y, w, h )
 
     local text = Text( layer, x + w/2, y+h*0.40, "Are you sure?", 20  )
-    local icon = Panel( layer, x + 8, y + 8, 32, 32 )
+    local icon = Widget( layer, x + 8, y + 8, 32, 32 )
     icon:background "icon.exit"
 
     local by = y + h * 0.6

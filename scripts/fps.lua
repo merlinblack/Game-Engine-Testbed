@@ -7,7 +7,7 @@ fps.text2 = MarkupText( gui.mainLayer, 135, gui.screen.height-133, "" )
 fps.panel:addChild( fps.text )
 fps.panel:addChild( fps.text2 )
 fps.text.markup.text = "%3Average FPS\nBest FPS\nWorst\nTriangles\nBatch Count"
-fps.logo = Panel( gui.mainLayer, 210, gui.screen.height-125, 64, 64 )
+fps.logo = Widget( gui.mainLayer, 210, gui.screen.height-125, 64, 64 )
 fps.logo:background( 'ogrehead' )
 fps.panel:addChild( fps.logo )
 fps.drag = DragButton( gui.mainLayer, 8, gui.screen.height-137, fps.panel )

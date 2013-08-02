@@ -71,7 +71,7 @@ function getAbsolutePosition( parent, x, y )
 end
 
 function panelFactory( parent, parameters )
-    print 'Panel Factory'
+    print 'Widget Factory'
     local x, y, w, h, panel
     x = parameters.position[1]
     y = parameters.position[2]
@@ -79,7 +79,7 @@ function panelFactory( parent, parameters )
     h = parameters.size[2]
     x, y = getAbsolutePosition( parent, x, y )
     print( x, y, w, h )
-    panel =  Panel( gui.mainLayer, x, y, w, h )
+    panel =  Widget( gui.mainLayer, x, y, w, h )
     panel:background( parameters.background )
     parent[parameters.id] = panel
     panel.parent = parent
