@@ -140,10 +140,8 @@ void LuaConsole::setLogging( bool enable )
 
 bool LuaConsole::frameStarted(const Ogre::FrameEvent &evt)
 {
-    if( interpreter->getState() == LuaInterpreter::LI_YIELDING )
-    {
-        interpreter->resume();
-    }
+    // Resume any yielded chunks.
+    interpreter->resume();
 
     if(visible)
     {
