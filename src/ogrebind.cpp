@@ -489,26 +489,89 @@ SceneManager* getSceneManager()
     return root->getSceneManager("SceneManagerInstance");
 }
 
+Radian* RadianConstructor( lua_State* L )
+{
+    const char* arg_error = "Expecting %s for argument %d when given %d arguments";
+
+    switch( lua_gettop( L ) ) // Note that the class table is always index 1 on the stack.
+    {
+        case 1:
+            {
+                return new Radian();
+            }
+            break;
+        case 2:
+            {
+                LuaRef p1 = LuaRef::fromStack( L, 2 );
+                if( p1.isNumber() == true )
+                {
+                    return new Radian( LuaRef_cast<Real>(p1) );
+                }
+                if( p1.is<Degree>() == true )
+                {
+                    return new Radian( LuaRef_cast<Degree>(p1) );
+                }
+                luaL_error( L, arg_error, "Degree or Number", 1, 1 ); // returns
+            }
+            break;
+        default:
+            luaL_error( L, "Incorrect number of arguments given (%d)", lua_gettop( L ) ); // returns
+            break;
+    }
+
+    // Should not get here.
+    return NULL;
+}
+
+Degree* DegreeConstructor( lua_State* L )
+{
+    const char* arg_error = "Expecting %s for argument %d when given %d arguments";
+
+    switch( lua_gettop( L ) ) // Note that the class table is always index 1 on the stack.
+    {
+        case 1:
+            {
+                return new Degree();
+            }
+            break;
+        case 2:
+            {
+                LuaRef p1 = LuaRef::fromStack( L, 2 );
+                if( p1.isNumber() == true )
+                {
+                    return new Degree( LuaRef_cast<Real>(p1) );
+                }
+                if( p1.is<Radian>() == true )
+                {
+                    return new Degree( LuaRef_cast<Radian>(p1) );
+                }
+                luaL_error( L, arg_error, "Radian or Number", 1, 1 ); // returns
+            }
+            break;
+        default:
+            luaL_error( L, "Incorrect number of arguments given (%d)", lua_gettop( L ) ); // returns
+            break;
+    }
+
+    // Should not get here.
+    return NULL;
+}
+
 void bindRadian( lua_State* L )
 {
-    /*
-    module(L)
-    [
-        class_<Radian>("Radian")
-        .def(constructor< Real >() )
-        .def(constructor< Degree& >() )
-        .def(tostring(self))
-        .def_readonly( "rad", (float (Radian::*)())&Radian::valueRadians )
-        .def_readonly( "deg", (float (Radian::*)())&Radian::valueDegrees ),
-
-        class_<Degree>("Degree")
-        .def(constructor< Real >() )
-        .def(constructor< Radian& >() )
-        .def(tostring(self))
-        .def_readonly( "rad", (float (Degree::*)())&Degree::valueRadians )
-        .def_readonly( "deg", (float (Degree::*)())&Degree::valueDegrees )
-    ];
-    */
+    getGlobalNamespace( L )
+        .beginNamespace( "Ogre" )
+        .beginClass<Radian>( "Radian" )
+        .addStaticFunction( "__call", &RadianConstructor )
+        .addFunction( "rad", (float (Radian::*)())&Radian::valueRadians )
+        .addFunction( "deg", (float (Radian::*)())&Radian::valueDegrees )
+        .endClass()
+        .beginClass<Degree>( "Degree" )
+        .addStaticFunction( "__call", &DegreeConstructor )
+        .addFunction( "rad", (float (Degree::*)())&Degree::valueRadians )
+        .addFunction( "deg", (float (Degree::*)())&Degree::valueDegrees )
+        .endClass()
+        .endNamespace();
 }
 
 RenderWindow::FrameStats getFrameStats()
