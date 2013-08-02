@@ -5,7 +5,7 @@ require 'gui/text'
 require 'gui/markup'
 require 'gui/button'
 require 'gui/dragbutton'
---require 'gui/checkbox'
+require 'gui/checkbox'
 require 'gui/control'
 require 'gui/mouse'
 require 'gui/keybinding'
@@ -56,5 +56,5 @@ function keyReleasedEventListener( event )
 end
 
 function guiLog( str )
-    log( os.date() .. ' - ' .. str )
+    --log( os.date() .. ' - ' .. str )
 end
