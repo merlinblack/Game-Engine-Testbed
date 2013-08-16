@@ -286,7 +286,7 @@ void bindEntity( lua_State* L ) // And Movable Object for now.
 
 // Fake member function for simplifying binding, as the real functions
 // have optional arguments, which I don't want to use in the Lua script.
-// However luabind does not support optional arguments.
+// However luabridge does not support optional arguments.
 // Think of "obj" as "this"
 SceneNode *createChildSceneNode( SceneNode *obj, const String name )
 {
@@ -321,11 +321,12 @@ void SceneNode_rotate( SceneNode *obj, const Quaternion& q )
     return obj->rotate( q );
 }
 
-void SceneNode_translate( SceneNode *obj, const Vector3& v )
+void SceneNode_translate( SceneNode *obj, const Vector3& v, int transformspace )
 {
-    return obj->translate( v );
+    return obj->translate( v, (SceneNode::TransformSpace) transformspace );
 }
 
+/* May not be required with LuaBridge
 Vector3 SceneNode_getPosition( SceneNode* obj )
 {
     // This function returns a reference which confuses luabind.
@@ -339,6 +340,7 @@ Quaternion SceneNode_getOrientation( SceneNode* obj )
     // So we wrap it.
     return obj->getOrientation();
 }
+*/
 
 std::ostream& operator<<( std::ostream& stream, const SceneNode& node )
 {
@@ -347,38 +349,35 @@ std::ostream& operator<<( std::ostream& stream, const SceneNode& node )
 
 void bindSceneNode( lua_State* L )
 {
-    /*
-    module(L)
-    [
-        class_<SceneNode>("SceneNode")
-        .def("createChildSceneNode", &createChildSceneNode )
-        .def("attachObject", &SceneNode::attachObject )
-        .def("yaw", SceneNode_yaw )
-        .def("pitch", SceneNode_pitch )
-        .def("roll", SceneNode_roll )
-        .def("setPosition", (void( SceneNode::*)(const Vector3&))&SceneNode::setPosition )
-        .def("setPosition", (void( SceneNode::*)(Real,Real,Real))&SceneNode::setPosition )
-        .def("getPosition", &SceneNode_getPosition )
-        .def("setOrientation", (void( SceneNode::*)( const Quaternion& ))&SceneNode::setOrientation )
-        .def("getOrientation", &SceneNode_getOrientation )
-        .def("scale", (void( SceneNode::*)(Real,Real,Real))&SceneNode::scale )
-        .def("scale", (void( SceneNode::*)(const Vector3&))&SceneNode::scale )
-        .def("showBoundingBox", &SceneNode::showBoundingBox )
-        .def("rotate", &SceneNode_rotate )
-        .def("lookAt", &SceneNode::lookAt )
-        .def("setAutoTracking", &SceneNode::setAutoTracking )
-        .def("translate", &SceneNode_translate )
-        .def("translate", (void( SceneNode::*)(const Vector3&, SceneNode::TransformSpace))&SceneNode::translate )
-        .def("destroy", &SceneNode_destroy )
-        .def(tostring(self))
-    ];
+    getGlobalNamespace( L )
+        .beginNamespace( "Ogre" )
+        .beginClass<SceneNode>("SceneNode")
+        .addFunction( "createChildSceneNode", &createChildSceneNode )
+        .addFunction( "attachObject", &SceneNode::attachObject )
+        .addFunction( "yaw", SceneNode_yaw )
+        .addFunction( "pitch", SceneNode_pitch )
+        .addFunction( "roll", SceneNode_roll )
+        .addFunction( "setPosition", (void( SceneNode::*)(Real,Real,Real))&SceneNode::setPosition )
+        .addFunction( "setPositionV3", (void( SceneNode::*)(const Vector3&))&SceneNode::setPosition )
+        .addFunction( "getPosition", &SceneNode::getPosition )
+        .addFunction( "setOrientation", (void( SceneNode::*)( const Quaternion& ))&SceneNode::setOrientation )
+        .addFunction( "getOrientation", &SceneNode::getOrientation )
+        .addFunction( "scale", (void( SceneNode::*)(Real,Real,Real))&SceneNode::scale )
+        .addFunction( "scaleV3", (void( SceneNode::*)(const Vector3&))&SceneNode::scale )
+        .addFunction( "showBoundingBox", &SceneNode::showBoundingBox )
+        .addFunction( "rotate", &SceneNode_rotate )
+        .addFunction( "lookAt", &SceneNode::lookAt )
+        .addFunction( "setAutoTracking", &SceneNode::setAutoTracking )
+        .addFunction( "translate", &SceneNode_translate )
+        .addFunction( "destroy", &SceneNode_destroy )
+        .endClass()
+        .endNamespace();
 
-    LUA_STATIC_START( SceneNode )
-        LUA_STATIC( SceneNode, TS_LOCAL );
-        LUA_STATIC( SceneNode, TS_PARENT );
-        LUA_STATIC( SceneNode, TS_WORLD );
-    LUA_STATIC_END;
-    */
+    LuaRef ogre = getGlobal( L, "Ogre" );
+    LuaRef scenenode = ogre["SceneNode"];
+    scenenode["TS_LOCAL"]  = (int)SceneNode::TS_LOCAL;
+    scenenode["TS_PARENT"] = (int)SceneNode::TS_PARENT;
+    scenenode["TS_WORLD"]  = (int)SceneNode::TS_WORLD;
 }
 
 void bindLight( lua_State* L )
@@ -409,19 +408,19 @@ void bindLight( lua_State* L )
 
 void bindCamera( lua_State* L )
 {
-    /*
-    module(L)
-    [
-        class_<Camera, MovableObject>("Camera")
-        .def("setPosition", (void( Camera::*)(const Vector3&))&Camera::setPosition )
-        .def("setPosition", (void( Camera::*)(Real,Real,Real))&Camera::setPosition )
-        .def("lookAt", (void( Camera::*)(const Vector3&))&Camera::lookAt )
-        .def("lookAt", (void( Camera::*)(Real,Real,Real))&Camera::lookAt )
-        .def("setNearClipDistance", &Camera::setNearClipDistance )
-        .def("setFarClipDistance", &Camera::setFarClipDistance )
-        .def(tostring(self))
-    ];
-    */
+    getGlobalNamespace( L )
+        .beginNamespace( "Ogre" )
+        .deriveClass<Frustum,MovableObject>("Frustum")
+        .endClass()
+        .deriveClass<Camera,Frustum>("Camera")
+        .addFunction("setPositionV3", (void( Camera::*)(const Vector3&))&Camera::setPosition )
+        .addFunction("setPosition", (void( Camera::*)(Real,Real,Real))&Camera::setPosition )
+        .addFunction("lookAtV3", (void( Camera::*)(const Vector3&))&Camera::lookAt )
+        .addFunction("lookAt", (void( Camera::*)(Real,Real,Real))&Camera::lookAt )
+        .addFunction("setNearClipDistance", &Camera::setNearClipDistance )
+        .addFunction("setFarClipDistance", &Camera::setFarClipDistance )
+        .endClass()
+        .endNamespace();
 }
 
 void Scene_setSkyBox( SceneManager* mgr, const String& materialName )
@@ -436,35 +435,34 @@ void Scene_disableSkyBox( SceneManager* mgr )
 
 void bindSceneManager( lua_State* L )
 {
+    getGlobalNamespace( L )
+        .beginNamespace( "Ogre" )
+        .beginClass<SceneManager>("SceneManager")
+        .addFunction("getCamera", &SceneManager::getCamera )
+        .addFunction("getRootSceneNode", &SceneManager::getRootSceneNode )
+        .addFunction("getSceneNode", &SceneManager::getSceneNode )
+        .addFunction("hasSceneNode", &SceneManager::hasSceneNode )
+        .addFunction("destroySceneNodeByName", (void (SceneManager::*)(const String&))&SceneManager::destroySceneNode )
+        .addFunction("destroySceneNode", (void (SceneManager::*)(SceneNode*))&SceneManager::destroySceneNode )
+        .addFunction("createEntityEx", (Entity* (SceneManager::*)(const String&, const String&, const String&))&SceneManager::createEntity )
+        .addFunction("createEntity", (Entity* (SceneManager::*)(const String&))&SceneManager::createEntity )
+        .addFunction("getEntity", &SceneManager::getEntity )
+        .addFunction("hasEntity", &SceneManager::hasEntity )
+        .addFunction("destroyEntity", (void (SceneManager::*)(Entity*))&SceneManager::destroyEntity )
+        .addFunction("destroyEntityByName", (void (SceneManager::*)(const String&))&SceneManager::destroyEntity )
+        .addFunction("destroyAllEntities", &SceneManager::destroyAllEntities)
+        .addFunction("clearScene", &SceneManager::clearScene )
+        .addFunction("setAmbientLight", &SceneManager::setAmbientLight )
+        .addFunction("getAmbientLight", &SceneManager::getAmbientLight )
+        .addFunction("setDisplaySceneNodes", &SceneManager::setDisplaySceneNodes )
+        .addFunction("setShadowTechnique", &SceneManager::setShadowTechnique )
+        .addFunction("setSkyBox", &Scene_setSkyBox )
+        .addFunction("disableSkyBox", &Scene_disableSkyBox )
+        .addFunction("createLight", (Light* (SceneManager::*)())&SceneManager::createLight )
+        .addFunction("createLightByName", (Light* (SceneManager::*)(const String&))&SceneManager::createLight )
+        .endClass()
+        .endNamespace();
     /*
-    module(L)
-    [
-        class_<SceneManager>("SceneManager")
-        .def("getCamera", &SceneManager::getCamera )
-        .def("getRootSceneNode", &SceneManager::getRootSceneNode )
-        .def("getSceneNode", &SceneManager::getSceneNode )
-        .def("hasSceneNode", &SceneManager::hasSceneNode )
-        .def("destroySceneNode", (void (SceneManager::*)(const String&))&SceneManager::destroySceneNode )
-        .def("destroySceneNode", (void (SceneManager::*)(SceneNode*))&SceneManager::destroySceneNode )
-        .def("createEntity", (Entity* (SceneManager::*)(const String&, const String&, const String&))&SceneManager::createEntity )
-        .def("createEntity", (Entity* (SceneManager::*)(const String&))&SceneManager::createEntity )
-        .def("getEntity", &SceneManager::getEntity )
-        .def("hasEntity", &SceneManager::hasEntity )
-        .def("destroyEntity", (void (SceneManager::*)(Entity*))&SceneManager::destroyEntity )
-        .def("destroyEntity", (void (SceneManager::*)(const String&))&SceneManager::destroyEntity )
-        .def("destroyAllEntities", &SceneManager::destroyAllEntities)
-        .def("clearScene", &SceneManager::clearScene )
-        .def("setAmbientLight", &SceneManager::setAmbientLight )
-        .def("getAmbientLight", &SceneManager::getAmbientLight )
-        .def("setDisplaySceneNodes", &SceneManager::setDisplaySceneNodes )
-        .def("setShadowTechnique", &SceneManager::setShadowTechnique )
-        .def("setSkyBox", &Scene_setSkyBox )
-        .def("disableSkyBox", &Scene_disableSkyBox )
-        .def("createLight", (Light* (SceneManager::*)())&SceneManager::createLight )
-        .def("createLight", (Light* (SceneManager::*)(const String&))&SceneManager::createLight )
-        .def(tostring(self))
-    ];
-
     LUA_STATIC_START( SceneManager )
         table["AUTODETECT_RESOURCE_GROUP_NAME"] = ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME;
         table["SHADOWTYPE_NONE"] = SHADOWTYPE_NONE;

@@ -1,15 +1,15 @@
 local scene = Ogre.getSceneManager()
 
 if scene:hasSceneNode 'Pivot' then
-    scene:destroySceneNode'Pivot'
+    scene:destroySceneNodeByName 'Pivot'
 end
 
 if scene:hasSceneNode 'CameraNode' then
-    scene:destroySceneNode'CameraNode'
+    scene:destroySceneNodeByName 'CameraNode'
 end
 
 if scene:hasSceneNode 'CameraPitch' then
-    scene:destroySceneNode'CameraPitch'
+    scene:destroySceneNodeByName 'CameraPitch'
 end
 
 if cameraControl then
@@ -18,15 +18,12 @@ end
 
 cameraControl = {}
 local root = scene:getRootSceneNode()
-cameraControl.pivotNode = root:createChildSceneNode"Pivot"
-cameraControl.mainNode = cameraControl.pivotNode:createChildSceneNode"CameraNode"
-cameraControl.pitchNode = cameraControl.mainNode:createChildSceneNode"CameraPitch"
+cameraControl.pivotNode = root:createChildSceneNode "Pivot"
+cameraControl.mainNode = cameraControl.pivotNode:createChildSceneNode "CameraNode"
+cameraControl.pitchNode = cameraControl.mainNode:createChildSceneNode "CameraPitch"
 local cam = scene:getCamera("MainCamera")
 cam:setNearClipDistance(0.1)
 cameraControl.pitchNode:attachObject(cam)
-cameraControl.pitchNode:pitch(-25)
-cameraControl.mainNode:translate( Vector3( -80, 75, 0 ) )
-cameraControl.mainNode:yaw( -90 )
 cameraControl.autoRotateSpeed = .05
 cameraControl.autoRotate = false
 cameraControl.forward = false
@@ -41,10 +38,10 @@ function cameraControl.update()
             cameraControl.pivotNode:yaw(cameraControl.autoRotateSpeed)
         else
             if cameraControl.forward == true then
-                cameraControl.mainNode:translate( Vector3( 0, 0, -2 ), SceneNode.TS_LOCAL )
+                cameraControl.mainNode:translate( Ogre.Vector3( 0, 0, -2 ), Ogre.SceneNode.TS_LOCAL )
             end
             if cameraControl.backward == true then
-                cameraControl.mainNode:translate( Vector3( 0, 0, 2 ), SceneNode.TS_LOCAL )
+                cameraControl.mainNode:translate( Ogre.Vector3( 0, 0, 2 ), Ogre.SceneNode.TS_LOCAL )
             end
             if cameraControl.left == true then
                 cameraControl.mainNode:yaw( 2 );
@@ -88,10 +85,10 @@ function cameraControl:keypressed( key )
             cameraControl.pitchNode:pitch( 1 );
         end
         if key == KeyCodes.KC_PGUP then
-            cameraControl.mainNode:translate( Vector3( 0, 5, 0 ))
+            cameraControl.mainNode:translate( Ogre.Vector3( 0, 5, 0 ), Ogre.SceneNode.TS_WORLD )
         end
         if key == KeyCodes.KC_PGDOWN then
-            cameraControl.mainNode:translate( Vector3( 0, -5, 0 ))
+            cameraControl.mainNode:translate( Ogre.Vector3( 0, -5, 0 ), Ogre.SceneNode.TS_WORLD )
         end
     end
 end
