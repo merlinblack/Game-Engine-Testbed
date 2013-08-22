@@ -6,7 +6,8 @@ set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${${PROJECT_NAME}_LUA_C_FLAGS}")
 # Remove debug if it is there.
 string(REPLACE "-g" "" CMAKE_C_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
 
-add_definitions(-DLUA_USE_LINUX)
+
+
 
 if(WIN32)
     set (Lua_LIBRARIES lua PARENT_SCOPE )
@@ -15,6 +16,7 @@ elseif(UNIX)
     set(Lua_LIBRARIES lua dl m PARENT_SCOPE )
     set(Lua_LIBRARIES lua dl m )
     set(Lua_EXEC_LIBRARIES readline ncurses)
+    add_definitions(-DLUA_USE_LINUX)
 endif()
 
 # define the lua core source files

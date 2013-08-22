@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6)
 project (engine)
 
 if (WIN32)
-    set(CMAKE_MODULE_PATH_ADD $ENV{PROGRAMFILES}/OGRE/CMake )
+    set(CMAKE_MODULE_PATH_ADD $ENV{PROGRAMFILES}/OGRE/CMake $ENV{OGRE_HOME}/CMake )
 elseif (UNIX)
     set(CMAKE_MODULE_PATH_ADD /usr/lib/OGRE/cmake /usr/lib64/OGRE/cmake /usr/local/lib/OGRE/cmake )
 endif ()
@@ -24,7 +24,9 @@ FIND_PACKAGE(Threads)
 add_subdirectory( Lua )
 
 # For LuaBridge
-SET(LuaBridge_FLAGS "-Wno-deprecated")
+if(UNIX)
+  SET(LuaBridge_FLAGS "-Wno-deprecated")
+endif()
 
 INCLUDE_DIRECTORIES(
 	${PROJECT_SOURCE_DIR}/include
