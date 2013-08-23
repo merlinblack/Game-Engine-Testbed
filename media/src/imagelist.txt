@@ -22,3 +22,4 @@ se.png
 ne.png
 nw.png
 lua.png
+lua.sm.png

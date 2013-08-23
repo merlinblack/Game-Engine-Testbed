@@ -117,6 +117,7 @@ function setup()
     --Something to look at...
     require 'fps'
     require 'clock'
+    require 'lualogo'
     --require 'cameracontrol'
     --require 'walk'
     --require 'test'

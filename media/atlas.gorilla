@@ -3,26 +3,27 @@ acoustic_bass_regular_20 0 0 228 226
 dejavu_sans_book_14 228 0 140 139
 lua 368 0 128 128
 white.arrow 496 0 15 23
-drag.pressed 496 23 16 16
-checkbox.false 496 39 16 16
-drag.hover 496 55 16 16
-drag.normal 496 71 16 16
+drag.hover 496 23 16 16
+drag.pressed 496 39 16 16
+drag.normal 496 55 16 16
+checkbox.false 496 71 16 16
 checkbox.true 496 87 16 16
-ne 496 103 8 8
-nw 504 103 8 8
-se 496 111 8 8
-sw 504 111 8 8
+nw 496 103 8 8
+ne 504 103 8 8
+sw 496 111 8 8
+se 504 111 8 8
 white 496 119 4 4
-coco 228 139 64 64
+lua.sm 228 139 64 64
 ogrehead 292 139 64 64
-yellow.arrow 356 139 64 48
-icon.exit 420 139 32 32
-icon.info 452 139 32 32
+coco 356 139 64 64
+yellow.arrow 420 139 64 48
 crosshair 484 139 22 23
 acoustic_bass_regular_10 0 226 125 122
-button.hover 125 226 80 24
-button.pressed 205 226 80 24
-button.normal 285 226 80 24
+icon.exit 125 226 32 32
+icon.info 157 226 32 32
+button.normal 189 226 80 24
+button.pressed 269 226 80 24
+button.hover 349 226 80 24
 [Texture]
 file atlas.png
 whitepixel 498 121
