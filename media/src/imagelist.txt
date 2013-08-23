@@ -21,3 +21,4 @@ sw.png
 se.png
 ne.png
 nw.png
+lua.png

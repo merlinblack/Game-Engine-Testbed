@@ -3,7 +3,7 @@
 svgfiles=$(shell ls *.svg | grep -v icon.svg )
 pngfiles=$(svgfiles:.svg=.png)
 
-atlas.png atlas.gorilla :	$(shell cat imagelist.txt) packatlas.lua $(svgfiles)
+atlas.png atlas.gorilla :	$(shell cat imagelist.txt) packatlas.lua $(svgfiles) imagelist.txt
 	./packatlas.lua
 
 .PHONY: clean

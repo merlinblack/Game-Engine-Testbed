@@ -5,3 +5,5 @@ notes.txt
 *.log
 *.mesh
 *.swp
+media/src/atlas.gorilla
+media/src/atlas.png
