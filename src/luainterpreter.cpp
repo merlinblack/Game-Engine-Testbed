@@ -250,8 +250,10 @@ static const string dumpstack_str(lua_State* L )
             case LUA_TNUMBER:
                 ss << lua_tonumber(L,i) << "\n";
             break;
+            case LUA_TUSERDATA:
             case LUA_TSTRING:
-                ss << lua_tostring(L,i) << "\n";
+                ss << luaL_tolstring(L,-1,NULL) << "\n";
+                lua_pop(L,1);
                 break;
             case LUA_TBOOLEAN:
                 ss << (lua_toboolean(L, i) ? "true" : "false") << "\n";
