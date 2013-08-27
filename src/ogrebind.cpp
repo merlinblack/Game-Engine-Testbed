@@ -112,6 +112,14 @@ Vector3* Vector3Constructor( lua_State* L )
     return NULL;
 }
 
+String Vector3ToString( const Vector3* ptr )
+{
+    std::stringstream ss;
+
+    ss << "Vector3(" << ptr->x << ", " << ptr->y << ", " << ptr->z << ")";
+    return ss.str();
+}
+
 void bindVector3( lua_State* L )
 {
     getGlobalNamespace( L )
@@ -126,6 +134,7 @@ void bindVector3( lua_State* L )
         .addFunction( "__mul", (Vector3  (Vector3::*) (const Vector3&) const )&Vector3::operator* )
         .addFunction( "__div", (Vector3  (Vector3::*) (const Real)     const )&Vector3::operator/ )
         .addFunction( "__eq",  (Vector3& (Vector3::*) (const Vector3&)       )&Vector3::operator= )
+        .addFunction( "__tostring", &Vector3ToString )
         .addFunction("absDotProduct", &Vector3::absDotProduct)
         .addFunction("crossProduct", &Vector3::crossProduct )
         .addFunction("directionEquals", &Vector3::directionEquals )
@@ -326,21 +335,15 @@ void SceneNode_translate( SceneNode *obj, const Vector3& v, int transformspace )
     return obj->translate( v, (SceneNode::TransformSpace) transformspace );
 }
 
-/* May not be required with LuaBridge
 Vector3 SceneNode_getPosition( SceneNode* obj )
 {
-    // This function returns a reference which confuses luabind.
-    // So we wrap it.
     return obj->getPosition();
 }
 
 Quaternion SceneNode_getOrientation( SceneNode* obj )
 {
-    // This function returns a reference which confuses luabind.
-    // So we wrap it.
     return obj->getOrientation();
 }
-*/
 
 std::ostream& operator<<( std::ostream& stream, const SceneNode& node )
 {
@@ -359,9 +362,9 @@ void bindSceneNode( lua_State* L )
         .addFunction( "roll", SceneNode_roll )
         .addFunction( "setPosition", (void( SceneNode::*)(Real,Real,Real))&SceneNode::setPosition )
         .addFunction( "setPositionV3", (void( SceneNode::*)(const Vector3&))&SceneNode::setPosition )
-        .addFunction( "getPosition", &SceneNode::getPosition )
+        .addFunction( "getPosition", &SceneNode_getPosition )
         .addFunction( "setOrientation", (void( SceneNode::*)( const Quaternion& ))&SceneNode::setOrientation )
-        .addFunction( "getOrientation", &SceneNode::getOrientation )
+        .addFunction( "getOrientation", &SceneNode_getOrientation )
         .addFunction( "scale", (void( SceneNode::*)(Real,Real,Real))&SceneNode::scale )
         .addFunction( "scaleV3", (void( SceneNode::*)(const Vector3&))&SceneNode::scale )
         .addFunction( "showBoundingBox", &SceneNode::showBoundingBox )
@@ -433,6 +436,11 @@ void Scene_disableSkyBox( SceneManager* mgr )
     mgr->setSkyBox( false, String() );
 }
 
+void Scene_setShadowTechnique( SceneManager *mgr, int technique )
+{
+    mgr->setShadowTechnique( (ShadowTechnique)technique );
+}
+
 void bindSceneManager( lua_State* L )
 {
     getGlobalNamespace( L )
@@ -455,25 +463,24 @@ void bindSceneManager( lua_State* L )
         .addFunction("setAmbientLight", &SceneManager::setAmbientLight )
         .addFunction("getAmbientLight", &SceneManager::getAmbientLight )
         .addFunction("setDisplaySceneNodes", &SceneManager::setDisplaySceneNodes )
-        .addFunction("setShadowTechnique", &SceneManager::setShadowTechnique )
+        .addFunction("setShadowTechnique", &Scene_setShadowTechnique )
         .addFunction("setSkyBox", &Scene_setSkyBox )
         .addFunction("disableSkyBox", &Scene_disableSkyBox )
         .addFunction("createLight", (Light* (SceneManager::*)())&SceneManager::createLight )
         .addFunction("createLightByName", (Light* (SceneManager::*)(const String&))&SceneManager::createLight )
         .endClass()
         .endNamespace();
-    /*
-    LUA_STATIC_START( SceneManager )
-        table["AUTODETECT_RESOURCE_GROUP_NAME"] = ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME;
-        table["SHADOWTYPE_NONE"] = SHADOWTYPE_NONE;
-        table["SHADOWTYPE_STENCIL_ADDITIVE"] = SHADOWTYPE_STENCIL_ADDITIVE;
-        table["SHADOWTYPE_STENCIL_MODULATIVE"] = SHADOWTYPE_STENCIL_MODULATIVE;
-        table["SHADOWTYPE_TEXTURE_ADDITIVE"] = SHADOWTYPE_TEXTURE_ADDITIVE;
-        table["SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED"] = SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED;
-        table["SHADOWTYPE_TEXTURE_MODULATIVE"] = SHADOWTYPE_TEXTURE_MODULATIVE;
-        table["SHADOWTYPE_TEXTURE_MODULATIVE_INTEGRATED"] = SHADOWTYPE_TEXTURE_MODULATIVE_INTEGRATED;
-    LUA_STATIC_END;
-    */
+
+    LuaRef ogre = getGlobal( L, "Ogre" );
+    LuaRef sm = ogre["SceneManager"];
+    sm["AUTODETECT_RESOURCE_GROUP_NAME"] = ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME;
+    sm["SHADOWTYPE_NONE"] = (int) SHADOWTYPE_NONE;
+    sm["SHADOWTYPE_STENCIL_ADDITIVE"] = (int) SHADOWTYPE_STENCIL_ADDITIVE;
+    sm["SHADOWTYPE_STENCIL_MODULATIVE"] = (int) SHADOWTYPE_STENCIL_MODULATIVE;
+    sm["SHADOWTYPE_TEXTURE_ADDITIVE"] = (int) SHADOWTYPE_TEXTURE_ADDITIVE;
+    sm["SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED"] = (int) SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED;
+    sm["SHADOWTYPE_TEXTURE_MODULATIVE"] = (int) SHADOWTYPE_TEXTURE_MODULATIVE;
+    sm["SHADOWTYPE_TEXTURE_MODULATIVE_INTEGRATED"] = (int) SHADOWTYPE_TEXTURE_MODULATIVE_INTEGRATED;
 }
 
 std::ostream& operator<<( std::ostream& stream, const Ogre::SceneManager& mgr )
