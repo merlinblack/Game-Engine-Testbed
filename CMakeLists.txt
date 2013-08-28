@@ -64,6 +64,7 @@ enable_git_versioning( engine )
 
 MESSAGE(STATUS "Boost libraries:    ${Boost_LIBRARIES} ")
 MESSAGE(STATUS "OIS libraries:      ${OIS_LIBRARIES} ")
+MESSAGE(STATUS "OIS headers:        ${OIS_INCLUDE_DIRS} ")
 MESSAGE(STATUS "OGRE libraries:     ${OGRE_LIBRARIES} ")
 MESSAGE(STATUS "Lua libraries:      ${Lua_LIBRARIES} ")
 MESSAGE(STATUS "Lua headers:        ${Lua_INCLUDE_DIRS} ")
