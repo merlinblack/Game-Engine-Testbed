@@ -25,7 +25,7 @@ THE SOFTWARE.
 #ifndef INPUTSYSTEM_H_INCLUDED
 #define INPUTSYSTEM_H_INCLUDED
 
-#include <OIS/OIS.h>
+#include <OIS.h>
 #include <OgreRenderWindow.h>
 #include <eventmanager.h>
 
