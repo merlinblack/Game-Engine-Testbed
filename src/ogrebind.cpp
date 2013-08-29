@@ -383,30 +383,41 @@ void bindSceneNode( lua_State* L )
     scenenode["TS_WORLD"]  = (int)SceneNode::TS_WORLD;
 }
 
+void Light_setType( Light* lt, int type )
+{
+    lt->setType( (Light::LightTypes)type );
+}
+
+int Light_getType( Light* lt )
+{
+    return (int)lt->getType();
+}
+
 void bindLight( lua_State* L )
 {
-    /*
-    module(L)
-    [
-        class_<Light, MovableObject>("Light")
-        .property( "type", &Light::getType, &Light::setType )
-        .def( "setDiffuse", (void( Light::*)(Real, Real, Real))&Light::setDiffuseColour )
-        .def( "setDiffuse", (void( Light::*)(const ColourValue&))&Light::setDiffuseColour )
-        .def( "setSpecular", (void( Light::*)(Real, Real, Real))&Light::setSpecularColour )
-        .def( "setSpecular", (void( Light::*)(const ColourValue&))&Light::setSpecularColour )
-        .def( "setAttenuation", &Light::setAttenuation )
-        .def( "setPosition", (void( Light::*)(Real, Real, Real))&Light::setPosition )
-        .def( "setPosition", (void( Light::*)(const Vector3&))&Light::setPosition )
-        .def( "setDirection", (void( Light::*)(Real, Real, Real))&Light::setDirection )
-        .def( "setDirection", (void( Light::*)(const Vector3&))&Light::setDirection )
-    ];
+    getGlobalNamespace( L )
+        .beginNamespace( "Ogre" )
+        .deriveClass<Light,MovableObject>("Light")
+        .addFunction( "getType", &Light_getType )
+        .addFunction( "setType", &Light_setType )
+        .addFunction( "setDiffuse", (void( Light::*)(Real, Real, Real))&Light::setDiffuseColour )
+        .addFunction( "setDiffuse", (void( Light::*)(const ColourValue&))&Light::setDiffuseColour )
+        .addFunction( "setSpecular", (void( Light::*)(Real, Real, Real))&Light::setSpecularColour )
+        .addFunction( "setSpecular", (void( Light::*)(const ColourValue&))&Light::setSpecularColour )
+        .addFunction( "setAttenuation", &Light::setAttenuation )
+        .addFunction( "setPosition", (void( Light::*)(Real, Real, Real))&Light::setPosition )
+        .addFunction( "setPosition", (void( Light::*)(const Vector3&))&Light::setPosition )
+        .addFunction( "setDirection", (void( Light::*)(Real, Real, Real))&Light::setDirection )
+        .addFunction( "setDirection", (void( Light::*)(const Vector3&))&Light::setDirection )
+        .endClass()
+        .endNamespace();
 
-    LUA_STATIC_START( Light )
-        LUA_STATIC( Light, LT_POINT );
-        LUA_STATIC( Light, LT_DIRECTIONAL );
-        LUA_STATIC( Light, LT_SPOTLIGHT );
-    LUA_STATIC_END;
-    */
+    LuaRef ogre = getGlobal( L, "Ogre" );
+    LuaRef light = ogre["Light"];
+
+    light["LT_POINT"] = (int)Light::LT_POINT;
+    light["LT_DIRECTIONAL"] = (int)Light::LT_DIRECTIONAL;
+    light["LT_SPOTLIGHT"] = (int)Light::LT_SPOTLIGHT;
 }
 
 void bindCamera( lua_State* L )
