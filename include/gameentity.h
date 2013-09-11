@@ -100,7 +100,7 @@ public:
     void highlight( bool on = true );
     void createHighlightMaterial();
 
-    bool isVisible();
+    bool isVisible() const;
     void setVisible( bool visible );
 };
 

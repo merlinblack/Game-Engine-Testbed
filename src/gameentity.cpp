@@ -28,10 +28,9 @@ THE SOFTWARE.
 #include <OgreSubEntity.h>
 #include <OgreMaterialManager.h>
 #include <ogretools.h>
-#include <ostream>
+#include <lua.hpp>
+#include <LuaBridge.h>
 
-std::ostream& operator<<( std::ostream& stream, const GameEntity& ge );
-std::ostream& operator<<( std::ostream& stream, const GameEntityManager& gm );
 
 boost::hash<std::string> GameEntity::hasher;
 
@@ -199,7 +198,7 @@ void GameEntity::createHighlightMaterial()
     }
 }
 
-bool GameEntity::isVisible()
+bool GameEntity::isVisible() const
 {
     if( ! mesh )
         return false;
@@ -420,20 +419,42 @@ void GameEntityManager::getGameEntityList( lua_State *L )
     */
 }
 
-std::ostream& operator<<( std::ostream& stream, const GameEntity& ge )
+Ogre::String GameEntityToString( const GameEntity& ge )
 {
-    return stream << "Game Entity: " << ge.getName();
+    return "Game Entity: " + ge.getName();
 }
 
-std::ostream& operator<<( std::ostream& stream, const GameEntityManager& gm )
+Ogre::String GameEntityManagerToString( const GameEntityManager& gm )
 {
-    return stream << "Game Entity Manager (Singleton)";
+    return "Game Entity Manager (Singleton)";
 }
 
 void bindGameEntityClasses( lua_State* L )
 {
+    using namespace luabridge;
+
+    getGlobalNamespace( L )
+        .beginNamespace( "Engine" )
+        .beginClass<GameEntity>( "GameEntity" )
+            .addConstructor<void (*)()>()
+            .addFunction( "update", &GameEntity::update )
+            .addProperty( "name", &GameEntity::getName, &GameEntity::setName )
+            .addData( "mesh", &GameEntity::mesh )
+            .addData( "node", &GameEntity::sceneNode )
+            .addFunction( "hashId", &GameEntity::getHashId )
+            .addData( "parent", &GameEntity::parent )
+            .addFunction( "hash", &GameEntity::hash )
+            .addFunction( "hitCheck", &GameEntity::hitCheck )
+            .addFunction( "hitPosition", &GameEntity::hitPosition )
+            .addFunction( "highlight", &GameEntity::highlight )
+            .addFunction( "createHighlightMaterial", &GameEntity::createHighlightMaterial )
+            .addFunction( "removeFromManager", &GameEntity::removeFromManager )
+            .addProperty( "visible", &GameEntity::isVisible, &GameEntity::setVisible )
+            .addFunction( "__tostring", &GameEntityToString )
+            .addFunction( "__gc", &GameEntity::removeFromManager)
+            .endClass()
+            .endNamespace();
     /*
-    using namespace luabind;
 
     module(L)
     [
