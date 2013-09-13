@@ -255,6 +255,7 @@ void bindEntity( lua_State* L ) // And Movable Object for now.
         .beginClass<MovableObject>("MovableObject")
         .addFunction( "getVisible", &MovableObject::getVisible )
         .addFunction( "setVisible", &MovableObject::setVisible )
+        .addFunction( "detachFromParent", &MovableObject::detachFromParent )
         .endClass()
         .deriveClass<Entity,MovableObject>("Entity")
         .addFunction("setMaterialName", &Entity::setMaterialName )
@@ -265,14 +266,6 @@ void bindEntity( lua_State* L ) // And Movable Object for now.
     /*
     module(L)
     [
-        class_<MovableObject>("MovableObject")
-        .def("getVisible", &MovableObject::getVisible )
-        .def("setVisible", &MovableObject::setVisible )
-        .def("detachFromParent", &MovableObject::detachFromParent ),
-        class_<Entity, MovableObject>("Entity")
-        .def(tostring(self))
-        .def("setMaterialName", &Entity::setMaterialName )
-        .def("setDisplaySkeleton", &Entity::setDisplaySkeleton ),
         class_<ManualObject, MovableObject>("ManualObject")
         .def(constructor<const String&>())
         .def("clear", &ManualObject::clear )
