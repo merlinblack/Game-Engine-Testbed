@@ -550,9 +550,9 @@ private:
       @note The object is popped.
   */
   LuaRef (lua_State* L, FromStack)
-    : m_L (L)
+    : m_L (get_main_thread(L))
   {
-    m_ref = luaL_ref (m_L, LUA_REGISTRYINDEX);
+    m_ref = luaL_ref (L, LUA_REGISTRYINDEX);
   }
 
   //----------------------------------------------------------------------------
@@ -565,10 +565,10 @@ private:
       @note The object is not popped.
   */
   LuaRef (lua_State* L, int index, FromStack)
-    : m_L (L)
+    : m_L (get_main_thread(L))
   {
-    lua_pushvalue (m_L, index);
-    m_ref = luaL_ref (m_L, LUA_REGISTRYINDEX);
+    lua_pushvalue (L, index);
+    m_ref = luaL_ref (L, LUA_REGISTRYINDEX);
   }
 
   //----------------------------------------------------------------------------
@@ -607,7 +607,7 @@ public:
       The LuaRef may be assigned later.
   */
   LuaRef (lua_State* L)
-    : m_L (L)
+    : m_L (get_main_thread(L))
     , m_ref (LUA_REFNIL)
   {
   }
@@ -618,7 +618,7 @@ public:
   */
   template <class T>
   LuaRef (lua_State* L, T v)
-    : m_L (L)
+    : m_L (get_main_thread(L))
   {
     Stack <T>::push (m_L, v);
     m_ref = luaL_ref (m_L, LUA_REGISTRYINDEX);

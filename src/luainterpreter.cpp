@@ -271,6 +271,7 @@ static const string dumpstack_str(lua_State* L )
 
 static void dumpstack (lua_State *L, const char *message)
 {
+    printf("thread -- %p\n", L );
     printf("dumpstack -- %s\n",message);
     printf("%s\n", dumpstack_str( L ).c_str() );
     printf("dumpstack -- END\n");

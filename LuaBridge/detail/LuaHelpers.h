@@ -91,6 +91,14 @@ inline int get_length (lua_State* L, int idx)
   return int (luaL_checknumber (L, -1));
 }
 
+inline lua_State* get_main_thread( lua_State* thread )
+{
+    lua_rawgeti( thread, LUA_REGISTRYINDEX, LUA_RIDX_MAINTHREAD );
+    lua_State* L = lua_tothread( thread, -1 );
+    lua_pop( thread, 1 );
+    return L;
+}
+
 #endif
 
 #ifndef LUA_OK
