@@ -28,13 +28,10 @@ THE SOFTWARE.
 #include <OgreSubEntity.h>
 #include <OgreMaterialManager.h>
 #include <ogretools.h>
-#include <lua.hpp>
-#include <LuaBridge.h>
-
 
 boost::hash<std::string> GameEntity::hasher;
 
-GameEntity::GameEntity() : hashId(0), sceneNode(0), mesh(0), originalMaterial(0), highlightMaterial(0)
+GameEntity::GameEntity( lua_State* L ) : update_overide(L), hashId(0), sceneNode(0), mesh(0), originalMaterial(0), highlightMaterial(0)
 {
 }
 
@@ -74,7 +71,8 @@ void GameEntity::setName( std::string newName )
 
 void GameEntity::update()
 {
-    // Nothing, might get overridden in Lua
+    if( update_overide.isFunction() )
+        update_overide();
 }
 
 void GameEntity::removeFromManager()
@@ -436,7 +434,8 @@ void bindGameEntityClasses( lua_State* L )
     getGlobalNamespace( L )
         .beginNamespace( "Engine" )
         .beginClass<GameEntity>( "GameEntity" )
-            .addConstructor<void (*)()>()
+            .addConstructor<void (*)(lua_State*), RefCountedPtr<GameEntity> >()
+            .addData( "updateOveride", &GameEntity::update_overide )
             .addFunction( "update", &GameEntity::update )
             .addProperty( "name", &GameEntity::getName, &GameEntity::setName )
             .addData( "mesh", &GameEntity::mesh )

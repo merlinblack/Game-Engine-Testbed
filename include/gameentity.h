@@ -34,6 +34,8 @@ THE SOFTWARE.
 #include <boost/shared_ptr.hpp>
 #include <boost/functional/hash.hpp>
 #include <lua.hpp>
+#include <LuaBridge.h>
+#include <RefCountedPtr.h>
 
 class GameEntity;
 class GameEntityManager;
@@ -66,8 +68,11 @@ public: // TODO: Make private and add accessor funcs.
     // btSomethingErRather* physical;
 
 public:
-    GameEntity();
+    GameEntity( lua_State* L);
     virtual ~GameEntity();
+
+    // Lua function for updates
+    luabridge::LuaRef update_overide;
 
     // Accessors
     std::string getName() const { return name; }
@@ -103,33 +108,6 @@ public:
     bool isVisible() const;
     void setVisible( bool visible );
 };
-
-// This allows GameEntities passed from Lua to C++ and back
-// to retain thier Lua parts.  In other words, not get sliced.
-// Also Lua can derive from GameEntity and override the update
-// method.
-/*
-class GameEntityWrapper : public GameEntity, public luabind::wrap_base
-{
-    public:
-
-    virtual void update()
-    {
-        lua_State* L = m_self.state();
-        m_self.get(L);
-        if( ! lua_isnil( L, -1 ) ) // If the Lua side is not there anymore just ignore.
-            call<void>( "update" );
-        else
-            Ogre::LogManager::getSingleton().stream() << "Game Entity Lua side missing.";
-        lua_pop( L, 1 );
-    }
-
-    static void default_update( GameEntity* ptr )
-    {
-        ptr->GameEntity::update();
-    }
-};
-*/
 
 class GameEntityManager : public Ogre::Singleton<GameEntityManager>
 {

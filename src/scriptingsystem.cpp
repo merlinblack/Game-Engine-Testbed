@@ -212,8 +212,8 @@ void ScriptingSystem::initialise()
 
     bind();
     bindOgre( mL );
-    /*
     bindGameEntityClasses( mL );
+    /*
     bindAnimation( mL );
     bindNavigationMesh( mL );
     */
