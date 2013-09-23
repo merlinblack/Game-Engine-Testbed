@@ -58,5 +58,13 @@ Ogre::String versionString()
     version += Ogre::StringConverter::toString( LUABRIDGE_MINOR_VERSION );
     version += "\n";
 
+    version += "Boost ";
+    version += Ogre::StringConverter::toString( BOOST_VERSION / 100000 );
+    version += ".";
+    version += Ogre::StringConverter::toString( BOOST_VERSION / 100 % 1000 );
+    version += ".";
+    version += Ogre::StringConverter::toString( BOOST_VERSION % 100 );
+    version += "\n";
+
     return version;
 }
