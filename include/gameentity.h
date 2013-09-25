@@ -35,14 +35,12 @@ THE SOFTWARE.
 #include <boost/functional/hash.hpp>
 #include <lua.hpp>
 #include <LuaBridge.h>
-#include <RefCountedPtr.h>
+#include <RefCountedObject.h>
 
 class GameEntity;
 class GameEntityManager;
 
-typedef boost::shared_ptr<GameEntity> GameEntityPtr;
-
-class GameEntity
+class GameEntity : public RefCountedObject
 {
     friend class GameEntityManager;
 
@@ -57,7 +55,7 @@ class GameEntity
 
 public: // TODO: Make private and add accessor funcs.
 
-    GameEntityPtr parent;
+    RefCountedObjectPtr<GameEntity> parent;
 
     // Scene Node
     Ogre::SceneNode* sceneNode;
@@ -97,7 +95,7 @@ public:
     {
         return hasher(str);
     }
-    bool operator==( const GameEntityPtr rhs )
+    bool operator==( const RefCountedObjectPtr<GameEntity> rhs )
     {
         return hashId == rhs->hashId;
     }
@@ -107,13 +105,15 @@ public:
 
     bool isVisible() const;
     void setVisible( bool visible );
+
+    typedef RefCountedObjectPtr<GameEntity> Ptr;
 };
 
 class GameEntityManager : public Ogre::Singleton<GameEntityManager>
 {
-    typedef std::pair<size_t, GameEntityPtr> mapping;
+    typedef std::pair<size_t, GameEntity::Ptr> mapping;
 
-    std::map<size_t, GameEntityPtr> entities;
+    std::map<size_t, GameEntity::Ptr> entities;
 
     Ogre::SceneManager* sceneManager;
     Ogre::RaySceneQuery* sceneQuery;
@@ -128,16 +128,16 @@ public:
     void initialise();
     void shutdown();
 
-    bool addGameEntity( GameEntityPtr p );
+    bool addGameEntity( GameEntity::Ptr p );
     void removeGameEntity( size_t hashId );
     void removeGameEntity( std::string name );
-    GameEntityPtr getGameEntity( size_t hashId );
-    GameEntityPtr getGameEntity( std::string name );
+    GameEntity::Ptr getGameEntity( size_t hashId );
+    GameEntity::Ptr getGameEntity( std::string name );
 
     void update();
 
     Ogre::Ray getCameraRay( float x, float y );
-    std::list<GameEntityPtr> mousePick( float x, float y );
+    std::list<GameEntity::Ptr> mousePick( float x, float y );
     void mousePickLua( lua_State* L, float x, float y );
     void getGameEntityList( lua_State *L );
 };

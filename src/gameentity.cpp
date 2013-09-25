@@ -45,7 +45,7 @@ GameEntity::~GameEntity()
 
 void GameEntity::setName( std::string newName )
 {
-    GameEntityPtr old;
+    GameEntity::Ptr old;
 
     // A name change, also changes the hashId. Thus if we are being managed
     // by the GameEntityManager, which uses hashId as a key, we have to
@@ -274,7 +274,7 @@ void GameEntityManager::shutdown()
     entities.clear();
 }
 
-bool GameEntityManager::addGameEntity( GameEntityPtr p )
+bool GameEntityManager::addGameEntity( GameEntity::Ptr p )
 {
     assert( p );
 
@@ -293,19 +293,19 @@ void GameEntityManager::removeGameEntity( std::string name )
     entities.erase( hashId );
 }
 
-GameEntityPtr GameEntityManager::getGameEntity( size_t hashId )
+GameEntity::Ptr GameEntityManager::getGameEntity( size_t hashId )
 {
-    std::map<size_t, GameEntityPtr>::iterator iter;
+    std::map<size_t, GameEntity::Ptr>::iterator iter;
 
     iter = entities.find( hashId );
 
     if( iter != entities.end() )
         return iter->second;
     else
-        return GameEntityPtr();     // Null shared pointer.
+        return GameEntity::Ptr();     // TODO: Fix this!!! Was a Null shared pointer.
 }
 
-GameEntityPtr GameEntityManager::getGameEntity( std::string name )
+GameEntity::Ptr GameEntityManager::getGameEntity( std::string name )
 {
     size_t hashId = GameEntity::hasher( name );
     return getGameEntity( hashId );
@@ -313,7 +313,7 @@ GameEntityPtr GameEntityManager::getGameEntity( std::string name )
 
 void GameEntityManager::update()
 {
-    std::map<size_t, GameEntityPtr>::iterator iter;
+    std::map<size_t, GameEntity::Ptr>::iterator iter;
 
     for( iter = entities.begin(); iter != entities.end(); iter++ )
         iter->second->update();
@@ -326,7 +326,7 @@ Ogre::Ray GameEntityManager::getCameraRay( float x, float y )
     return cam->getCameraToViewportRay( x, y );
 }
 
-std::list<GameEntityPtr> GameEntityManager::mousePick( float x, float y )
+std::list<GameEntity::Ptr> GameEntityManager::mousePick( float x, float y )
 {
     using namespace Ogre;
 
@@ -335,8 +335,8 @@ std::list<GameEntityPtr> GameEntityManager::mousePick( float x, float y )
     RaySceneQueryResult& result = sceneQuery->execute();
     RaySceneQueryResult::iterator iter;
 
-    std::list<GameEntityPtr> picked;
-    std::map<size_t, GameEntityPtr>::iterator entityIter;
+    std::list<GameEntity::Ptr> picked;
+    std::map<size_t, GameEntity::Ptr>::iterator entityIter;
 
     for( iter = result.begin(); iter != result.end(); iter++ )
     {
@@ -417,9 +417,9 @@ void GameEntityManager::getGameEntityList( lua_State *L )
     */
 }
 
-Ogre::String GameEntityToString( const GameEntity& ge )
+Ogre::String GameEntityToString( const GameEntity::Ptr ge )
 {
-    return "Game Entity: " + ge.getName();
+    return "Game Entity: " + ge->getName();
 }
 
 Ogre::String GameEntityManagerToString( const GameEntityManager& gm )
@@ -434,7 +434,7 @@ void bindGameEntityClasses( lua_State* L )
     getGlobalNamespace( L )
         .beginNamespace( "Engine" )
         .beginClass<GameEntity>( "GameEntity" )
-            .addConstructor<void (*)(lua_State*), RefCountedPtr<GameEntity> >()
+            .addConstructor<void (*)(lua_State*), RefCountedObjectPtr<GameEntity> >()
             .addData( "updateOveride", &GameEntity::update_overide )
             .addFunction( "update", &GameEntity::update )
             .addProperty( "name", &GameEntity::getName, &GameEntity::setName )
