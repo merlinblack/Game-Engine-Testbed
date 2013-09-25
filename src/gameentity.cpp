@@ -356,23 +356,21 @@ std::list<GameEntity::Ptr> GameEntityManager::mousePick( float x, float y )
     return picked;
 }
 
-void GameEntityManager::mousePickLua( lua_State* L, float x, float y )
+luabridge::LuaRef GameEntityManager::mousePickLua( lua_State* L, float x, float y )
 {
-    /*
     using namespace Ogre;
+    using namespace luabridge;
 
-    //TODO convert to LuaBridge
-    luabind::object geTable = luabind::newtable( L );
-    luabind::object distTable = luabind::newtable( L );
-    size_t index = 1;
+    LuaRef geTable = newTable( L );
+    LuaRef distTable = newTable( L );
 
     sceneQuery->setRay( getCameraRay( x, y ) );
 
     RaySceneQueryResult& result = sceneQuery->execute();
     RaySceneQueryResult::iterator iter;
 
-    std::list<GameEntityPtr> picked;
-    std::map<size_t, GameEntityPtr>::iterator entityIter;
+    std::list<GameEntity::Ptr> picked;
+    std::map<size_t, GameEntity::Ptr>::iterator entityIter;
 
     for( iter = result.begin(); iter != result.end(); iter++ )
     {
@@ -383,38 +381,36 @@ void GameEntityManager::mousePickLua( lua_State* L, float x, float y )
             {
                 if( entityIter->second->mesh == iter->movable )
                 {
-                    geTable[index] = entityIter->second;
-                    distTable[index] = iter->distance;
-                    index++;
+                    geTable.append( entityIter->second );
+                    distTable.append( iter->distance );
                     break;
                 }
             }
         }
     }
 
-    // Push return values (tables) onto the Lua stack.
+    LuaRef retTable = newTable( L );
 
-    geTable.push( L );
-    distTable.push( L );
-*/
-    return;
+    retTable["entities"] = geTable;
+    retTable["distances"] = distTable;
+
+    return retTable;
 }
 
-void GameEntityManager::getGameEntityList( lua_State *L )
+luabridge::LuaRef GameEntityManager::getGameEntityList( lua_State *L )
 {
-    /*
-    luabind::object geTable = luabind::newtable( L );
-    size_t index = 0;
+    using namespace luabridge;
 
-    std::map<size_t, GameEntityPtr>::iterator entityIter;
+    LuaRef geTable = newTable( L );
+
+    std::map<size_t, GameEntity::Ptr>::iterator entityIter;
 
     for( entityIter = entities.begin(); entityIter != entities.end(); entityIter++ )
     {
-        geTable[++index] = entityIter->second;
+        geTable.append( entityIter->second );
     }
 
-    geTable.push( L );
-    */
+    return geTable;
 }
 
 Ogre::String GameEntityToString( const GameEntity::Ptr ge )
@@ -422,7 +418,7 @@ Ogre::String GameEntityToString( const GameEntity::Ptr ge )
     return "Game Entity: " + ge->getName();
 }
 
-Ogre::String GameEntityManagerToString( const GameEntityManager& gm )
+Ogre::String GameEntityManagerToString( const GameEntityManager* gm )
 {
     return "Game Entity Manager (Singleton)";
 }
@@ -434,62 +430,34 @@ void bindGameEntityClasses( lua_State* L )
     getGlobalNamespace( L )
         .beginNamespace( "Engine" )
         .beginClass<GameEntity>( "GameEntity" )
-            .addConstructor<void (*)(lua_State*), RefCountedObjectPtr<GameEntity> >()
-            .addData( "updateOveride", &GameEntity::update_overide )
-            .addFunction( "update", &GameEntity::update )
-            .addProperty( "name", &GameEntity::getName, &GameEntity::setName )
-            .addData( "mesh", &GameEntity::mesh )
-            .addData( "node", &GameEntity::sceneNode )
-            .addFunction( "hashId", &GameEntity::getHashId )
-            .addData( "parent", &GameEntity::parent )
-            .addFunction( "hash", &GameEntity::hash )
-            .addFunction( "hitCheck", &GameEntity::hitCheck )
-            .addFunction( "hitPosition", &GameEntity::hitPosition )
-            .addFunction( "highlight", &GameEntity::highlight )
-            .addFunction( "createHighlightMaterial", &GameEntity::createHighlightMaterial )
-            .addFunction( "removeFromManager", &GameEntity::removeFromManager )
-            .addProperty( "visible", &GameEntity::isVisible, &GameEntity::setVisible )
-            .addFunction( "__tostring", &GameEntityToString )
-            .addFunction( "__gc", &GameEntity::removeFromManager)
-            .endClass()
-            .endNamespace();
-    /*
-
-    module(L)
-    [
-            class_<GameEntity, GameEntityPtr, GameEntityWrapper>("GameEntity")
-            .def( constructor<>() )
-            .def( "update", &GameEntity::update, &GameEntityWrapper::default_update )
-            .property( "name", &GameEntity::getName, &GameEntity::setName )
-            .def_readwrite( "mesh", &GameEntity::mesh )
-            .def_readwrite( "node", &GameEntity::sceneNode )
-            .property( "hashId", &GameEntity::getHashId )
-            .def_readwrite( "parent", &GameEntity::parent )
-            .def( "hash", &GameEntity::hash )
-            .def( "hitCheck", &GameEntity::hitCheck )
-            .def( "hitPosition", &GameEntity::hitPosition )
-            .def( "highlight", &GameEntity::highlight )
-            .def( "createHighlightMaterial", &GameEntity::createHighlightMaterial )
-            .def( "removeFromManager", &GameEntity::removeFromManager )
-            .property( "visible", &GameEntity::isVisible, &GameEntity::setVisible )
-            .def(tostring(self))
-            .def( self == other<GameEntityPtr>() )
-            .def("__finalize", &GameEntity::removeFromManager)
-            ,
-            class_<GameEntityManager>("GameEntityManager")
-            .scope
-            [
-                def( "getSingleton", &GameEntityManager::getSingletonPtr )
-            ]
-            .def( "add", &GameEntityManager::addGameEntity )
-            .def( "remove", (void (GameEntityManager::*)(std::string)) &GameEntityManager::removeGameEntity )
-            .def( "remove", (void (GameEntityManager::*)(size_t)) &GameEntityManager::removeGameEntity )
-            .def( "get", (GameEntityPtr (GameEntityManager::*)(std::string)) &GameEntityManager::getGameEntity )
-            .def( "get", (GameEntityPtr (GameEntityManager::*)(size_t)) &GameEntityManager::getGameEntity )
-            .def( "mousePick", &GameEntityManager::mousePickLua )
-            .def( "getEntityList", &GameEntityManager::getGameEntityList )
-            .def(tostring(self))
-            //.def( "update", &GameEntityManager::update ) // Usually done every game loop.
-    ];
-    */
+        .addConstructor<void (*)(lua_State*), RefCountedObjectPtr<GameEntity> >()
+        .addData( "updateOveride", &GameEntity::update_overide )
+        .addFunction( "update", &GameEntity::update )
+        .addProperty( "name", &GameEntity::getName, &GameEntity::setName )
+        .addData( "mesh", &GameEntity::mesh )
+        .addData( "node", &GameEntity::sceneNode )
+        .addFunction( "hashId", &GameEntity::getHashId )
+        .addData( "parent", &GameEntity::parent )
+        .addFunction( "hash", &GameEntity::hash )
+        .addFunction( "hitCheck", &GameEntity::hitCheck )
+        .addFunction( "hitPosition", &GameEntity::hitPosition )
+        .addFunction( "highlight", &GameEntity::highlight )
+        .addFunction( "createHighlightMaterial", &GameEntity::createHighlightMaterial )
+        .addFunction( "removeFromManager", &GameEntity::removeFromManager )
+        .addProperty( "visible", &GameEntity::isVisible, &GameEntity::setVisible )
+        .addFunction( "__tostring", &GameEntityToString )
+        .addFunction( "__gc", &GameEntity::removeFromManager)
+        .endClass()
+        .beginClass<GameEntityManager>("GameEntityManager")
+        .addStaticFunction( "getSingleton", &GameEntityManager::getSingletonPtr )
+        .addFunction( "add", &GameEntityManager::addGameEntity )
+        .addFunction( "remove", (void (GameEntityManager::*)(std::string)) &GameEntityManager::removeGameEntity )
+        .addFunction( "removeById", (void (GameEntityManager::*)(size_t)) &GameEntityManager::removeGameEntity )
+        .addFunction( "get", (GameEntity::Ptr (GameEntityManager::*)(std::string)) &GameEntityManager::getGameEntity )
+        .addFunction( "getById", (GameEntity::Ptr (GameEntityManager::*)(size_t)) &GameEntityManager::getGameEntity )
+        .addFunction( "mousePick", &GameEntityManager::mousePickLua )
+        .addFunction( "getEntityList", &GameEntityManager::getGameEntityList )
+        .addFunction( "__tostring", &GameEntityManagerToString )
+        .endClass()
+        .endNamespace();
 }

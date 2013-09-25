@@ -138,8 +138,8 @@ public:
 
     Ogre::Ray getCameraRay( float x, float y );
     std::list<GameEntity::Ptr> mousePick( float x, float y );
-    void mousePickLua( lua_State* L, float x, float y );
-    void getGameEntityList( lua_State *L );
+    luabridge::LuaRef mousePickLua( lua_State* L, float x, float y );
+    luabridge::LuaRef getGameEntityList( lua_State *L );
 };
 
 void bindGameEntityClasses( lua_State* L );
