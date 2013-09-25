@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include <OgreStringConverter.h>
 #include <git_versioning.h>
 #include <LuaBridge.h>
+#include <boost/version.hpp>
 
 Ogre::String versionString()
 {
