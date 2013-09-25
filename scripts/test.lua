@@ -1,10 +1,10 @@
 scene = Ogre.getSceneManager()
 root = scene:getRootSceneNode()
 
-gm = GameEntityManager.getSingleton()
+gm = Engine.GameEntityManager.getSingleton()
 
 function createGameEntity( parentNode, name, mesh )
-    local e = GameEntity()
+    local e = Engine.GameEntity()
 
     e.name = name
     e.mesh = scene:createEntity( mesh )
@@ -18,18 +18,21 @@ end
 mouse:show()
 
 function test()
-    t,d = gm:mousePick(mouse.x/mouse.width, mouse.y / mouse.height)
+    local ret = gm:mousePick(mouse.x/mouse.width, mouse.y / mouse.height)
+    t = ret.entities
+    d = ret.distances
     print(#t)
     for i=1,#t do
         print( t[i].name, d[i] )
     end
-    return { t, d }
+    return ret
 end
 
-infVector = Vector3( math.huge, math.huge, math.huge )
+infVector = Ogre.Vector3( math.huge, math.huge, math.huge )
 
 function getWalkableEntityHitPosition( x, y )
-    local geTable = gm:mousePick( x, y )
+    local ret = gm:mousePick( x, y )
+    local geTable = ret.entites
 
     if #geTable == 0 then
         return infVector

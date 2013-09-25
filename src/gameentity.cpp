@@ -356,7 +356,7 @@ std::list<GameEntity::Ptr> GameEntityManager::mousePick( float x, float y )
     return picked;
 }
 
-luabridge::LuaRef GameEntityManager::mousePickLua( lua_State* L, float x, float y )
+luabridge::LuaRef GameEntityManager::mousePickLua( float x, float y, lua_State* L )
 {
     using namespace Ogre;
     using namespace luabridge;
