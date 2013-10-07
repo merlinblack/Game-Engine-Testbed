@@ -32,8 +32,8 @@ function fixWalkmeshLinks( level )
 end
 
 function moveEntityToWaypoint( entity, waypoint )
-    local location = Vector3( waypoint.loc[1], waypoint.loc[2], waypoint.loc[3] )
-    local rotation = Quaternion( waypoint.rot[1], waypoint.rot[2], waypoint.rot[3], waypoint.rot[4] )
+    local location = Ogre.Vector3( waypoint.loc[1], waypoint.loc[2], waypoint.loc[3] )
+    local rotation = Ogre.Quaternion( waypoint.rot[1], waypoint.rot[2], waypoint.rot[3], waypoint.rot[4] )
 
     entity.node:setPosition( location )
     entity.node:setOrientation( rotation )
@@ -44,7 +44,7 @@ function createLights( level )
     local currentLights = {}
     for _,light in pairs( level.lights ) do
         local l = scene:createLight( light.name )
-        l:setDiffuse( ColourValue( light.colour[1], light.colour[2], light.colour[3] ) )
+        l:setDiffuse( Ogre.ColourValue( light.colour[1], light.colour[2], light.colour[3] ) )
         l:setPosition( light.loc[1], light.loc[2], light.loc[3] )
         currentLights[light.name] = l
     end
@@ -54,21 +54,21 @@ end
 function createEntities( level )
     local scene = Ogre.getSceneManager()
     local root  = scene:getRootSceneNode()
-    local gm    = GameEntityManager.getSingleton()
+    local gm    = Engine.GameEntityManager.getSingleton()
     local entities = {}
-    nv          = NavigationMesh()
+    nv = Engine.NavigationMesh( Ogre.Vector3.ZERO, Ogre.Quaternion.IDENTITY, Ogre.Vector3.ZERO )
 
     for _,mesh in pairs( level.meshes ) do
         print( mesh.name )
         if mesh.isEntity == true then
             print 'Creating entity'
-            local e = GameEntity()
+            local e = Engine.GameEntity()
 
             e.name = mesh.name
             e.mesh = scene:createEntity( mesh.filename )
             e.node = root:createChildSceneNode( e.name .. '_Node' )
-            local pos = Vector3( mesh.loc[1], mesh.loc[2], mesh.loc[3] )
-            local rot = Quaternion( mesh.rot[1], mesh.rot[2], mesh.rot[3], mesh.rot[4] )
+            local pos = Ogre.Vector3( mesh.loc[1], mesh.loc[2], mesh.loc[3] )
+            local rot = Ogre.Quaternion( mesh.rot[1], mesh.rot[2], mesh.rot[3], mesh.rot[4] )
             print( pos, rot )
             e.node:setPosition( pos )
             e.node:setOrientation( rot )
@@ -78,9 +78,9 @@ function createEntities( level )
 
             if mesh.walkmesh then
                 local nm = scene:createEntity( mesh.walkmesh.filename )
-                local pos = Vector3( mesh.walkmesh.loc[1], mesh.walkmesh.loc[2], mesh.walkmesh.loc[3] )
-                local rot = Quaternion( mesh.walkmesh.rot[1], mesh.walkmesh.rot[2], mesh.walkmesh.rot[3], mesh.walkmesh.rot[4] )
-                local scale = Vector3( mesh.walkmesh.scale[1], mesh.walkmesh.scale[2], mesh.walkmesh.scale[3] )
+                local pos = Ogre.Vector3( mesh.walkmesh.loc[1], mesh.walkmesh.loc[2], mesh.walkmesh.loc[3] )
+                local rot = Ogre.Quaternion( mesh.walkmesh.rot[1], mesh.walkmesh.rot[2], mesh.walkmesh.rot[3], mesh.walkmesh.rot[4] )
+                local scale = Ogre.Vector3( mesh.walkmesh.scale[1], mesh.walkmesh.scale[2], mesh.walkmesh.scale[3] )
                 local tag = mesh.tag or 0
                 print( 'Navmesh:', pos,rot,scale,tag )
                 nv:addFromEntity( nm, pos, rot, scale, tag )

@@ -118,11 +118,11 @@ function setup()
     require 'fps'
     require 'clock'
     require 'lualogo'
-    --require 'cameracontrol'
+    require 'cameracontrol'
     --require 'walk'
-    --require 'test'
+    require 'test'
     --require 'mydebug'
-    --require 'loadlevel'
+    require 'loadlevel'
 
     --player = createGameEntity( root, 'Robot', 'robot.mesh' )
     --player.node:scale( .5, .5, .5 )
