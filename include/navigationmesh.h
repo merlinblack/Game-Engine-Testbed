@@ -43,12 +43,13 @@ this avoids calling sqrt, and the costs are only ever compared against each othe
 #include <ogretools.h>
 #include <OgreVector3.h>
 #include <OgreMesh.h>
-#include <boost/shared_ptr.hpp>
 
 #include <vector>
 #include <ostream>
 
 #include <lua.hpp>
+#include <LuaBridge.h>
+#include <RefCountedObject.h>
 
 class NavigationMesh;
 struct NavigationCellComparison;
@@ -117,7 +118,7 @@ typedef std::vector<NavigationCell*> NavigationCellList;
 // Forward ref.
 struct lua_State;
 
-class NavigationMesh
+class NavigationMesh : public RefCountedObject
 {
     typedef std::vector<NavigationCell> CellVector;
     CellVector mCells;
@@ -132,21 +133,21 @@ class NavigationMesh
     bool mShow; // Show each cell for debugging.
 
 public:
-    NavigationMesh( 
+    NavigationMesh(
             Ogre::Vector3 position = Ogre::Vector3::ZERO,
             Ogre::Quaternion rotation = Ogre::Quaternion::IDENTITY,
             Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE );
 
     ~NavigationMesh();
 
-    void addFromOgreMesh( 
+    void addFromOgreMesh(
             Ogre::MeshPtr mesh,
             Ogre::Vector3 position = Ogre::Vector3::ZERO,
             Ogre::Quaternion rotation = Ogre::Quaternion::IDENTITY,
             Ogre::Vector3 scale = Ogre::Vector3::UNIT_SCALE,
             int tag = 0 );
 
-    void addFromOgreEntity( 
+    void addFromOgreEntity(
             Ogre::Entity *entity,
             Ogre::Vector3 position = Ogre::Vector3::ZERO,
             Ogre::Quaternion rotation = Ogre::Quaternion::IDENTITY,
@@ -166,13 +167,13 @@ public:
     NavigationPath* findNavigationPath( Ogre::Vector3 position, Ogre::Vector3 destination );
     NavigationCellList* findNavigationCellPath( NavigationCell* position, NavigationCell* destination );
 
-    void findNavigationPathLua( lua_State* L, Ogre::Vector3 position, Ogre::Vector3 destination, Ogre::Radian maxTurnAngle, Ogre::Real pathWidth );
+    void findNavigationPathLua( Ogre::Vector3 position, Ogre::Vector3 destination, Ogre::Radian maxTurnAngle, Ogre::Real pathWidth, lua_State* L );
 
     NavigationPath* straightenPath( NavigationPath* path, Ogre::Radian maxTurnAngle, Ogre::Real width );
 
     void DebugTextDump( std::ostream &out );
 
-    bool getShow() { return mShow; }
+    bool getShow() const { return mShow; }
     void setShow( bool show );
 
 private:
@@ -182,7 +183,5 @@ private:
     inline NavigationCell* popFromOpenList();
     inline void promoteCellInOpenList( NavigationCell* cell );
 };
-
-typedef boost::shared_ptr<NavigationMesh> NavigationMeshPtr;
 
 #endif // NAVIGATIONMESH_H

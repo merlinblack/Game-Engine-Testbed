@@ -35,8 +35,8 @@ THE SOFTWARE.
 void bindOgre( lua_State* L ); // From ogrebind.cpp
 /*
 void bindAnimation( lua_State* L ); // From animationbind.cpp
-void bindNavigationMesh( lua_State* L); // From navmeshbind.cpp
 */
+void bindNavigationMesh( lua_State* L); // From navmeshbind.cpp
 void bindGorilla( lua_State *L ); // From gorillabind.cpp
 
 template<class D, class B>
@@ -215,8 +215,8 @@ void ScriptingSystem::initialise()
     bindGameEntityClasses( mL );
     /*
     bindAnimation( mL );
-    bindNavigationMesh( mL );
     */
+    bindNavigationMesh( mL );
     bindGorilla( mL );
 
     using namespace luabridge;

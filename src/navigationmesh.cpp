@@ -157,10 +157,11 @@ void NavigationCell::debugDrawCellAndNeigbours()
 
 void NavigationCell::getDebugInfoLua( lua_State *L )
 {
-    /*
-    luabind::object info = luabind::newtable(L);
-    luabind::object verts = luabind::newtable(L);
-    luabind::object links = luabind::newtable(L);
+    using namespace luabridge;
+
+    LuaRef info = newTable(L);
+    LuaRef verts = newTable(L);
+    LuaRef links = newTable(L);
 
     verts[1] = mVertices[0];
     verts[2] = mVertices[1];
@@ -187,7 +188,6 @@ void NavigationCell::getDebugInfoLua( lua_State *L )
     info["centre"] = mCentre;
 
     info.push( L );
-    */
 
     return;
 }
@@ -276,7 +276,7 @@ NavigationMesh::~NavigationMesh()
 {
 }
 
-void NavigationMesh::addFromOgreMesh( 
+void NavigationMesh::addFromOgreMesh(
         Ogre::MeshPtr mesh,
         Ogre::Vector3 position,
         Ogre::Quaternion rotation,
@@ -292,8 +292,8 @@ void NavigationMesh::addFromOgreMesh(
     unsigned long* indices;
 
     OgreTools::GetMeshInformation( mesh, vertex_count, vertices, index_count, indices,
-                                   mPosition + position, 
-                                   mRotation * rotation, 
+                                   mPosition + position,
+                                   mRotation * rotation,
                                    mScale * scale );
 
     // Add each triangle as a navigation cell.
@@ -314,7 +314,7 @@ void NavigationMesh::computeNeighbours()
 {
     NavigationCellList list;
     CellVector::iterator current;
-    
+
     for( current = mCells.begin(); current != mCells.end(); current++ )
         list.push_back( &(*current) );
 
@@ -453,8 +453,10 @@ NavigationPath* NavigationMesh::findNavigationPath( Ogre::Vector3 position, Ogre
     return path;
 }
 
-void NavigationMesh::findNavigationPathLua( lua_State* L, Ogre::Vector3 position, Ogre::Vector3 destination, Ogre::Radian maxTurnAngle, Ogre::Real pathWidth )
+void NavigationMesh::findNavigationPathLua( Ogre::Vector3 position, Ogre::Vector3 destination, Ogre::Radian maxTurnAngle, Ogre::Real pathWidth, lua_State* L )
 {
+    using namespace luabridge;
+
     NavigationPath* path = findNavigationPath( position, destination );
     NavigationPath* straightendPath;
 
@@ -469,8 +471,7 @@ void NavigationMesh::findNavigationPathLua( lua_State* L, Ogre::Vector3 position
     }
 
     // Create a table and populate with the path points.
-    /*
-    luabind::object table = luabind::newtable( L );
+    LuaRef table = newTable( L );
 
     NavigationPath::iterator i;
     int index = 1;
@@ -484,7 +485,6 @@ void NavigationMesh::findNavigationPathLua( lua_State* L, Ogre::Vector3 position
     delete straightendPath;
 
     table.push( L );
-    */
 
     return;
 }
