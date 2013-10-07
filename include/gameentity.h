@@ -72,6 +72,8 @@ public:
     // Lua function for updates
     luabridge::LuaRef update_overide;
 
+    bool walkable;
+
     // Accessors
     std::string getName() const { return name; }
     void setName( std::string newName );

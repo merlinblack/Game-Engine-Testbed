@@ -35,7 +35,7 @@ function moveEntityToWaypoint( entity, waypoint )
     local location = Ogre.Vector3( waypoint.loc[1], waypoint.loc[2], waypoint.loc[3] )
     local rotation = Ogre.Quaternion( waypoint.rot[1], waypoint.rot[2], waypoint.rot[3], waypoint.rot[4] )
 
-    entity.node:setPosition( location )
+    entity.node:setPositionV3( location )
     entity.node:setOrientation( rotation )
 end
 
@@ -43,9 +43,9 @@ function createLights( level )
     local scene = Ogre.getSceneManager()
     local currentLights = {}
     for _,light in pairs( level.lights ) do
-        local l = scene:createLight( light.name )
-        l:setDiffuse( Ogre.ColourValue( light.colour[1], light.colour[2], light.colour[3] ) )
-        l:setPosition( light.loc[1], light.loc[2], light.loc[3] )
+        local l = scene:createLightByName( light.name )
+        l:setDiffuse( Ogre.ColourValue( light.colour[1], light.colour[2], light.colour[3], 1 ) )
+        l:setPosition( Ogre.Vector3( light.loc[1], light.loc[2], light.loc[3] ) )
         currentLights[light.name] = l
     end
     return currentLights
@@ -70,7 +70,7 @@ function createEntities( level )
             local pos = Ogre.Vector3( mesh.loc[1], mesh.loc[2], mesh.loc[3] )
             local rot = Ogre.Quaternion( mesh.rot[1], mesh.rot[2], mesh.rot[3], mesh.rot[4] )
             print( pos, rot )
-            e.node:setPosition( pos )
+            e.node:setPositionV3( pos )
             e.node:setOrientation( rot )
             e.node:attachObject( e.mesh )
             entities[e.name] = e
