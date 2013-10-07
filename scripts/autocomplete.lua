@@ -54,19 +54,20 @@ function getCompletions( str )
         return {}
     end
 
-    -- Retrieve class info if any
-    for k,v in pairs( getClassInfo( g ) ) do
-        if string.find( v, str ) == 1 then
-            table.insert( ret, prefix .. dottype .. v )
-        end
-    end
-
     if type( g ) == 'table' then
         for k,v in pairs(g) do
             if string.find( k, str ) == 1 and string.sub(k,1,1) ~= '_' then
                 table.insert( ret, prefix .. dottype .. k )
             end
         end
+    else
+        -- Retrieve class info if any
+        for k,v in pairs( getClassInfo( g ) ) do
+            if string.find( v, str ) == 1 then
+                table.insert( ret, prefix .. dottype .. v )
+            end
+        end
+
     end
 
     return ret
