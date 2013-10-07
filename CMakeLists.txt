@@ -8,7 +8,7 @@ elseif (UNIX)
 endif ()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} " " ${CMAKE_MODULE_PATH_ADD} " " ${PROJECT_SOURCE_DIR}/cmake )
-MESSAGE(STATUS "Searching in: " ${CMAKE_MODULE_PATH})
+MESSAGE(STATUS "Searching in: ${CMAKE_MODULE_PATH} ")
 
 set(OGRE_STATIC false)
 
