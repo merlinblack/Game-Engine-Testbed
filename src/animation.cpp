@@ -278,14 +278,14 @@ AnimationManager& AnimationManager::getSingleton()
 #endif
 }
 
-void AnimationManager::addAnimation( AnimationPtr animation )
+void AnimationManager::addAnimation( Animation::Ptr animation )
 {
     animations.push_back( animation );
 }
 
-void AnimationManager::removeAnimation( AnimationPtr animation )
+void AnimationManager::removeAnimation( Animation::Ptr animation )
 {
-    std::vector<AnimationPtr>::iterator i;
+    std::vector<Animation::Ptr>::iterator i;
 
     i = std::find( animations.begin(), animations.end(), animation );
 
@@ -295,7 +295,7 @@ void AnimationManager::removeAnimation( AnimationPtr animation )
 
 void AnimationManager::update()
 {
-    std::vector<AnimationPtr>::iterator i;
+    std::vector<Animation::Ptr>::iterator i;
 
     i = animations.begin();
     while( i != animations.end() )

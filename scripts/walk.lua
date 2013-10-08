@@ -1,5 +1,7 @@
 local scene = Ogre.getSceneManager()
-am = AnimationManager.getSingleton()
+local Vector3 = Ogre.Vector3
+
+am = Engine.AnimationManager.getSingleton()
 
 function moveTo( v )
     local ma = MovementAnimation( player.node, v, player.walkspeed )
@@ -66,7 +68,7 @@ end
 function getpath()
     local p = player.node:getPosition()
     local d = getWalkableEntityHitPosition(mouse.x/mouse.width, mouse.y/mouse.height)
-    local maxAngle = Radian( Degree(90) )
+    local maxAngle = Radian( Ogre.Degree(90) )
 
     return nv:findPath( p, d, maxAngle, 10 )
 end

@@ -29,7 +29,7 @@ THE SOFTWARE.
 
 struct AnimationEventData : public EventData
 {
-    AnimationPtr animation;
+    Animation::Ptr animation;
 };
 
 #endif // ANIMATIONEVENTDATA_H_INCLUDED

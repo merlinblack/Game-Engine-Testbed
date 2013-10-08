@@ -33,16 +33,18 @@ THE SOFTWARE.
 #include <OgreVector3.h>
 
 #include <vector>
-#include <boost/shared_ptr.hpp>
+
+#include <lua.hpp>
+#include <LuaBridge.h>
+#include <RefCountedObject.h>
 
 #define DEFAULT_FADE_SPEED 0.5
 
-class Animation;
-typedef boost::shared_ptr<Animation> AnimationPtr;
-
-class Animation
+class Animation : public RefCountedObject
 {
     public:
+        typedef RefCountedObjectPtr<Animation> Ptr;
+
         virtual void addTime( Ogre::Real timeSineLastFrame ) = 0;
         virtual bool isFinished() = 0;
 
@@ -58,9 +60,10 @@ class Animation
         {
             stop();
         }
-        bool operator==( const AnimationPtr ptr )
+
+        bool operator==( const Animation::Ptr ptr )
         {
-            return ptr.get() == this;
+            return ptr == this;
         }
 };
 
@@ -77,8 +80,7 @@ class MeshAnimation : public Animation
 
     void addTime( Ogre::Real timeSinceLastFrame );
     void setWeighting( Ogre::Real weighting );
-    void setFadeSpeed( Ogre::Real percentWeightPerSecond 
-            = DEFAULT_FADE_SPEED );
+    void setFadeSpeed( Ogre::Real percentWeightPerSecond = DEFAULT_FADE_SPEED );
 
     void fadeIn();
     void fadeOut();
@@ -134,16 +136,12 @@ class RotationAnimation : public Animation
     inline bool isFinished();
 };
 
-typedef boost::shared_ptr<MeshAnimation> MeshAnimationPtr;
-typedef boost::shared_ptr<MovementAnimation> MovementAnimationPtr;
-typedef boost::shared_ptr<RotationAnimation> RotationAnimationPtr;
-
-class AnimationManager : 
+class AnimationManager :
     public Ogre::Singleton<AnimationManager>,
     public Ogre::FrameListener,
     public EventListenerSender
 {
-    std::vector<AnimationPtr> animations;
+    std::vector<Animation::Ptr> animations;
     Ogre::Real timeSinceLastFrame;
     const size_t finishEvent;
 
@@ -154,8 +152,8 @@ class AnimationManager :
     void initailise();
     void shutdown();
 
-    void addAnimation( AnimationPtr animation );
-    void removeAnimation( AnimationPtr animation );
+    void addAnimation( Animation::Ptr animation );
+    void removeAnimation( Animation::Ptr animation );
     void update();
 
     static AnimationManager& getSingleton();
