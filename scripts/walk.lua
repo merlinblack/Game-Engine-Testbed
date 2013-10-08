@@ -1,7 +1,10 @@
 local scene = Ogre.getSceneManager()
 local Vector3 = Ogre.Vector3
+local MovementAnimation = Engine.MovementAnimation
+local RotationAnimation = Engine.RotationAnimation
+local MeshAnimation = Engine.MeshAnimation
 
-am = Engine.AnimationManager.getSingleton()
+am = Engine.AnimationManager:getSingleton()
 
 function moveTo( v )
     local ma = MovementAnimation( player.node, v, player.walkspeed )
