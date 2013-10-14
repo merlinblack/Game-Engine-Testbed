@@ -4,10 +4,10 @@ local MovementAnimation = Engine.MovementAnimation
 local RotationAnimation = Engine.RotationAnimation
 local MeshAnimation = Engine.MeshAnimation
 
-am = Engine.AnimationManager:getSingleton()
+am = Engine.AnimationManager.getSingleton()
 
 function moveTo( v )
-    local ma = MovementAnimation( player.node, v, player.walkspeed )
+    local ma = MovementAnimation( player.node, v, player.data.walkspeed )
     am:add(ma)
     ma:start()
     return ma
@@ -39,8 +39,8 @@ function followList( list )
     wa:start()
     wa:fadeIn()
     player.walking = true
-    player.stopwalking = false
-    player.walkspeed = player.walkspeed or 30
+    player.data.stopwalking = false
+    player.data.walkspeed = player.data.walkspeed or 30
     for i, vector in pairs(list) do
         if i ~= 1 then
             local r
@@ -50,17 +50,17 @@ function followList( list )
             end
             local r = rotateTo( getDirectionTo( vector ) )
             local m = moveTo( vector )
-            while not m:isFinished() and not player.stopwalking do
+            while not m:isFinished() and not player.data.stopwalking do
                 yield()
             end
-            if player.stopwalking == true then
+            if player.data.stopwalking == true then
                 m:stop()
                 am:remove(m)
                 break
             end
         end
     end
-    player.walking = false
+    player.data.walking = false
     wa:fadeOut()
     while wa:isFadingOut() do
         yield()
@@ -77,8 +77,8 @@ function getpath()
 end
 
 function walkTask()
-    player.stopwalking = true
-    while player.walking == true do
+    player.data.stopwalking = true
+    while player.data.walking == true do
         yield()
     end
     startwalk = false
