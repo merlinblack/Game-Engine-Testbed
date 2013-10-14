@@ -53,6 +53,7 @@ class GameEntity : public RefCountedObject
     // Material used for highlight.
     Ogre::MaterialPtr highlightMaterial;
 
+
 public: // TODO: Make private and add accessor funcs.
 
     RefCountedObjectPtr<GameEntity> parent;
@@ -68,6 +69,10 @@ public: // TODO: Make private and add accessor funcs.
 public:
     GameEntity( lua_State* L);
     virtual ~GameEntity();
+
+    // Lua ref to hold any Lua data.
+    // Assigned a Lua table.
+    luabridge::LuaRef luaData;
 
     // Lua function for updates
     luabridge::LuaRef update_overide;

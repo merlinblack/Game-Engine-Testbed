@@ -31,8 +31,9 @@ THE SOFTWARE.
 
 boost::hash<std::string> GameEntity::hasher;
 
-GameEntity::GameEntity( lua_State* L ) : update_overide(L), hashId(0), sceneNode(0), mesh(0), originalMaterial(0), highlightMaterial(0)
+GameEntity::GameEntity( lua_State* L ) : luaData(L), update_overide(L), hashId(0), sceneNode(0), mesh(0), originalMaterial(0), highlightMaterial(0)
 {
+    luaData = luabridge::newTable( L );
 }
 
 GameEntity::~GameEntity()
@@ -431,6 +432,7 @@ void bindGameEntityClasses( lua_State* L )
         .beginNamespace( "Engine" )
         .beginClass<GameEntity>( "GameEntity" )
         .addConstructor<void (*)(lua_State*), RefCountedObjectPtr<GameEntity> >()
+        .addData( "data", &GameEntity::luaData )
         .addData( "updateOveride", &GameEntity::update_overide )
         .addData( "walkable", &GameEntity::walkable )
         .addFunction( "update", &GameEntity::update )
