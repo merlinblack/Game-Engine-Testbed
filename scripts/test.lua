@@ -32,7 +32,7 @@ infVector = Ogre.Vector3( math.huge, math.huge, math.huge )
 
 function getWalkableEntityHitPosition( x, y )
     local ret = gm:mousePick( x, y )
-    local geTable = ret.entites
+    local geTable = ret.entities
 
     if #geTable == 0 then
         return infVector
@@ -63,7 +63,7 @@ function teleport()
 
     local p = getWalkableEntityHitPosition( mouse.x / mouse.width, mouse.y / mouse.height )
     if p ~= infVector then
-        player.node:setPosition( p )
+        player.node:setPositionV3( p )
     else
         print 'Nothing under the mouse cursor.'
     end

@@ -71,7 +71,7 @@ end
 function getpath()
     local p = player.node:getPosition()
     local d = getWalkableEntityHitPosition(mouse.x/mouse.width, mouse.y/mouse.height)
-    local maxAngle = Radian( Ogre.Degree(90) )
+    local maxAngle = Ogre.Radian( Ogre.Degree(90) )
 
     return nv:findPath( p, d, maxAngle, 10 )
 end

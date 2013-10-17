@@ -63,12 +63,12 @@ function adjustPointTowardsPoint( point, anchor, percentage )
 end
 
 function drawCell( cellinfo )
-    local mo = ManualObject( cellinfo.name )
+    local mo = Ogre.ManualObject( cellinfo.name )
     local material = 'debug/yellow'
-    if cellinfo.open then 
+    if cellinfo.open then
         material = 'debug/cyan'
     end
-    if cellinfo.closed then 
+    if cellinfo.closed then
         material = 'debug/red'
     end
     mo:begin( material, 4, 'General' )
