@@ -56,7 +56,7 @@ function createEntities( level )
     local root  = scene:getRootSceneNode()
     local gm    = Engine.GameEntityManager.getSingleton()
     local entities = {}
-    nv = Engine.NavigationMesh( Ogre.Vector3.ZERO, Ogre.Quaternion.IDENTITY, Ogre.Vector3.ZERO )
+    nv = Engine.NavigationMesh( Ogre.Vector3.ZERO, Ogre.Quaternion.IDENTITY, Ogre.Vector3.UNIT_SCALE )
 
     for _,mesh in pairs( level.meshes ) do
         print( mesh.name )
