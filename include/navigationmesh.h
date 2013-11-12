@@ -167,7 +167,7 @@ public:
     NavigationPath* findNavigationPath( Ogre::Vector3 position, Ogre::Vector3 destination );
     NavigationCellList* findNavigationCellPath( NavigationCell* position, NavigationCell* destination );
 
-    void findNavigationPathLua( Ogre::Vector3 position, Ogre::Vector3 destination, Ogre::Radian maxTurnAngle, Ogre::Real pathWidth, lua_State* L );
+    luabridge::LuaRef findNavigationPathLua( Ogre::Vector3 position, Ogre::Vector3 destination, Ogre::Radian maxTurnAngle, Ogre::Real pathWidth, lua_State* L );
 
     NavigationPath* straightenPath( NavigationPath* path, Ogre::Radian maxTurnAngle, Ogre::Real width );
 

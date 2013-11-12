@@ -453,7 +453,7 @@ NavigationPath* NavigationMesh::findNavigationPath( Ogre::Vector3 position, Ogre
     return path;
 }
 
-void NavigationMesh::findNavigationPathLua( Ogre::Vector3 position, Ogre::Vector3 destination, Ogre::Radian maxTurnAngle, Ogre::Real pathWidth, lua_State* L )
+luabridge::LuaRef NavigationMesh::findNavigationPathLua( Ogre::Vector3 position, Ogre::Vector3 destination, Ogre::Radian maxTurnAngle, Ogre::Real pathWidth, lua_State* L )
 {
     using namespace luabridge;
 
@@ -466,8 +466,7 @@ void NavigationMesh::findNavigationPathLua( Ogre::Vector3 position, Ogre::Vector
     }
     else
     {
-        lua_pushnil( L );
-        return;
+        return luabridge::LuaRef(L);
     }
 
     // Create a table and populate with the path points.
@@ -484,9 +483,7 @@ void NavigationMesh::findNavigationPathLua( Ogre::Vector3 position, Ogre::Vector
     delete path;
     delete straightendPath;
 
-    table.push( L );
-
-    return;
+    return table;
 }
 
 NavigationPath* NavigationMesh::straightenPath( NavigationPath* path, Ogre::Radian maxTurnAngle, Ogre::Real pathWidth )
