@@ -42,16 +42,36 @@ FILE(GLOB SRCS src/*.cpp)
 FILE(GLOB HDRS include/*.h)
 FILE(GLOB SCRIPTS scripts/*.lua scripts/gui/*.lua)
 
+FILE(GLOB MAIN src/main.cpp)
+FILE(GLOB TEST src/test.cpp)
+LIST(REMOVE_ITEM SRCS ${MAIN} ${TEST} )
+
 add_definitions (-DGORILLA_USES_EXCEPTIONS=1)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LuaBridge_FLAGS}" )
 
 ADD_EXECUTABLE(engine
+    ${MAIN}
 	${SRCS}
 	${HDRS}
     ${SCRIPTS}
 	)
 
 TARGET_LINK_LIBRARIES(engine
+	${OIS_LIBRARIES}
+	${OGRE_LIBRARIES}
+	${Boost_LIBRARIES}
+    ${Lua_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
+	)
+
+ADD_EXECUTABLE(test
+    ${TEST}
+    ${SRCS}
+    ${HDRS}
+    ${SCRIPTS}
+    )
+
+TARGET_LINK_LIBRARIES(test
 	${OIS_LIBRARIES}
 	${OGRE_LIBRARIES}
 	${Boost_LIBRARIES}

@@ -198,7 +198,7 @@ void ScriptingSystem::shutdown()
     mL = 0;
 }
 
-void ScriptingSystem::initialise()
+void ScriptingSystem::initialise( const std::string& alternateStartupScript )
 {
     mL = luaL_newstate();
 
@@ -217,14 +217,21 @@ void ScriptingSystem::initialise()
 
     using namespace luabridge;
 
-    LuaResourcePtr mainlua = LuaResourceManager::getSingleton().load( "main.lua" );
+    std::string StartupScript;
+
+    if( alternateStartupScript.empty() )
+        StartupScript = "main.lua";
+    else
+        StartupScript = alternateStartupScript;
+
+    LuaResourcePtr mainlua = LuaResourceManager::getSingleton().load( StartupScript );
 
     if( luaL_loadbuffer( mL,
                 mainlua->getScriptSource().c_str(),
-                mainlua->calculateSize(), "main.lua" ) || lua_pcall( mL, 0, LUA_MULTRET, 0) )
+                mainlua->calculateSize(), StartupScript.c_str() ) || lua_pcall( mL, 0, LUA_MULTRET, 0) )
     {
         Ogre::LogManager::getSingleton().stream() << " ****************************** ";
-        Ogre::LogManager::getSingleton().stream() << " *** main.lua failed to run     ";
+        Ogre::LogManager::getSingleton().stream() << " *** " << StartupScript << " failed to run     ";
         Ogre::LogManager::getSingleton().stream() << " *** " << lua_tostring( mL, -1 );
         Ogre::LogManager::getSingleton().stream() << " ****************************** ";
     }

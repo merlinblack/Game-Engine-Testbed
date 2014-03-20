@@ -22,39 +22,56 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
-#ifndef SCRIPTINGSYSTEM_H_INCLUDED
-#define SCRIPTINGSYSTEM_H_INCLUDED
+#include <iostream>
+#include <exception>
 
-#include <lua.hpp>
-#include <eventmanager.h>
-#include <OgreFrameListener.h>
+#include "rendersystem.h"
+//#include "inputsystem.h"
+#include "scriptingsystem.h"
+//#include "eventmanager.h"
+//#include "luaconsole.h"
+#include "gameentity.h"
+//#include "animation.h"
+//#include "Gorilla.h"
 
-class ScriptingSystem : public EventListenerSender, public Ogre::FrameListener
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#define WIN32_LEAN_AND_MEAN
+#include "windows.h"
+#endif
+
+using namespace std;
+using namespace Ogre;
+
+Root* root;
+ScriptingSystem ss;
+
+void test()
 {
-    lua_State *mL;
-    static int GUID;
+}
 
-public:
-    friend void queueEventThunk( Event&, lua_State * );
+int main()
+{
+    cout << "Staring testing." << endl;
 
-    ScriptingSystem() : mL(0)
-    {
-    }
-    ~ScriptingSystem()
-    {
-        shutdown();
-    }
+    root = new Root();
 
-    void shutdown();
-    void initialise( const std::string& alternateStartupScript = std::string() );
-    void bind();
+    root->restoreConfig();
 
-    bool EventNotification( EventPtr event );
+    LuaResourceManager *luaRMgr = new LuaResourceManager();
 
-    bool frameStarted(const Ogre::FrameEvent& evt);
-    bool frameEnded(const Ogre::FrameEvent& evt);
+    ResourceGroupManager::getSingleton().addResourceLocation( "../scripts", "FileSystem", "General" );
 
-    lua_State* getInterpreter() { return mL; }
-};
+    ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-#endif // SCRIPTINGSYSTEM_H_INCLUDED
+    ss.initialise("TestingMain.lua");
+
+    test();
+
+    ss.shutdown();
+
+    delete luaRMgr;
+    delete root;
+
+    return 0;
+}
+
