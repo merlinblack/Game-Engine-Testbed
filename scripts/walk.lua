@@ -38,7 +38,7 @@ function followList( list )
     wa:setFadeSpeed(2)
     wa:start()
     wa:fadeIn()
-    player.walking = true
+    player.data.walking = true
     player.data.stopwalking = false
     player.data.walkspeed = player.data.walkspeed or 30
     for i, vector in pairs(list) do

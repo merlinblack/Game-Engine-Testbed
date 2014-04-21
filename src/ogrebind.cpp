@@ -30,6 +30,28 @@ THE SOFTWARE.
 using namespace luabridge;
 using namespace Ogre;
 
+int mulQuaternion( lua_State* L )
+{
+    const char* arg_error = "Expecting %s for argument %d when given %d arguments";
+    if( lua_gettop( L ) == 3 ) // Note that the class table is always index 1 on the stack.
+    {
+        LuaRef p1 = LuaRef::fromStack( L, 2 );
+        LuaRef p2 = LuaRef::fromStack( L, 3 );
+        if( p1.is<Vector3>() == true )
+        {
+            //return new Vector3( LuaRef_cast<Vector3>(p1) );
+        }
+        luaL_error( L, arg_error, "Vector3", 1, 1 ); // returns
+    }
+    else
+    {
+        luaL_error( L, "Incorrect number of arguments given (%d)", lua_gettop( L ) ); // returns
+    }
+
+    // Should not get here.
+    return 0;
+}
+
 void bindQuaternion( lua_State* L )
 {
     getGlobalNamespace( L )
@@ -43,7 +65,7 @@ void bindQuaternion( lua_State* L )
         .addConstructor<void (*) (Real,Real,Real,Real)>()
         .addFunction( "__add", (Quaternion (Quaternion::*)(const Quaternion&) const)&Quaternion::operator+ )
         .addFunction( "__sub", (Quaternion (Quaternion::*)(const Quaternion&) const)&Quaternion::operator- )
-        .addFunction( "__mul", (Quaternion (Quaternion::*)(const Quaternion&) const)&Quaternion::operator* )
+        .addFunction( "__mul", (Vector3    (Quaternion::*)(const Vector3&)    const)&Quaternion::operator* )
         // May have to write an overide handler for __mul. See luabind operator binding below...
         .endClass()
         .endNamespace();

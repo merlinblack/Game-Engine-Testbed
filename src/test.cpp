@@ -44,6 +44,7 @@ using namespace Ogre;
 
 Root* root;
 ScriptingSystem ss;
+GameEntityManager gm;
 
 void test()
 {
@@ -64,9 +65,10 @@ int main()
     ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     ss.initialise("TestingMain.lua");
-
+    gm.initialise();
     test();
 
+    gm.shutdown();
     ss.shutdown();
 
     delete luaRMgr;

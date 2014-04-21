@@ -27,7 +27,13 @@ THE SOFTWARE.
 #include <OgreMath.h>
 #include <OgreSubEntity.h>
 #include <OgreMaterialManager.h>
+#include <OgreStringConverter.h>
 #include <ogretools.h>
+
+#include <iostream>
+
+using std::cout;
+using std::endl;
 
 boost::hash<std::string> GameEntity::hasher;
 
@@ -253,12 +259,17 @@ void GameEntityManager::initialise()
     using namespace Ogre;
 
     Root& root = Root::getSingleton();
-    sceneManager = root.getSceneManager("SceneManagerInstance");
+    try
+    {
+        sceneManager = root.getSceneManager("SceneManagerInstance");
+        assert( sceneManager );
 
-    assert( sceneManager );
-
-    sceneQuery = sceneManager->createRayQuery(Ray());
-    sceneQuery->setSortByDistance(true);
+        sceneQuery = sceneManager->createRayQuery(Ray());
+        sceneQuery->setSortByDistance(true);
+    }
+    catch( ... )
+    {
+    }
 }
 
 // This should be done before the scripting system is shutdown,
@@ -322,6 +333,8 @@ void GameEntityManager::update()
 
 Ogre::Ray GameEntityManager::getCameraRay( float x, float y )
 {
+    assert( sceneManager );
+
     Ogre::Camera* cam = sceneManager->getCamera("MainCamera");
 
     return cam->getCameraToViewportRay( x, y );
@@ -370,7 +383,6 @@ luabridge::LuaRef GameEntityManager::mousePickLua( float x, float y, lua_State* 
     RaySceneQueryResult& result = sceneQuery->execute();
     RaySceneQueryResult::iterator iter;
 
-    std::list<GameEntity::Ptr> picked;
     std::map<size_t, GameEntity::Ptr>::iterator entityIter;
 
     for( iter = result.begin(); iter != result.end(); iter++ )
@@ -416,7 +428,7 @@ luabridge::LuaRef GameEntityManager::getGameEntityList( lua_State *L )
 
 Ogre::String GameEntityToString( const GameEntity::Ptr ge )
 {
-    return "Game Entity: " + ge->getName();
+    return "Game Entity: " + ge->getName() + " " + Ogre::StringConverter::toString(ge->getHashId(), 0, ' ', std::ios::hex );
 }
 
 Ogre::String GameEntityManagerToString( const GameEntityManager* gm )
@@ -449,7 +461,6 @@ void bindGameEntityClasses( lua_State* L )
         .addFunction( "removeFromManager", &GameEntity::removeFromManager )
         .addProperty( "visible", &GameEntity::isVisible, &GameEntity::setVisible )
         .addFunction( "__tostring", &GameEntityToString )
-        .addFunction( "__gc", &GameEntity::removeFromManager)
         .endClass()
         .beginClass<GameEntityManager>("GameEntityManager")
         .addStaticFunction( "getSingleton", &GameEntityManager::getSingletonPtr )
